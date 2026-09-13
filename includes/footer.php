@@ -21,6 +21,128 @@ $footer_user_id = get_current_user_id();
   <script src="assets/js/pwa-install.js"></script>
   <!-- Varsaathi VIP Premium Bottom Sheet Engine -->
   <script src="assets/js/premium.js"></script>
+  <!-- Global Bottom Sheet Filter Drawer Modal -->
+  <div class="modal-overlay filter-drawer-overlay" id="filterDrawerModal">
+    <div class="filter-drawer-sheet">
+      <div class="filter-drawer-handle"></div>
+      
+      <!-- Modal Header -->
+      <div class="filter-drawer-header">
+        <h3 class="filter-drawer-title">Filter Preferences</h3>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="filter-drawer-reset-btn" onclick="resetGlobalFilters()" type="button">Reset All</button>
+          <button class="filter-drawer-close-btn" id="closeFilterBtn" type="button" title="Close Filters">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="filter-drawer-body">
+        
+        <!-- 1. Looking For / Gender Category (Var / Vadhu / Everyone) -->
+        <div>
+          <div class="filter-group-title">Looking For / किसे खोज रहे हैं</div>
+          <div class="filter-chip-group" id="filterGenderChips">
+            <button type="button" class="filter-chip-btn active" data-gender="everyone" onclick="selectFilterChip(this, 'gender')">Everyone ✨</button>
+            <button type="button" class="filter-chip-btn" data-gender="female" onclick="selectFilterChip(this, 'gender')">Vadhu 👰 (Bride)</button>
+            <button type="button" class="filter-chip-btn" data-gender="male" onclick="selectFilterChip(this, 'gender')">Var 🤵 (Groom)</button>
+          </div>
+        </div>
+
+        <!-- 2. Age Range Filter -->
+        <div>
+          <div class="filter-range-label-wrap">
+            <span class="filter-group-title" style="margin-bottom: 0;">Age Range / आयु सीमा</span>
+            <span class="filter-range-value" id="ageVal">18 - 45 Yrs</span>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center; margin-top: 6px;">
+            <input type="range" class="filter-range-slider" id="ageMin" min="18" max="60" value="18">
+            <span style="font-size: 0.8rem; color: #8E8E93;">to</span>
+            <input type="range" class="filter-range-slider" id="ageMax" min="18" max="60" value="45">
+          </div>
+        </div>
+
+        <!-- 3. Distance Range Filter -->
+        <div>
+          <div class="filter-range-label-wrap">
+            <span class="filter-group-title" style="margin-bottom: 0;">Max Distance / अधिकतम दूरी</span>
+            <span class="filter-range-value" id="distanceVal">50 km</span>
+          </div>
+          <input type="range" class="filter-range-slider" id="distanceRange" min="5" max="300" step="5" value="50" style="margin-top: 6px;">
+        </div>
+
+        <!-- 4. Marital Status Filter -->
+        <div>
+          <div class="filter-group-title">Marital Status / वैवाहिक स्थिति</div>
+          <div class="filter-chip-group" id="filterMaritalChips">
+            <button type="button" class="filter-chip-btn active" data-val="Any" onclick="selectFilterChip(this, 'marital')">Any</button>
+            <button type="button" class="filter-chip-btn" data-val="Never Married" onclick="selectFilterChip(this, 'marital')">Never Married</button>
+            <button type="button" class="filter-chip-btn" data-val="Divorced" onclick="selectFilterChip(this, 'marital')">Divorced</button>
+            <button type="button" class="filter-chip-btn" data-val="Widowed" onclick="selectFilterChip(this, 'marital')">Widowed</button>
+          </div>
+        </div>
+
+        <!-- 5. Religion & Community Filter -->
+        <div>
+          <div class="filter-group-title">Community / धर्म एवं समुदाय</div>
+          <div class="filter-chip-group" id="filterCommunityChips">
+            <button type="button" class="filter-chip-btn active" data-val="Any" onclick="selectFilterChip(this, 'community')">Any</button>
+            <button type="button" class="filter-chip-btn" data-val="Chourasiya" onclick="selectFilterChip(this, 'community')">Chourasiya Samaj ❤️</button>
+            <button type="button" class="filter-chip-btn" data-val="Hindu" onclick="selectFilterChip(this, 'community')">Hindu</button>
+            <button type="button" class="filter-chip-btn" data-val="Jain" onclick="selectFilterChip(this, 'community')">Jain</button>
+          </div>
+        </div>
+
+        <!-- 6. Education Qualification Filter -->
+        <div>
+          <div class="filter-group-title">Education / योग्यता</div>
+          <div class="filter-chip-group" id="filterEduChips">
+            <button type="button" class="filter-chip-btn active" data-val="Any" onclick="selectFilterChip(this, 'education')">Any</button>
+            <button type="button" class="filter-chip-btn" data-val="Bachelor" onclick="selectFilterChip(this, 'education')">Bachelor Degree</button>
+            <button type="button" class="filter-chip-btn" data-val="Master" onclick="selectFilterChip(this, 'education')">Master / Post Grad</button>
+            <button type="button" class="filter-chip-btn" data-val="Engineer" onclick="selectFilterChip(this, 'education')">B.Tech / Engineering</button>
+            <button type="button" class="filter-chip-btn" data-val="Doctor" onclick="selectFilterChip(this, 'education')">MBBS / Medical</button>
+          </div>
+        </div>
+
+        <!-- 7. Profession Sector Filter -->
+        <div>
+          <div class="filter-group-title">Profession Sector / व्यवसाय क्षेत्र</div>
+          <div class="filter-chip-group" id="filterOccChips">
+            <button type="button" class="filter-chip-btn active" data-val="Any" onclick="selectFilterChip(this, 'occupation')">Any</button>
+            <button type="button" class="filter-chip-btn" data-val="Private" onclick="selectFilterChip(this, 'occupation')">Private Sector</button>
+            <button type="button" class="filter-chip-btn" data-val="Government" onclick="selectFilterChip(this, 'occupation')">Government / PSU</button>
+            <button type="button" class="filter-chip-btn" data-val="Business" onclick="selectFilterChip(this, 'occupation')">Business / Self Employed</button>
+          </div>
+        </div>
+
+        <!-- 8. Hobbies & Interests Multi-select Filter -->
+        <div>
+          <div class="filter-group-title">Interests & Hobbies / रुचि व शौक</div>
+          <div class="filter-chip-group" id="filterHobbyChips">
+            <button type="button" class="filter-chip-btn" data-val="Travel" onclick="toggleMultiFilterChip(this)">Travel ✈️</button>
+            <button type="button" class="filter-chip-btn" data-val="Music" onclick="toggleMultiFilterChip(this)">Music 🎵</button>
+            <button type="button" class="filter-chip-btn" data-val="Fitness" onclick="toggleMultiFilterChip(this)">Fitness 🏋️</button>
+            <button type="button" class="filter-chip-btn" data-val="Cooking" onclick="toggleMultiFilterChip(this)">Cooking 🍳</button>
+            <button type="button" class="filter-chip-btn" data-val="Reading" onclick="toggleMultiFilterChip(this)">Reading 📚</button>
+            <button type="button" class="filter-chip-btn" data-val="Movies" onclick="toggleMultiFilterChip(this)">Movies 🎬</button>
+            <button type="button" class="filter-chip-btn" data-val="Photography" onclick="toggleMultiFilterChip(this)">Photography 📷</button>
+            <button type="button" class="filter-chip-btn" data-val="Gaming" onclick="toggleMultiFilterChip(this)">Gaming 🎮</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Action Button -->
+      <div class="filter-drawer-footer">
+        <button class="filter-apply-btn" id="applyFiltersBtn" type="button" onclick="handleApplyFilters()">
+          Apply Filters ✨
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Global Fullscreen Photo Lightbox Preview Modal -->
   <div class="modal-overlay" id="globalPhotoPreviewModal" style="z-index: 9999999; background: rgba(0,0,0,0.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: none; align-items: center; justify-content: center; position: fixed; inset: 0;">
     <div style="position: relative; width: 94%; max-width: 500px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;">
@@ -118,6 +240,114 @@ $footer_user_id = get_current_user_id();
       if (e.key === 'ArrowRight') navigatePhotoPreview(1);
     }
   });
+
+  // Filter Drawer Helper Functions
+  window.selectFilterChip = function(btn, groupName) {
+    const container = btn.closest('.filter-chip-group');
+    if (!container) return;
+    container.querySelectorAll('.filter-chip-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  };
+
+  window.toggleMultiFilterChip = function(btn) {
+    btn.classList.toggle('active');
+  };
+
+  window.resetGlobalFilters = function() {
+    document.querySelectorAll('.filter-chip-group').forEach(group => {
+      group.querySelectorAll('.filter-chip-btn').forEach((btn, idx) => {
+        if (idx === 0 && group.id !== 'filterHobbyChips') {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    });
+    const ageMin = document.getElementById('ageMin');
+    const ageMax = document.getElementById('ageMax');
+    const ageVal = document.getElementById('ageVal');
+    if (ageMin && ageMax) {
+      ageMin.value = 18;
+      ageMax.value = 45;
+      if (ageVal) ageVal.textContent = '18 - 45 Yrs';
+    }
+    const dist = document.getElementById('distanceRange');
+    const distVal = document.getElementById('distanceVal');
+    if (dist) {
+      dist.value = 50;
+      if (distVal) distVal.textContent = '50 km';
+    }
+  };
+
+  window.handleApplyFilters = async function() {
+    const applyBtn = document.getElementById('applyFiltersBtn');
+    if (applyBtn) {
+      applyBtn.disabled = true;
+      applyBtn.textContent = 'Saving Preferences...';
+    }
+
+    const genderActive = document.querySelector('#filterGenderChips .filter-chip-btn.active');
+    const gender_preference = genderActive ? genderActive.getAttribute('data-gender') : 'everyone';
+
+    const ageMin = document.getElementById('ageMin')?.value || 18;
+    const ageMax = document.getElementById('ageMax')?.value || 45;
+    const max_distance = document.getElementById('distanceRange')?.value || 50;
+
+    const maritalActive = document.querySelector('#filterMaritalChips .filter-chip-btn.active');
+    const marital_status = maritalActive ? maritalActive.getAttribute('data-val') : 'Any';
+
+    const commActive = document.querySelector('#filterCommunityChips .filter-chip-btn.active');
+    const religion_community = commActive ? commActive.getAttribute('data-val') : 'Any';
+
+    const eduActive = document.querySelector('#filterEduChips .filter-chip-btn.active');
+    const education = eduActive ? eduActive.getAttribute('data-val') : 'Any';
+
+    const occActive = document.querySelector('#filterOccChips .filter-chip-btn.active');
+    const occupation = occActive ? occActive.getAttribute('data-val') : 'Any';
+
+    const hobbies = [];
+    document.querySelectorAll('#filterHobbyChips .filter-chip-btn.active').forEach(b => {
+      hobbies.push(b.getAttribute('data-val'));
+    });
+
+    try {
+      const res = await fetch('api/filter.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          ajax: 1,
+          gender_preference,
+          min_age: ageMin,
+          max_age: ageMax,
+          max_distance,
+          marital_status,
+          religion_community,
+          education,
+          occupation,
+          interests: hobbies
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const modal = document.getElementById('filterDrawerModal');
+        if (modal) modal.classList.remove('active');
+        window.location.reload();
+      } else {
+        alert(data.message || 'Error updating filters');
+      }
+    } catch (err) {
+      console.error('Filter update error:', err);
+      window.location.reload();
+    } finally {
+      if (applyBtn) {
+        applyBtn.disabled = false;
+        applyBtn.textContent = 'Apply Filters ✨';
+      }
+    }
+  };
   </script>
 </body>
 </html>

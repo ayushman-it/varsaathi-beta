@@ -6,34 +6,104 @@ require_login();
 $active_tab = 'discover';
 $current_user_id = get_current_user_id();
 
-// Fetch candidates for discover feed
+$pref_stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE user_id = :id");
+$pref_stmt->execute([':id' => $current_user_id]);
+$pref = $pref_stmt->fetch() ?: [
+    'min_age' => 18,
+    'max_age' => 60,
+    'max_distance' => 300,
+    'gender_preference' => 'everyone',
+    'marital_status' => 'Any',
+    'religion_community' => 'Any',
+    'education' => 'Any',
+    'occupation' => 'Any'
+];
+
+// Fetch candidates for discover feed with filter preference support
+$where_clauses = ["u.id != :u"];
+$params = [':u' => $current_user_id];
+
+if (!empty($pref['gender_preference']) && $pref['gender_preference'] !== 'everyone') {
+    $where_clauses[] = "u.gender = :gen";
+    $params[':gen'] = $pref['gender_preference'];
+}
+
+if (!empty($pref['min_age']) && !empty($pref['max_age'])) {
+    $where_clauses[] = "TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN :min_age AND :max_age";
+    $params[':min_age'] = (int)$pref['min_age'];
+    $params[':max_age'] = (int)$pref['max_age'];
+}
+
+if (!empty($pref['marital_status']) && $pref['marital_status'] !== 'Any') {
+    $where_clauses[] = "(sp.marital_status LIKE :m_status OR u.marital_status LIKE :m_status)";
+    $params[':m_status'] = '%' . $pref['marital_status'] . '%';
+}
+
+if (!empty($pref['religion_community']) && $pref['religion_community'] !== 'Any') {
+    $where_clauses[] = "(sp.caste_community LIKE :rel OR sp.religion LIKE :rel OR u.bio LIKE :rel)";
+    $params[':rel'] = '%' . $pref['religion_community'] . '%';
+}
+
+if (!empty($pref['education']) && $pref['education'] !== 'Any') {
+    $where_clauses[] = "(sp.highest_qualification LIKE :edu OR sp.degree LIKE :edu)";
+    $params[':edu'] = '%' . $pref['education'] . '%';
+}
+
+if (!empty($pref['occupation']) && $pref['occupation'] !== 'Any') {
+    $where_clauses[] = "(sp.occupation_type LIKE :occ OR u.occupation LIKE :occ)";
+    $params[':occ'] = '%' . $pref['occupation'] . '%';
+}
+
+$where_sql = implode(' AND ', $where_clauses);
+
 $stmt = $pdo->prepare("
     SELECT u.*, sp.height_cm, sp.highest_qualification, sp.occupation_type, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
     FROM users u
     LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
-    WHERE u.id != :u
+    WHERE $where_sql
     ORDER BY u.id DESC
     LIMIT 20
 ");
-$stmt->execute([':u' => $current_user_id]);
+$stmt->execute($params);
 $candidates = $stmt->fetchAll();
+
+// Graceful fallback to all candidates if strict filter returns 0 results
+if (empty($candidates)) {
+    $fallback_stmt = $pdo->prepare("
+        SELECT u.*, sp.height_cm, sp.highest_qualification, sp.occupation_type, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
+        FROM users u
+        LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
+        WHERE u.id != :u
+        ORDER BY u.id DESC
+        LIMIT 20
+    ");
+    $fallback_stmt->execute([':u' => $current_user_id]);
+    $candidates = $fallback_stmt->fetchAll();
+}
 
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Header -->
-<header class="app-header">
-  <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
-    Discover
+<header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px;">
+  <!-- Left: Logo -->
+  <div class="header-logo-left" style="display: flex; align-items: center; flex: 1;">
+    <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
   </div>
 
-  <div class="header-actions">
-    <a href="index.php" class="icon-btn" title="Cards View" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA;">
-      <i class="fa-solid fa-layer-group" style="font-size: 0.95rem;"></i>
-    </a>
-    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA;">
-      <i class="fa-solid fa-ellipsis-vertical" style="font-size: 0.95rem;"></i>
+  <!-- Center: For Chourasiyas -->
+  <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
+    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
+  </div>
+
+  <!-- Right Actions: Filter, Cards View, Menu -->
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+    </button>
+    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
     </button>
   </div>
 </header>

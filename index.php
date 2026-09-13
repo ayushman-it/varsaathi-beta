@@ -15,29 +15,76 @@ $pref_stmt = $pdo->prepare("SELECT * FROM user_preferences WHERE user_id = :id")
 $pref_stmt->execute([':id' => $current_user_id]);
 $pref = $pref_stmt->fetch() ?: [
     'min_age' => 18,
-    'max_age' => 45,
-    'max_distance' => 50,
-    'gender_preference' => 'everyone'
+    'max_age' => 60,
+    'max_distance' => 300,
+    'gender_preference' => 'everyone',
+    'marital_status' => 'Any',
+    'religion_community' => 'Any',
+    'education' => 'Any',
+    'occupation' => 'Any'
 ];
 
-// Fetch candidates for home feed
-$gender_sql = "";
+// Fetch candidates for home feed with comprehensive filter support
+$where_clauses = ["u.id != :u"];
 $params = [':u' => $current_user_id];
-if ($pref['gender_preference'] !== 'everyone') {
-    $gender_sql = " AND u.gender = :gen";
+
+if (!empty($pref['gender_preference']) && $pref['gender_preference'] !== 'everyone') {
+    $where_clauses[] = "u.gender = :gen";
     $params[':gen'] = $pref['gender_preference'];
 }
 
+if (!empty($pref['min_age']) && !empty($pref['max_age'])) {
+    $where_clauses[] = "TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) BETWEEN :min_age AND :max_age";
+    $params[':min_age'] = (int)$pref['min_age'];
+    $params[':max_age'] = (int)$pref['max_age'];
+}
+
+if (!empty($pref['marital_status']) && $pref['marital_status'] !== 'Any') {
+    $where_clauses[] = "(sp.marital_status LIKE :m_status OR u.marital_status LIKE :m_status)";
+    $params[':m_status'] = '%' . $pref['marital_status'] . '%';
+}
+
+if (!empty($pref['religion_community']) && $pref['religion_community'] !== 'Any') {
+    $where_clauses[] = "(sp.caste_community LIKE :rel OR sp.religion LIKE :rel OR u.bio LIKE :rel)";
+    $params[':rel'] = '%' . $pref['religion_community'] . '%';
+}
+
+if (!empty($pref['education']) && $pref['education'] !== 'Any') {
+    $where_clauses[] = "(sp.highest_qualification LIKE :edu OR sp.degree LIKE :edu)";
+    $params[':edu'] = '%' . $pref['education'] . '%';
+}
+
+if (!empty($pref['occupation']) && $pref['occupation'] !== 'Any') {
+    $where_clauses[] = "(sp.occupation_type LIKE :occ OR u.occupation LIKE :occ)";
+    $params[':occ'] = '%' . $pref['occupation'] . '%';
+}
+
+$where_sql = implode(' AND ', $where_clauses);
+
 $c_stmt = $pdo->prepare("
-    SELECT u.*, sp.highest_qualification, sp.occupation_type
+    SELECT u.*, sp.highest_qualification, sp.occupation_type, sp.height_cm, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
     FROM users u
     LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
-    WHERE u.id != :u $gender_sql
+    WHERE $where_sql
     ORDER BY RAND()
-    LIMIT 15
+    LIMIT 20
 ");
 $c_stmt->execute($params);
 $candidates = $c_stmt->fetchAll();
+
+// Graceful fallback to all candidates if strict filter returns 0 results
+if (empty($candidates)) {
+    $fallback_stmt = $pdo->prepare("
+        SELECT u.*, sp.highest_qualification, sp.occupation_type, sp.height_cm, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
+        FROM users u
+        LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
+        WHERE u.id != :u
+        ORDER BY RAND()
+        LIMIT 20
+    ");
+    $fallback_stmt->execute([':u' => $current_user_id]);
+    $candidates = $fallback_stmt->fetchAll();
+}
 
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
@@ -55,9 +102,12 @@ require_once __DIR__ . '/includes/header.php';
     <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
   </div>
 
-  <!-- Right: Hamburger Menu Button -->
-  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1;">
-    <button class="icon-btn" id="openSidebarBtn" title="Open Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA;">
+  <!-- Right: Filter & Hamburger Menu Buttons -->
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+    </button>
+    <button class="icon-btn" id="openSidebarBtn" title="Open Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
       <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
     </button>
   </div>
