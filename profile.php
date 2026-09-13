@@ -76,7 +76,6 @@ require_once __DIR__ . '/includes/header.php';
         </div>
       </div>
     </div>
-  </div>
 
   <!-- 3. Main Overlapping White Card Container -->
   <div class="profile-main-card">
