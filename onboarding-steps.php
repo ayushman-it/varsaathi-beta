@@ -153,6 +153,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':max_d' => $max_distance,
                 ':gp' => $gender_pref
             ]);
+
+            // Broadcast FCM Push Notification for New Profile Registered
+            try {
+                require_once __DIR__ . '/includes/fcm_helper.php';
+                $nu_stmt = $pdo->prepare("SELECT full_name, birthdate, location_city FROM users WHERE id = :u LIMIT 1");
+                $nu_stmt->execute([':u' => $user_id]);
+                $new_user = $nu_stmt->fetch();
+                if ($new_user) {
+                    $name = ucwords(strtolower(trim($new_user['full_name'])));
+                    $age = calculate_age($new_user['birthdate']);
+                    $city = (!empty($new_user['location_city']) && strpos(strtolower($new_user['location_city']), 'san francisco') === false) ? $new_user['location_city'] : 'India';
+
+                    $recip_stmt = $pdo->prepare("SELECT id FROM users WHERE id != :nu AND fcm_token IS NOT NULL AND CHAR_LENGTH(fcm_token) > 10 LIMIT 30");
+                    $recip_stmt->execute([':nu' => $user_id]);
+                    $recipients = $recip_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                    foreach ($recipients as $target_id) {
+                        send_fcm_notification(
+                            $target_id,
+                            "New Profile Joined Varsaathi! ✨",
+                            "$name ($age yrs, $city) just joined Varsaathi! Tap to view their profile.",
+                            [
+                                'type' => 'new_profile',
+                                'target_id' => $user_id,
+                                'url' => "saathi-profile.php?id=$user_id"
+                            ]
+                        );
+                    }
+                }
+            } catch (Exception $e) {}
         }
         header("Location: index.php");
         exit;

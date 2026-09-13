@@ -5,6 +5,32 @@ require_login();
 
 $current_user_id = get_current_user_id();
 $match_id = (int)($_GET['match_id'] ?? 0);
+$target_user_id = (int)($_GET['target_id'] ?? ($_GET['user_id'] ?? ($_GET['partner_id'] ?? ($_GET['id'] ?? 0))));
+
+// If match_id is not provided but target_user_id is provided, find or create match
+if (!$match_id && $target_user_id && $target_user_id !== $current_user_id) {
+    $find_stmt = $pdo->prepare("
+        SELECT id FROM matches 
+        WHERE (user1_id = :u1 AND user2_id = :u2) OR (user1_id = :u2_2 AND user2_id = :u1_2)
+        LIMIT 1
+    ");
+    $find_stmt->execute([
+        ':u1' => $current_user_id, ':u2' => $target_user_id,
+        ':u1_2' => $current_user_id, ':u2_2' => $target_user_id
+    ]);
+    $existing_match = $find_stmt->fetch();
+    if ($existing_match) {
+        $match_id = (int)$existing_match['id'];
+    } else {
+        $ins = $pdo->prepare("INSERT INTO matches (user1_id, user2_id, status, requested_by, matched_at) VALUES (:u1, :u2, 'pending', :req, NOW())");
+        $ins->execute([
+            ':u1' => $current_user_id,
+            ':u2' => $target_user_id,
+            ':req' => $current_user_id
+        ]);
+        $match_id = (int)$pdo->lastInsertId();
+    }
+}
 
 if (!$match_id) {
     header("Location: matches.php");
@@ -172,55 +198,6 @@ $css_version = time();
           </button>
         </form>
       <?php endif; ?>
-    </div>
-  </div>
-
-  <!-- Fullscreen WebRTC Call Overlay Modal -->
-  <div class="call-modal-overlay" id="callModal">
-    <div class="video-stream-container">
-      <video id="remoteVideo" class="remote-video-full" autoplay playsinline></video>
-      <video id="localVideo" class="local-video-pip" autoplay playsinline muted></video>
-    </div>
-
-    <div class="call-info-layer">
-      <div class="call-avatar-wrapper">
-        <div class="call-pulse-ring"></div>
-        <img id="callAvatar" src="" class="call-avatar-img" alt="Candidate Avatar">
-      </div>
-      <h3 id="callPartnerName" class="call-partner-name">User</h3>
-      <span id="callStatusLabel" class="call-status-text">Connecting Call...</span>
-      <span id="callTimer" class="call-timer-badge">00:00</span>
-    </div>
-
-    <div class="call-actions-toolbar">
-      <button class="call-btn call-btn-action" id="muteAudioBtn" title="Mute Microphone">
-        <i class="fa-solid fa-microphone"></i>
-      </button>
-      <button class="call-btn call-btn-end" id="endCallBtn" title="End Call">
-        <i class="fa-solid fa-phone-slash"></i>
-      </button>
-      <button class="call-btn call-btn-action" id="toggleVideoBtn" title="Toggle Camera">
-        <i class="fa-solid fa-video"></i>
-      </button>
-    </div>
-  </div>
-
-  <!-- Incoming Call Alert Modal Banner -->
-  <div class="incoming-call-modal" id="incomingModal">
-    <div style="display:flex; align-items:center; gap:12px;">
-      <img id="incomingAvatar" src="" style="width:48px; height:48px; border-radius:50%; object-fit:cover; border:2px solid var(--ios-pink);">
-      <div>
-        <h4 id="incomingName" style="font-weight:800; font-size:0.95rem; color:#FFF; margin-bottom:2px;">Incoming Call</h4>
-        <span id="incomingTypeLabel" style="font-size:0.75rem; color:var(--ios-pink); font-weight:700;">Incoming Call...</span>
-      </div>
-    </div>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <button class="call-btn call-btn-end" id="rejectCallBtn" style="width:46px; height:46px; font-size:1.1rem;" title="Decline Call">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-      <button class="call-btn call-btn-accept" id="acceptCallBtn" style="width:46px; height:46px; font-size:1.1rem; background:#34C759;" title="Accept Call">
-        <i class="fa-solid fa-phone"></i>
-      </button>
     </div>
   </div>
 

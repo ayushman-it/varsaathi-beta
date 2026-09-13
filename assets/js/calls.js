@@ -296,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!isCallConnected) {
       isCallConnected = true;
+      pushCallHistoryState();
       if (callStatusLabel) {
         callStatusLabel.textContent = 'Connected';
       }
@@ -329,7 +330,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     stopCallTimer();
 
-    if (callModal) callModal.classList.remove('active');
+    if (callModal) {
+      callModal.classList.remove('active');
+      callModal.classList.remove('minimized');
+    }
     if (incomingModal) incomingModal.classList.remove('active');
 
     isAudioMuted = false;
@@ -342,7 +346,121 @@ document.addEventListener('DOMContentLoaded', () => {
     currentCallId = null;
   }
 
-  // Prevent accidental page navigation during active calls
+  // Minimize Call Controls, PIP Actions & Draggable Floating Bubble
+  const minimizeCallBtn = document.getElementById('minimizeCallBtn');
+  const pipMuteBtn = document.getElementById('pipMuteBtn');
+  const pipEndBtn = document.getElementById('pipEndBtn');
+  const pipExpandBtn = document.getElementById('pipExpandBtn');
+
+  if (minimizeCallBtn && callModal) {
+    minimizeCallBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      callModal.classList.add('minimized');
+    });
+  }
+
+  if (pipMuteBtn) {
+    pipMuteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (localStream && localStream.getAudioTracks().length > 0) {
+        isAudioMuted = !isAudioMuted;
+        localStream.getAudioTracks()[0].enabled = !isAudioMuted;
+        pipMuteBtn.classList.toggle('muted', isAudioMuted);
+        if (muteAudioBtn) muteAudioBtn.classList.toggle('muted', isAudioMuted);
+      }
+    });
+  }
+
+  if (pipEndBtn) {
+    pipEndBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      endCurrentCall();
+    });
+  }
+
+  if (pipExpandBtn) {
+    pipExpandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (callModal) callModal.classList.remove('minimized');
+    });
+  }
+
+  if (callModal) {
+    callModal.addEventListener('click', (e) => {
+      if (callModal.classList.contains('minimized') && !e.target.closest('.pip-btn')) {
+        callModal.classList.remove('minimized');
+      }
+    });
+
+    // Make Minimized Call Bubble Draggable across mobile/desktop screen
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+
+    callModal.addEventListener('pointerdown', (e) => {
+      if (!callModal.classList.contains('minimized') || e.target.closest('.pip-btn')) return;
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      const rect = callModal.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+      callModal.setPointerCapture(e.pointerId);
+    });
+
+    callModal.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      callModal.style.left = `${initialLeft + dx}px`;
+      callModal.style.top = `${initialTop + dy}px`;
+      callModal.style.right = 'auto';
+      callModal.style.bottom = 'auto';
+    });
+
+    callModal.addEventListener('pointerup', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      try { callModal.releasePointerCapture(e.pointerId); } catch(err) {}
+    });
+  }
+
+  // Push call history state to intercept browser back button & mobile swipe gestures
+  function pushCallHistoryState() {
+    try {
+      if (window.history && window.history.pushState) {
+        window.history.pushState({ inCall: true }, '', window.location.href);
+      }
+    } catch (e) {}
+  }
+
+  window.addEventListener('popstate', (e) => {
+    if (isCallConnected || (callModal && callModal.classList.contains('active'))) {
+      pushCallHistoryState();
+      if (callModal && !callModal.classList.contains('minimized')) {
+        callModal.classList.add('minimized');
+      } else if (callModal && callModal.classList.contains('minimized')) {
+        if (confirm('An active call is in progress. Do you want to disconnect this call?')) {
+          endCurrentCall();
+        }
+      }
+    }
+  });
+
+  // Keep Audio Stream alive when app is backgrounded or tab switched
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      console.log('[PeerJS Engine] App backgrounded - maintaining active WebRTC call session');
+      if (remoteAudio && remoteAudio.paused) {
+        remoteAudio.play().catch(() => {});
+      }
+      if (remoteVideo && document.pictureInPictureEnabled && !document.pictureInPictureElement && isCallConnected) {
+        try { remoteVideo.requestPictureInPicture().catch(() => {}); } catch(e) {}
+      }
+    }
+  });
+
+  // Prevent accidental page unload during active calls
   window.addEventListener('beforeunload', (e) => {
     if (isCallConnected || (callModal && callModal.classList.contains('active'))) {
       const warning = 'You have an active call in progress. Navigating away will disconnect your call.';
@@ -352,17 +470,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Intercept back navigation clicks on chat page when call is active
-  document.querySelectorAll('a[href="matches.php"], .icon-btn[href="matches.php"]').forEach(btn => {
+  // Intercept navigation link clicks when call is active by minimizing call instead of ending it
+  document.querySelectorAll('a[href="matches.php"], .icon-btn[href="matches.php"], .app-nav .nav-item').forEach(btn => {
     btn.addEventListener('click', (e) => {
       if (isCallConnected || (callModal && callModal.classList.contains('active'))) {
-        if (!confirm('Call in progress! Are you sure you want to end the call and go back?')) {
-          e.preventDefault();
-          e.stopPropagation();
-          return false;
-        } else {
-          endCurrentCall();
+        e.preventDefault();
+        e.stopPropagation();
+        if (callModal && !callModal.classList.contains('minimized')) {
+          callModal.classList.add('minimized');
         }
+        return false;
       }
     });
   });
@@ -384,7 +501,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (callAvatar) callAvatar.src = partnerAvatar;
       if (callPartnerName) callPartnerName.textContent = partnerName;
       if (callStatusLabel) callStatusLabel.textContent = callType === 'video' ? 'Calling Video...' : 'Calling Voice...';
-      if (callModal) callModal.classList.add('active');
+      if (callModal) {
+        callModal.classList.add('active');
+        pushCallHistoryState();
+      }
 
       const formData = new FormData();
       formData.append('action', 'initiate');
@@ -416,7 +536,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (callAvatar) callAvatar.src = signal.caller_avatar || partnerAvatar;
       if (callPartnerName) callPartnerName.textContent = signal.caller_name || partnerName;
-      if (callModal) callModal.classList.add('active');
+      if (callModal) {
+        callModal.classList.add('active');
+        pushCallHistoryState();
+      }
 
       // Update signal status in DB to accepted
       const formData = new FormData();

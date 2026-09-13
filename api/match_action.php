@@ -37,7 +37,7 @@ try {
     $match = $stmt->fetch();
 
     if (!$match) {
-        json_response(['error' => 'Match request not found'], 4404);
+        json_response(['error' => 'Match request not found'], 404);
     }
 
     $requester_id = $match['requested_by'] ?? ($match['user1_id'] == $current_user_id ? $match['user2_id'] : $match['user1_id']);

@@ -117,9 +117,25 @@ if ($action === 'fetch') {
     }
 
     // Sanitize user plain text against XSS before saving
-    $safe_text = htmlspecialchars($raw_text, ENT_QUOTES, 'UTF-8');
+    $quote_prefix = '';
+    $user_text = $raw_text;
+
+    // Extract quote box HTML structure if present
+    if (preg_match('/^<div class="msg-quote-box"><div class="quote-author">(.*?)<\/div><div class="quote-text">(.*?)<\/div><\/div>(.*)/s', $raw_text, $matches)) {
+        $q_author = htmlspecialchars(strip_tags($matches[1]), ENT_QUOTES, 'UTF-8');
+        $q_text   = htmlspecialchars(strip_tags($matches[2]), ENT_QUOTES, 'UTF-8');
+        $quote_prefix = '<div class="msg-quote-box"><div class="quote-author">' . $q_author . '</div><div class="quote-text">' . $q_text . '</div></div>';
+        $user_text = $matches[3];
+    }
+
+    $safe_text = htmlspecialchars($user_text, ENT_QUOTES, 'UTF-8');
     
-    if (!empty($safe_text) && !empty($media_html)) {
+    if (!empty($quote_prefix)) {
+        $final_text = $quote_prefix . (!empty($safe_text) ? nl2br($safe_text) : '');
+        if (!empty($media_html)) {
+            $final_text .= '<br>' . $media_html;
+        }
+    } elseif (!empty($safe_text) && !empty($media_html)) {
         $final_text = nl2br($safe_text) . '<br>' . $media_html;
     } elseif (!empty($media_html)) {
         $final_text = $media_html;

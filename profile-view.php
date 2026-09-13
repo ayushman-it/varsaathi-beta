@@ -68,7 +68,7 @@ require_once __DIR__ . '/includes/header.php';
   <div style="position: relative; width: 100%; height: 380px; min-height: 380px; flex-shrink: 0; border-radius: var(--radius-card); overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,0.15); margin-bottom: 14px; user-select: none; background: #1C1C1E;">
     
     <!-- Main Carousel Image -->
-    <img id="mainCarouselImg" src="<?= htmlspecialchars($visible_photos[0]) ?>" alt="<?= htmlspecialchars($target_user['full_name']) ?>" style="width: 100%; height: 100%; min-height: 100%; object-fit: cover; display: block; transition: opacity 0.2s ease;" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
+    <img id="mainCarouselImg" src="<?= htmlspecialchars($visible_photos[0]) ?>" alt="<?= htmlspecialchars($target_user['full_name']) ?>" onclick="openPhotoPreview(this.src, <?= htmlspecialchars(json_encode(array_values($visible_photos))) ?>, currentPhotoIndex)" style="width: 100%; height: 100%; min-height: 100%; object-fit: cover; display: block; transition: opacity 0.2s ease; cursor: pointer;" title="Click to View Full Photo" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
     
     <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.85) 100%); pointer-events: none;"></div>
 

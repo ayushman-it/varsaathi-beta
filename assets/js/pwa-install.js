@@ -66,10 +66,10 @@
       `;
     } else {
       actionContent = `
-        <button id="pwaInstallBtn" class="btn-block btn-primary" style="height: 50px; border-radius: 25px; font-weight: 800; font-size: 1rem; width: 100%; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(195,31,58,0.4); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
-          <i class="fa-solid fa-mobile-screen-button" style="font-size: 1.1rem;"></i> Install Varsaathi App
+        <button id="pwaInstallBtn" class="btn-block btn-primary" style="height: 48px; border-radius: 24px; font-weight: 700; font-size: 0.95rem; width: 100%; margin-bottom: 10px; box-shadow: 0 6px 20px rgba(195,31,58,0.35); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-mobile-screen-button" style="font-size: 1rem;"></i> Install App
         </button>
-        <button id="pwaDismissBtn" style="background: none; border: none; color: #8E8E93; font-weight: 700; font-size: 0.88rem; width: 100%; padding: 10px; cursor: pointer;">
+        <button id="pwaDismissBtn" style="background: none; border: none; color: #8E8E93; font-weight: 600; font-size: 0.85rem; width: 100%; padding: 10px; cursor: pointer;">
           Maybe Later
         </button>
       `;
@@ -79,11 +79,11 @@
       <div style="width: 100%; max-width: 420px; background: #FFFFFF; border-radius: 30px 30px 0 0; padding: 26px 22px calc(26px + env(safe-area-inset-bottom, 0px)) 22px; text-align: center; box-shadow: 0 -12px 40px rgba(0,0,0,0.25); transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);" id="pwaModalCard">
         <div style="width: 38px; height: 4px; border-radius: 2px; background: #E5E5EA; margin: 0 auto 16px auto;"></div>
         
-        <div style="width: 72px; height: 72px; border-radius: 22px; background: #FFFFFF; padding: 10px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(195,31,58,0.25); margin-bottom: 14px; border: 1px solid rgba(195,31,58,0.15);">
+        <div style="width: 72px; height: 72px; border-radius: 22px; background: #FFFFFF; padding: 10px; display: inline-flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(195,31,58,0.2); margin-bottom: 14px; border: 1px solid rgba(195,31,58,0.15);">
           <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
 
-        <h3 style="font-weight: 900; font-size: 1.35rem; color: #1C1C1E; margin-bottom: 6px; font-family: 'Outfit', sans-serif;">Install VARSAATHI App</h3>
+        <h3 style="font-weight: 800; font-size: 1.3rem; color: #1C1C1E; margin-bottom: 6px;">Install App</h3>
         <p style="font-size: 0.86rem; color: #8E8E93; line-height: 1.4; margin-bottom: 20px;">
           Install Varsaathi on your phone home screen for instant push notifications, full screen view, and super fast dating experience!
         </p>

@@ -67,3 +67,35 @@ document.addEventListener('DOMContentLoaded', () => {
     ageMax.addEventListener('input', updateAgeText);
   }
 });
+
+// Global Cute Floating Heart Particles Explosion Trigger
+window.triggerCuteLikeAnimation = function (element, event) {
+  if (!element && !event) return;
+
+  const rect = element ? element.getBoundingClientRect() : null;
+  const centerX = event && event.clientX ? event.clientX : (rect ? rect.left + rect.width / 2 : window.innerWidth / 2);
+  const centerY = event && event.clientY ? event.clientY : (rect ? rect.top + rect.height / 2 : window.innerHeight / 2);
+
+  const heartEmojis = ['💕', '💖', '💗', '💓', '✨', '🌸', '❤️'];
+
+  for (let i = 0; i < 9; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'cute-heart-particle';
+    particle.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+
+    const tx = (Math.random() - 0.5) * 160;
+    const ty = - (Math.random() * 110 + 30);
+    const rot = (Math.random() - 0.5) * 60;
+
+    particle.style.left = `${centerX}px`;
+    particle.style.top = `${centerY}px`;
+    particle.style.setProperty('--tx', `${tx}px`);
+    particle.style.setProperty('--ty', `${ty}px`);
+    particle.style.setProperty('--rot', `${rot}deg`);
+
+    document.body.appendChild(particle);
+
+    setTimeout(() => particle.remove(), 1200);
+  }
+};
+

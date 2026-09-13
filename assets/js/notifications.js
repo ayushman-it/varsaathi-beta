@@ -229,8 +229,22 @@
         .catch((err) => {
           console.warn('[FCM ServiceWorker] Registration failed:', err);
         });
+      checkHourlyNotifications();
     }
   });
+
+  // Trigger Hourly Automatic Push Notification Check (Once every 1 hour)
+  function checkHourlyNotifications() {
+    try {
+      const lastRun = localStorage.getItem('varsaathi_last_hourly_cron');
+      const now = Date.now();
+      if (!lastRun || (now - parseInt(lastRun, 10)) > 3600000) {
+        fetch('api/cron_hourly_notifications.php')
+          .then(() => localStorage.setItem('varsaathi_last_hourly_cron', now.toString()))
+          .catch(() => {});
+      }
+    } catch(e) {}
+  }
 
   function saveFcmToken(token) {
     fetch('api/save_fcm_token.php', {

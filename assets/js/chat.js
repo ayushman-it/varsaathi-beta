@@ -137,10 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Clean plain text snippet for reply
     const rawContent = msg.message_text;
+    const formattedContent = formatMessageContent(rawContent);
     const plainSnippet = stripHtml(rawContent).substring(0, 80);
 
     bubble.innerHTML = `
-      <div class="msg-content">${rawContent}</div>
+      <div class="msg-content">${formattedContent}</div>
       <div class="msg-footer-row">
         <span class="msg-time">${timeStr}</span>
         ${statusTickHtml}
@@ -241,6 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return tmp.textContent || tmp.innerText || '';
   }
 
+  function formatMessageContent(rawText) {
+    if (!rawText) return '';
+    // If rawText has escaped quote HTML entity tags, unescape quote box safely
+    let text = rawText.replace(/&lt;div class="msg-quote-box"&gt;&lt;div class="quote-author"&gt;(.*?)&lt;\/div&gt;&lt;div class="quote-text"&gt;(.*?)&lt;\/div&gt;&lt;\/div&gt;/g, (match, author, snippet) => {
+      return `<div class="msg-quote-box"><div class="quote-author">${author}</div><div class="quote-text">${snippet}</div></div>`;
+    });
+    return text;
+  }
+
   // Render Optimistic Pending Message
   function appendPendingMessage(tempId, text, mediaPreviewUrl = null) {
     const bubbleWrapper = document.createElement('div');
@@ -253,7 +263,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const date = new Date();
     const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    let contentHtml = escapeHtml(text).replace(/\n/g, '<br>');
+    let contentHtml = '';
+    const quoteEndIdx = text.indexOf('</div></div>');
+    if (text.startsWith('<div class="msg-quote-box">') && quoteEndIdx !== -1) {
+      const quoteHtml = text.substring(0, quoteEndIdx + 12);
+      const userText = text.substring(quoteEndIdx + 12);
+      contentHtml = quoteHtml + escapeHtml(userText).replace(/\n/g, '<br>');
+    } else {
+      contentHtml = escapeHtml(text).replace(/\n/g, '<br>');
+    }
+
     if (mediaPreviewUrl) {
       contentHtml += `<br><img src="${mediaPreviewUrl}" style="max-width:100%; border-radius:12px; margin-top:4px; display:block;">`;
     }

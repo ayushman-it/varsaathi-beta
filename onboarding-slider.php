@@ -161,18 +161,18 @@ $css_version = time();
     const slides = [
       {
         img: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80',
-        title: 'Welcome to Varsaathi- Where Love Meets!',
-        desc: 'Discover genuine connections with people around you who share your passion, values, and energy.'
+        title: 'Welcome - Right Life Partner Match',
+        desc: 'For suggesting genuine life partner matches anytime, anywhere with verified profiles.'
       },
       {
         img: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
-        title: 'Find Your Perfect Match Nearby!',
-        desc: 'Our intelligent location scanner connects you with genuine profiles in your immediate neighborhood.'
+        title: 'Find Exactly the Right Partner for You!',
+        desc: 'Filter by education, occupation, diet, and family preferences to find your perfect soulmate.'
       },
       {
         img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
-        title: 'Start Instant Conversations!',
-        desc: 'Chat in real-time, share photos & videos, and discover romantic dates easily.'
+        title: 'Congrats! Start Your Journey Together',
+        desc: 'Connect in real-time with voice & video calls, instant messaging, and complete privacy.'
       }
     ];
 

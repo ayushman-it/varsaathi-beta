@@ -1,5 +1,5 @@
 <?php
-// includes/navbar.php
+// includes/navbar.php - Original App Navigation Bar
 $current_u_id = get_current_user_id();
 $unread_count = 0;
 $nav_avatar = '';
@@ -15,7 +15,7 @@ if ($current_u_id) {
 }
 
 if (empty($nav_avatar)) {
-    $nav_avatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';
+    $nav_avatar = 'assets/images/no_image_placeholder.png';
 }
 ?>
 <nav class="app-nav">
@@ -43,7 +43,7 @@ if (empty($nav_avatar)) {
   </a>
 
   <a href="profile.php" class="nav-item <?= ($active_tab === 'profile') ? 'active' : '' ?>" title="My Profile & Settings">
-    <img src="<?= htmlspecialchars($nav_avatar) ?>" class="nav-avatar-img <?= ($active_tab === 'profile') ? 'active-ring' : '' ?>" alt="Account" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';">
+    <img src="<?= htmlspecialchars($nav_avatar) ?>" class="nav-avatar-img <?= ($active_tab === 'profile') ? 'active-ring' : '' ?>" alt="Account" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
     <span>Profile</span>
   </a>
 </nav>
