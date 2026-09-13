@@ -26,18 +26,11 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- Header -->
 <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px;">
-  <!-- Left: Logo -->
-  <div class="header-logo-left" style="display: flex; align-items: center; flex: 1;">
-    <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
+  <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
+    Radar Scanner
   </div>
 
-  <!-- Center: For Chourasiyas -->
-  <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
-    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
-  </div>
-
-  <!-- Right Actions: Filter, Menu -->
-  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
     <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E; display: flex; align-items: center; justify-content: center;">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <line x1="4" y1="21" x2="4" y2="14"></line>
