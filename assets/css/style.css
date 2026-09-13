@@ -2577,8 +2577,9 @@ body {
 .profile-avatar-container {
   text-align: center;
   position: relative;
-  margin-top: 10px;
-  z-index: 2;
+  margin-top: 14px;
+  margin-bottom: 12px;
+  z-index: 10;
 }
 
 .profile-avatar-outer-ring {
@@ -2586,8 +2587,8 @@ body {
   display: inline-block;
   padding: 3.5px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #E91E63 0%, #FF4081 100%);
-  box-shadow: 0 6px 20px rgba(233, 30, 99, 0.25);
+  background: linear-gradient(135deg, #FF2D55 0%, #FF4081 100%);
+  box-shadow: 0 8px 24px rgba(255, 45, 85, 0.25);
 }
 
 .profile-avatar-img {
@@ -2606,7 +2607,7 @@ body {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #E91E63;
+  background: #FF2D55;
   color: #FFFFFF;
   display: flex;
   align-items: center;
@@ -2620,11 +2621,11 @@ body {
   background: #FFFFFF;
   border-radius: 26px;
   padding: 24px 20px 24px 20px;
-  margin: -40px 16px 16px 16px;
+  margin: 0 16px 16px 16px;
   position: relative;
-  z-index: 3;
-  box-shadow: 0 8px 30px rgba(233, 30, 99, 0.06), 0 2px 10px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(233, 30, 99, 0.08);
+  z-index: 2;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05), 0 2px 10px rgba(0, 0, 0, 0.02);
+  border: 1px solid #F2F2F7;
 }
 
 .profile-user-name {
