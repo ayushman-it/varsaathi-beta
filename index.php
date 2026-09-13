@@ -260,7 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
 
-        if (typeof window.triggerCuteLikeAnimation === 'function') {
+        if (typeof window.triggerBouncyHeartBubble === 'function') {
+          window.triggerBouncyHeartBubble(activeCard, e);
+        } else if (typeof window.triggerCuteLikeAnimation === 'function') {
           window.triggerCuteLikeAnimation(likeBtn, e);
         }
 
@@ -299,8 +301,12 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleCardFavorite(btn, targetId, event) {
   if (!targetId || targetId === 0) return;
   btn.classList.toggle('active');
-  if (btn.classList.contains('active') && typeof window.triggerCuteLikeAnimation === 'function') {
-    window.triggerCuteLikeAnimation(btn, event);
+  if (btn.classList.contains('active')) {
+    if (typeof window.triggerBouncyHeartBubble === 'function') {
+      window.triggerBouncyHeartBubble(btn, event);
+    } else if (typeof window.triggerCuteLikeAnimation === 'function') {
+      window.triggerCuteLikeAnimation(btn, event);
+    }
   }
   fetch('api/saathi_action.php', {
     method: 'POST',

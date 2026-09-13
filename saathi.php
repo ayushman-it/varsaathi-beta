@@ -124,6 +124,10 @@ require_once __DIR__ . '/includes/header.php';
 
 <script>
 function handleMatchAction(targetId, action) {
+  if (action === 'like' && typeof window.triggerBouncyHeartBubble === 'function') {
+    const heroCard = document.getElementById('saathiHeroCard');
+    window.triggerBouncyHeartBubble(heroCard || document.body);
+  }
   fetch('api/saathi_action.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

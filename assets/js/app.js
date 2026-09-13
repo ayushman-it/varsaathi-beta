@@ -97,5 +97,48 @@ window.triggerCuteLikeAnimation = function (element, event) {
 
     setTimeout(() => particle.remove(), 1200);
   }
+// Global Bouncy 3D Heart Bubble Burst Trigger for Cards
+window.triggerBouncyHeartBubble = function (cardOrElement, event) {
+  let targetContainer = document.body;
+  let posX = window.innerWidth / 2;
+  let posY = window.innerHeight / 2;
+
+  if (cardOrElement) {
+    if (cardOrElement.classList && cardOrElement.classList.contains('carousel-card-item')) {
+      targetContainer = cardOrElement;
+    } else if (cardOrElement.closest && cardOrElement.closest('.carousel-card-item')) {
+      targetContainer = cardOrElement.closest('.carousel-card-item');
+    } else if (cardOrElement.closest && cardOrElement.closest('.saathi-hero-card')) {
+      targetContainer = cardOrElement.closest('.saathi-hero-card');
+    } else if (cardOrElement.getBoundingClientRect) {
+      const rect = cardOrElement.getBoundingClientRect();
+      posX = rect.left + rect.width / 2;
+      posY = rect.top + rect.height / 2;
+    }
+  }
+
+  // Create main bouncy 3D glass bubble
+  const bubbleWrap = document.createElement('div');
+  bubbleWrap.className = 'bouncy-heart-bubble-wrap';
+  
+  if (targetContainer !== document.body) {
+    bubbleWrap.style.position = 'absolute';
+    bubbleWrap.style.top = '45%';
+    bubbleWrap.style.left = '50%';
+  } else {
+    bubbleWrap.style.position = 'fixed';
+    bubbleWrap.style.left = `${posX}px`;
+    bubbleWrap.style.top = `${posY}px`;
+  }
+
+  bubbleWrap.innerHTML = `<div class="bouncy-heart-bubble">💖</div>`;
+  targetContainer.appendChild(bubbleWrap);
+
+  // Also trigger surrounding particle burst
+  if (typeof window.triggerCuteLikeAnimation === 'function') {
+    window.triggerCuteLikeAnimation(cardOrElement, event);
+  }
+
+  setTimeout(() => bubbleWrap.remove(), 1150);
 };
 

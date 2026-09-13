@@ -3455,3 +3455,56 @@ body {
   100% { transform: scale(1); }
 }
 
+/* Bouncy 3D Glassmorphic Heart Bubble Animation */
+.bouncy-heart-bubble-wrap {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99999;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: bouncyHeartPop 1.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.bouncy-heart-bubble {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 45, 85, 0.75) 45%, rgba(195, 31, 58, 0.95) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 16px 45px rgba(255, 45, 85, 0.65), inset 0 0 25px rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.2rem;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.3));
+}
+
+@keyframes bouncyHeartPop {
+  0% {
+    transform: translate(-50%, -40%) scale(0.1) rotate(-15deg);
+    opacity: 0;
+  }
+  35% {
+    transform: translate(-50%, -55%) scale(1.4) rotate(6deg);
+    opacity: 1;
+  }
+  55% {
+    transform: translate(-50%, -50%) scale(0.92) rotate(-3deg);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-50%, -65%) scale(1.1) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -110%) scale(1.25) rotate(0deg);
+    opacity: 0;
+  }
+}
+
