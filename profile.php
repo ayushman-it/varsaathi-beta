@@ -35,22 +35,28 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="profile-screen-container">
 
-  <!-- 1. Soft Pink Header Banner -->
-  <div class="profile-top-banner">
-    <div class="profile-nav-header">
-      <button class="icon-btn" id="openSidebarBtn" style="background:#FFF; color:#111; width:36px; height:36px;" title="Open Menu">
-        <i class="fa-solid fa-bars-staggered"></i>
-      </button>
-
-      <div class="profile-nav-title">Profile</div>
-
-      <div class="header-actions">
-        <button class="icon-btn" onclick="openShareModal()" style="background:#FFF; color:#E91E63; width:36px; height:36px;" title="Share Profile">
-          <i class="fa-solid fa-share-nodes"></i>
-        </button>
-        <a href="logout.php" class="icon-btn" style="background:#FFF; color:#FF3B30; width:36px; height:36px;" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a>
-      </div>
+  <!-- Header -->
+  <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: transparent; border: none;">
+    <!-- Left: Logo -->
+    <div class="header-logo-left" style="display: flex; align-items: center; flex: 1;">
+      <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
     </div>
+
+    <!-- Center: For Chourasiyas -->
+    <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
+      <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
+    </div>
+
+    <!-- Right Actions: Filter, Menu -->
+    <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+      <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #FFFFFF; border: 1px solid #E5E5EA; color: #1C1C1E;">
+        <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+      </button>
+      <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #FFFFFF; border: 1px solid #E5E5EA; color: #1C1C1E;">
+        <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
+      </button>
+    </div>
+  </header>
 
     <!-- Hidden Avatar Upload Form -->
     <form id="avatarUploadForm" action="api/upload_photos.php" method="POST" enctype="multipart/form-data" style="display: none;">

@@ -24,21 +24,26 @@ $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<!-- iOS Header -->
-<header class="app-header">
-  <button class="icon-btn" id="openSidebarBtn" title="Open Menu">
-    <i class="fa-solid fa-bars-staggered"></i>
-  </button>
-
-  <div class="header-title">
-    <i class="fa-solid fa-satellite-dish" style="color: var(--ios-pink);"></i>
-    Radar Scanner
+<!-- Header -->
+<header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px;">
+  <!-- Left: Logo -->
+  <div class="header-logo-left" style="display: flex; align-items: center; flex: 1;">
+    <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
   </div>
 
-  <div class="header-actions">
-    <span style="font-size: 0.76rem; font-weight:800; background:rgba(195,31,58,0.1); color:var(--ios-pink); padding:4px 12px; border-radius:20px;">
-      <?= count($nearby_users) ?> Nearby
-    </span>
+  <!-- Center: For Chourasiyas -->
+  <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
+    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
+  </div>
+
+  <!-- Right Actions: Filter, Menu -->
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+    </button>
+    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
+    </button>
   </div>
 </header>
 
@@ -123,9 +128,7 @@ require_once __DIR__ . '/includes/header.php';
 
   <!-- Snap Map Floating Action Controls -->
   <div class="snap-controls-overlay">
-    <div class="snap-hint-pill">
-      <i class="fa-solid fa-hand-pointer" style="color: var(--ios-pink);"></i> Drag radar to explore members
-    </div>
+    <div class="snap-zoom-toolbar">
 
     <div class="snap-zoom-toolbar">
       <button class="snap-control-btn" id="zoomInBtn" title="Zoom In"><i class="fa-solid fa-plus"></i></button>

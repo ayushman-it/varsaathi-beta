@@ -47,10 +47,13 @@ require_once __DIR__ . '/includes/header.php';
     <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
   </div>
 
-  <!-- Right: Hamburger Menu Button -->
-  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1;">
-    <button class="icon-btn" id="openSidebarBtn" title="Open Menu">
-      <i class="fa-solid fa-bars-staggered"></i>
+  <!-- Right: Filter & Hamburger Menu Buttons -->
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+    </button>
+    <button class="icon-btn" id="openSidebarBtn" title="Open Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
     </button>
   </div>
 </header>

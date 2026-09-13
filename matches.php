@@ -63,17 +63,24 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <!-- Header -->
-<header class="app-header">
-  <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
-    Connections
+<header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px;">
+  <!-- Left: Logo -->
+  <div class="header-logo-left" style="display: flex; align-items: center; flex: 1;">
+    <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
   </div>
 
-  <div class="header-actions">
-    <a href="discover.php" class="icon-btn" title="Discover Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; font-weight: 300;">
-      <i class="fa-solid fa-plus" style="font-size: 0.95rem;"></i>
-    </a>
-    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA;">
-      <i class="fa-solid fa-ellipsis-vertical" style="font-size: 0.95rem;"></i>
+  <!-- Center: For Chourasiyas -->
+  <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
+    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
+  </div>
+
+  <!-- Right Actions: Filter, Menu -->
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; flex: 1; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-sliders" style="font-size: 0.95rem; font-weight: 300;"></i>
+    </button>
+    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
+      <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
     </button>
   </div>
 </header>
