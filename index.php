@@ -50,9 +50,9 @@ require_once __DIR__ . '/includes/header.php';
     <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
   </div>
 
-  <!-- Center: For Chouasiyas -->
+  <!-- Center: For Chourasiyas -->
   <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
-    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chouasiyas</span>
+    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
   </div>
 
   <!-- Right: Hamburger Menu Button -->
@@ -76,7 +76,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="carousel-card-footer">
           <div>
             <div class="carousel-card-name">Varsaathi Matrimony</div>
-            <div class="carousel-card-loc"><i class="fa-solid fa-heart" style="color: #C31F3A; margin-right: 3px;"></i> Matrimony for Chouasiyas</div>
+            <div class="carousel-card-loc"><i class="fa-solid fa-heart" style="color: #C31F3A; margin-right: 3px;"></i> Matrimony for Chourasiyas</div>
           </div>
           <div class="carousel-card-like-icon active" title="Verified Profile" style="background: #E8F5E9; border: 1px solid #A5D6A7; display: flex; align-items: center; justify-content: center;">
             <i class="fa-solid fa-circle-check" style="color: #2E7D32; font-size: 1.15rem;"></i>

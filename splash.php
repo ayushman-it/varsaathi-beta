@@ -175,7 +175,7 @@ $css_version = time();
         <!-- Varsaathi White Emblem Card -->
         <div class="brand-emblem-card" style="flex-direction: column; padding: 12px 24px;">
           <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI">
-          <span style="font-size: 0.68rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-top: 4px;">For Chouasiyas</span>
+          <span style="font-size: 0.68rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-top: 4px;">For Chourasiyas</span>
         </div>
         <div class="splash-tagline">RIGHT LIFE PARTNER</div>
         <div class="splash-subtitle">Find exactly the right partner for you! Anytime, Anywhere.</div>

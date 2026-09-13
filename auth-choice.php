@@ -122,7 +122,7 @@ $css_version = time();
       <div>
         <div class="auth-header">
           <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 42px; object-fit: contain; margin-bottom: 2px; display: block; margin-left: auto; margin-right: auto;">
-          <div style="font-size: 0.72rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-bottom: 12px;">For Chouasiyas</div>
+          <div style="font-size: 0.72rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-bottom: 12px;">For Chourasiyas</div>
           <h2 class="auth-title" style="font-size: 1.6rem; font-weight: 700;">Let’s Get Started!</h2>
           <p class="auth-sub">Let’s dive into your Varsaathi account</p>
         </div>

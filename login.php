@@ -56,7 +56,7 @@ $css_version = time();
     <div class="auth-container">
       <div style="text-align: center; margin-bottom: 24px;">
         <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 48px; object-fit: contain; margin-bottom: 2px;">
-        <div style="font-size: 0.72rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-bottom: 8px;">For Chouasiyas</div>
+        <div style="font-size: 0.72rem; font-weight: 700; color: #C31F3A; letter-spacing: 0.5px; margin-bottom: 8px;">For Chourasiyas</div>
         <p style="color: var(--ios-muted); font-size: 0.84rem; font-weight: 500;">Find your perfect match & connect nearby</p>
       </div>
 

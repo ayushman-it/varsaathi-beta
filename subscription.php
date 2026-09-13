@@ -28,7 +28,7 @@ require_once __DIR__ . '/includes/header.php';
       🎉 100% FREE - SPECIAL LAUNCH OFFER
     </span>
     <h2 style="font-size: 1.2rem; font-weight: 800; color: #1C1C1E; margin-top: 8px; margin-bottom: 4px;">Select Plan to continue</h2>
-    <p style="font-size: 0.8rem; color: #8E8E93;">All premium features are completely free for all Chouasiya Samaj members!</p>
+    <p style="font-size: 0.8rem; color: #8E8E93;">All premium features are completely free for all Chourasiya Samaj members!</p>
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 16px;">

@@ -42,9 +42,9 @@ require_once __DIR__ . '/includes/header.php';
     <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; max-width: 155px; object-fit: contain; display: block;">
   </div>
 
-  <!-- Center: For Chouasiyas -->
+  <!-- Center: For Chourasiyas -->
   <div class="header-center-title" style="flex: 2; text-align: center; display: flex; align-items: center; justify-content: center;">
-    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chouasiyas</span>
+    <span style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">For Chourasiyas</span>
   </div>
 
   <!-- Right: Hamburger Menu Button -->
