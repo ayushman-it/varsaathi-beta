@@ -90,7 +90,7 @@ $og_url = $og_url ?? (SITE_URL);
       <div class="loader-brand">
         <div style="background: rgba(255, 255, 255, 0.95); padding: 10px 22px; border-radius: 18px; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.2); gap: 2px;">
           <img src="assets/images/varsaathi_logo.png" alt="VARSAATHI" style="height: 38px; object-fit: contain; margin: 0;">
-          <span style="font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-size: 0.63rem; font-weight: 500; color: #9B1C31; letter-spacing: 1.6px; text-transform: uppercase;">FOR CHOURSAIYAS</span>
+          <span style="font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; font-size: 0.63rem; font-weight: 500; color: #9B1C31; letter-spacing: 1.6px; text-transform: uppercase;">FOR CHOUASIYAS</span>
         </div>
       </div>
     </div>

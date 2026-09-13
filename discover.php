@@ -49,7 +49,7 @@ require_once __DIR__ . '/includes/header.php';
       Online Now
     </button>
     <button class="discover-filter-pill" style="background: #FFFFFF; color: #636366; font-size: 0.78rem; font-weight: 600; padding: 6px 14px; border-radius: 16px; border: 1px solid #E5E5EA; flex-shrink: 0;">
-      Chourasiya Samaj
+      Chouasiya Samaj
     </button>
     <button class="discover-filter-pill" style="background: #FFFFFF; color: #636366; font-size: 0.78rem; font-weight: 600; padding: 6px 14px; border-radius: 16px; border: 1px solid #E5E5EA; flex-shrink: 0;">
       Nearby
