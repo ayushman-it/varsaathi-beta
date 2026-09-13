@@ -214,6 +214,11 @@ $og_url = $og_url ?? (SITE_URL);
             <i class="fa-solid fa-bell"></i>
             <span>Notification Settings</span>
           </a>
+          <a href="https://api.whatsapp.com/send?phone=919238695500&text=Hi%20Varsaathi%20Support%2C%20I%20need%20help%20with%20my%20account" target="_blank" rel="noopener" class="sidebar-item" style="background: #E8F9EE; border: 1px solid rgba(37, 211, 102, 0.3); border-radius: 16px; margin-top: 4px; margin-bottom: 4px;">
+            <i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.15rem;"></i>
+            <span style="font-weight: 600; color: #1C1C1E; font-size: 0.88rem;">Help & Support</span>
+            <span class="sidebar-badge" style="background: #25D366; color: #FFF; font-weight: 700; font-size: 0.62rem; padding: 2px 8px; border-radius: 8px;">24x7</span>
+          </a>
           <a href="faq.php" class="sidebar-item">
             <i class="fa-solid fa-circle-question"></i>
             <span>FAQs</span>
