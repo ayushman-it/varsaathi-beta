@@ -28,7 +28,7 @@ $footer_user_id = get_current_user_id();
       
       <!-- Modal Header -->
       <div class="filter-drawer-header">
-        <h3 class="filter-drawer-title">Filter Preferences</h3>
+        <span class="filter-drawer-title" style="font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif; font-size: 1.15rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.4px; white-space: nowrap;">Filter Preferences</span>
         <div style="display: flex; align-items: center; gap: 8px;">
           <button class="filter-drawer-reset-btn" onclick="resetGlobalFilters()" type="button">Reset All</button>
           <button class="filter-drawer-close-btn" id="closeFilterBtn" type="button" title="Close Filters">

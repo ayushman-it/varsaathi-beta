@@ -3564,11 +3564,13 @@ body {
 }
 
 .filter-drawer-title {
+  font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 300;
   color: #1C1C1E;
+  letter-spacing: -0.4px;
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  white-space: nowrap;
 }
 
 .filter-drawer-reset-btn {
@@ -3576,14 +3578,15 @@ body {
   border: none;
   color: #FF2D55;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 400;
+  font-family: system-ui, -apple-system, sans-serif;
   cursor: pointer;
   padding: 4px 8px;
 }
 
 .filter-drawer-close-btn {
-  background: #F2F2F7;
-  border: none;
+  background: #F8F8FA;
+  border: 1px solid #E5E5EA;
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -3606,12 +3609,13 @@ body {
 }
 
 .filter-group-title {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-family: system-ui, -apple-system, 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #8E8E93;
-  margin-bottom: 10px;
+  color: #636366;
+  margin-bottom: 8px;
 }
 
 .filter-chip-group {
@@ -3621,13 +3625,14 @@ body {
 }
 
 .filter-chip-btn {
-  background: #F2F2F7;
-  color: #3A3A3C;
-  border: 1px solid transparent;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.86rem;
-  font-weight: 600;
+  background: #F8F8FA;
+  color: #1C1C1E;
+  border: 1px solid #E5E5EA;
+  padding: 7px 15px;
+  border-radius: 18px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  font-family: system-ui, -apple-system, sans-serif;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
@@ -3641,7 +3646,8 @@ body {
   background: #1C1C1E;
   color: #FFFFFF;
   border-color: #1C1C1E;
-  box-shadow: 0 4px 12px rgba(28, 28, 30, 0.25);
+  font-weight: 500;
+  box-shadow: 0 3px 10px rgba(28, 28, 30, 0.15);
 }
 
 .filter-range-label-wrap {
@@ -3652,8 +3658,9 @@ body {
 }
 
 .filter-range-value {
-  font-size: 0.92rem;
-  font-weight: 700;
+  font-size: 0.88rem;
+  font-weight: 500;
+  font-family: system-ui, -apple-system, sans-serif;
   color: #FF2D55;
   background: rgba(255, 45, 85, 0.08);
   padding: 3px 10px;
@@ -3679,15 +3686,20 @@ body {
 .filter-apply-btn {
   width: 100%;
   padding: 14px;
-  border-radius: 18px;
-  font-weight: 700;
-  font-size: 1rem;
-  background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
+  border-radius: 16px;
+  font-weight: 500;
+  font-size: 0.98rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #1C1C1E;
   color: #FFFFFF;
   border: none;
   cursor: pointer;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(28, 28, 30, 0.2);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.filter-apply-btn:active {
+  transform: scale(0.98);
 }
 
 .filter-apply-btn:active {
