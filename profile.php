@@ -19,21 +19,24 @@ if (!$user) {
 $saathi = get_saathi_profile($current_user_id);
 $age = calculate_age($user['birthdate'] ?? '2000-01-01');
 $placeholder_img = 'assets/images/no_image_placeholder.png';
-$avatar = !empty($user['avatar_url']) ? $user['avatar_url'] : $placeholder_img;
-$photos = json_decode($user['photos'] ?? '[]', true) ?: [$avatar];
-if (!in_array($avatar, $photos)) {
-    array_unshift($photos, $avatar);
+$avatar = get_valid_avatar_url($user['avatar_url'] ?? '');
+$photos = json_decode($user['photos'] ?? '[]', true) ?: [];
+if (empty($photos) && !empty($avatar) && $avatar !== $placeholder_img) {
+    $photos = [$avatar];
 }
 
+$has_photo = (!empty($avatar) && $avatar !== $placeholder_img);
+$completion_pct = calculate_saathi_completion($saathi, $user);
+
 $is_private = (bool)($user['is_private'] ?? 0);
-$city_display = (!empty(trim($user['location_city'] ?? '')) && $user['location_city'] !== 'No Location') ? $user['location_city'] . ', India' : 'India';
+$city_display = (!empty(trim($user['location_city'] ?? '')) && $user['location_city'] !== 'No Location') ? $user['location_city'] . ', India' : 'Location Not Set';
 $profile_share_url = SITE_URL . "saathi-profile.php?id=" . $current_user_id;
 
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="profile-screen-container">
+<div class="profile-screen-container" style="width: 100%; max-width: 580px; margin: 0 auto; padding-bottom: 90px;">
 
   <!-- Header -->
   <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: transparent; border: none;">
@@ -68,7 +71,7 @@ require_once __DIR__ . '/includes/header.php';
     </form>
 
     <!-- 2. Centered Overlapping Avatar Ring -->
-    <div class="profile-avatar-container" onclick="document.getElementById('avatarFileInput').click()" title="Tap to change profile picture" style="cursor:pointer;">
+    <div class="profile-avatar-container" onclick="document.getElementById('avatarFileInput').click()" title="Tap to change profile picture" style="cursor:pointer; margin-top: 10px; margin-bottom: 14px;">
       <div class="profile-avatar-outer-ring">
         <img src="<?= htmlspecialchars($avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
         <div class="profile-avatar-verified-badge" title="Change Profile Picture">
@@ -78,48 +81,88 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
   <!-- 3. Main Overlapping White Card Container -->
-  <div class="profile-main-card">
+  <div class="profile-main-card" style="margin-left: 12px; margin-right: 12px;">
     
     <!-- User Name & Subtitle -->
-    <h1 class="profile-user-name">
+    <h1 class="profile-user-name" style="font-family: system-ui, -apple-system, sans-serif; font-size: 1.4rem;">
       <?= htmlspecialchars($user['full_name']) ?>
-      <i class="fa-solid fa-circle-check" style="color: #E91E63; font-size: 1.15rem;" title="Verified Profile"></i>
+      <i class="fa-solid fa-circle-check" style="color: #FF2D55; font-size: 1.15rem;" title="Verified Profile"></i>
     </h1>
 
-    <div class="profile-user-subtitle">
-      <span><?= $age ?></span>
+    <div class="profile-user-subtitle" style="margin-bottom: 16px;">
+      <span><?= $age ?> Yrs</span>
       <span>|</span>
-      <span><i class="fa-solid fa-location-dot" style="color: #E91E63; margin-right: 2px;"></i> <span id="userCityLabel"><?= htmlspecialchars($city_display) ?></span></span>
+      <span><i class="fa-solid fa-location-dot" style="color: #FF2D55; margin-right: 2px;"></i> <span id="userCityLabel"><?= htmlspecialchars($city_display) ?></span></span>
+    </div>
+
+    <!-- Upload Photo Callout Prompt if photo missing -->
+    <?php if (!$has_photo): ?>
+      <div style="background: linear-gradient(135deg, #FFF0F4 0%, #FFEBF0 100%); border: 1px solid #FFD6E0; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #FF2D55; color: #FFF; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <i class="fa-solid fa-camera"></i>
+          </div>
+          <div>
+            <div style="font-size: 0.88rem; font-weight: 700; color: #1C1C1E;">Add Profile Photo</div>
+            <div style="font-size: 0.76rem; color: #636366;">Profiles with photos get 10x more interest!</div>
+          </div>
+        </div>
+        <button type="button" onclick="document.getElementById('avatarFileInput').click()" style="background: #FF2D55; color: #FFF; border: none; padding: 7px 14px; border-radius: 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; white-space: nowrap;">
+          Upload
+        </button>
+      </div>
+    <?php endif; ?>
+
+    <!-- Profile Completion Progress Section -->
+    <div style="background: #F8F8FA; border: 1px solid #E5E5EA; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 0.84rem; font-weight: 700; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">Profile Completion</span>
+        <span style="font-size: 0.84rem; font-weight: 700; color: #FF2D55;"><?= $completion_pct ?>%</span>
+      </div>
+      <div style="width: 100%; height: 7px; background: #E5E5EA; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+        <div style="width: <?= $completion_pct ?>%; height: 100%; background: linear-gradient(90deg, #FF2D55, #FF4081); border-radius: 4px; transition: width 0.4s ease;"></div>
+      </div>
+      <?php if ($completion_pct < 100): ?>
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <span style="font-size: 0.76rem; color: #8E8E93;">Complete your biodata for better matching</span>
+          <a href="saathi-edit.php" style="font-size: 0.76rem; font-weight: 700; color: #FF2D55; text-decoration: none;">Update Profile &rarr;</a>
+        </div>
+      <?php endif; ?>
     </div>
 
     <!-- Main Full-Width Edit Profile Action Button -->
-    <a href="saathi-edit.php" class="btn-pink-action" style="margin-top: 0; margin-bottom: 10px;">
-      <i class="fa-solid fa-pen-to-square"></i> Edit Profile
-    </a>
-
-    <!-- Download Matrimonial Biodata PDF Button -->
-    <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-pink-outline" style="margin-top: 0; margin-bottom: 18px; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 21px; font-weight: 700; white-space: nowrap;">
-      <i class="fa-solid fa-file-pdf"></i> Download Biodata
-    </a>
+    <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+      <a href="saathi-edit.php" class="btn-pink-action" style="flex: 1; margin: 0; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; background: #1C1C1E; color: #FFF; text-decoration: none;">
+        <i class="fa-solid fa-pen-to-square" style="margin-right: 6px;"></i> Edit Details
+      </a>
+      <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 16px; font-weight: 600; white-space: nowrap; display: flex; align-items: center; justify-content: center; border: 1px solid #E5E5EA; color: #1C1C1E; text-decoration: none;">
+        <i class="fa-solid fa-file-pdf" style="margin-right: 6px; color: #FF2D55;"></i> Download Biodata
+      </a>
+    </div>
 
     <!-- Matrimonial Headline Banner -->
     <?php if (!empty($saathi['headline'])): ?>
-      <div style="background: #FDF4F6; border-left: 3.5px solid #E91E63; padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 0.84rem; color: #9C1443; margin-bottom: 18px;">
+      <div style="background: #F8F8FA; border-left: 3.5px solid #FF2D55; padding: 10px 14px; border-radius: 12px; font-weight: 500; font-size: 0.84rem; color: #1C1C1E; margin-bottom: 18px;">
         "<?= htmlspecialchars($saathi['headline']) ?>"
       </div>
     <?php endif; ?>
 
     <!-- About Me Section -->
-    <h3 class="profile-section-title">About Me</h3>
-    <p class="profile-about-text">
-      <?= !empty($user['bio']) 
-          ? nl2br(htmlspecialchars($user['bio'])) 
-          : "Looking for a life partner who values family, growth and happiness. Believer in simple living and meaningful bonds." ?>
-    </p>
+    <h3 class="profile-section-title" style="font-family: system-ui, -apple-system, sans-serif;">About Me</h3>
+    <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.5; margin-bottom: 20px;">
+      <?php if (!empty($user['bio'])): ?>
+        <?= nl2br(htmlspecialchars($user['bio'])) ?>
+      <?php else: ?>
+        <span style="color: #8E8E93; font-style: italic;">No bio added yet. Tell potential life partners about yourself, your career, and family values.</span>
+        <div style="margin-top: 8px;">
+          <a href="saathi-edit.php?step=2" style="font-size: 0.78rem; font-weight: 700; color: #FF2D55; text-decoration: none;">+ Add Bio / About Me</a>
+        </div>
+      <?php endif; ?>
+    </div>
 
     <!-- Partner Preference Section -->
-    <h3 class="profile-section-title">Partner Preference</h3>
-    <div class="partner-pref-grid">
+    <h3 class="profile-section-title" style="font-family: system-ui, -apple-system, sans-serif;">Partner Preference</h3>
+    <div class="partner-pref-grid" style="margin-bottom: 20px;">
       <div class="partner-pref-card">
         <div class="partner-pref-icon-wrap">
           <i class="fa-solid fa-user-group"></i>
@@ -156,154 +199,160 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <div>
           <div class="partner-pref-label">Location</div>
-          <div class="partner-pref-value"><?= htmlspecialchars($saathi['partner_location'] ?? 'India') ?></div>
+          <div class="partner-pref-value"><?= htmlspecialchars($saathi['partner_location'] ?? 'Any') ?></div>
         </div>
       </div>
     </div>
 
     <!-- Photos Section -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 22px; margin-bottom: 10px;">
-      <h3 class="profile-section-title" style="margin: 0;">Photos</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; margin-bottom: 10px;">
+      <h3 class="profile-section-title" style="margin: 0; font-family: system-ui, -apple-system, sans-serif;">Photos</h3>
       <form action="api/upload_photos.php" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="action" value="upload">
-        <label style="cursor: pointer; background: #FDF4F6; color: #E91E63; border: 1px solid #FCE4EC; border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-          <i class="fa-solid fa-plus"></i> Add Photo
+        <label style="cursor: pointer; background: #F8F8FA; color: #1C1C1E; border: 1px solid #E5E5EA; border-radius: 14px; padding: 4px 12px; font-size: 0.76rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-plus" style="color: #FF2D55;"></i> Add Photo
           <input type="file" name="photos[]" multiple accept="image/*" style="display: none;" onchange="this.form.submit()">
         </label>
       </form>
     </div>
 
-    <div class="photo-gallery-grid">
-      <?php 
-        $display_photos = array_slice($photos, 0, 4);
-        $extra_count = count($photos) - 4;
-        foreach ($display_photos as $idx => $p_url): 
-      ?>
-        <div class="photo-gallery-item" onclick="openPhotoPreview('<?= htmlspecialchars($p_url) ?>', <?= htmlspecialchars(json_encode(array_values($photos))) ?>, <?= $idx ?>)" style="cursor:pointer;" title="Click to View Full Photo">
-          <img src="<?= htmlspecialchars($p_url) ?>" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
-          <?php if ($idx === 3 && $extra_count > 0): ?>
-            <div class="photo-gallery-overlay">+<?= $extra_count ?></div>
-          <?php endif; ?>
+    <div class="photo-gallery-grid" style="margin-bottom: 24px;">
+      <?php if (!empty($photos)): ?>
+        <?php 
+          $display_photos = array_slice($photos, 0, 4);
+          $extra_count = count($photos) - 4;
+          foreach ($display_photos as $idx => $p_url): 
+        ?>
+          <div class="photo-gallery-item" onclick="openPhotoPreview('<?= htmlspecialchars($p_url) ?>', <?= htmlspecialchars(json_encode(array_values($photos))) ?>, <?= $idx ?>)" style="cursor:pointer;" title="Click to View Full Photo">
+            <img src="<?= htmlspecialchars($p_url) ?>" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
+            <?php if ($idx === 3 && $extra_count > 0): ?>
+              <div class="photo-gallery-overlay">+<?= $extra_count ?></div>
+            <?php endif; ?>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div style="grid-column: 1 / -1; background: #F8F8FA; border: 1px dashed #E5E5EA; border-radius: 16px; padding: 20px; text-align: center; color: #8E8E93; font-size: 0.82rem;">
+          No gallery photos uploaded yet. Click "+ Add Photo" to showcase your pictures!
         </div>
-      <?php endforeach; ?>
+      <?php endif; ?>
     </div>
 
     <!-- Key Specifications Breakdown -->
-    <h3 class="profile-section-title" style="margin-top:28px;">Key Specifications</h3>
+    <h3 class="profile-section-title" style="margin-top:20px; font-family: system-ui, -apple-system, sans-serif;">Key Specifications</h3>
     <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 12px;">
       
       <!-- Basic & Physical -->
-      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);">
-        <div style="font-weight: 800; font-size: 0.82rem; color: #C31F3A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-user" style="font-size: 0.88rem;"></i> Basic & Physical Details
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);">
+        <div style="font-weight: 700; font-size: 0.82rem; color: #1C1C1E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-user" style="font-size: 0.88rem; color: #FF2D55;"></i> Basic & Physical Details
         </div>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 14px;">
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Height</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= (int)($saathi['height_cm'] ?? 165) ?> cm</div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= !empty($saathi['height_cm']) ? (int)$saathi['height_cm'] . ' cm' : 'Not Specified' ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Status</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['marital_status'] ?? 'Never Married') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['marital_status'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Mother Tongue</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['mother_tongue'] ?? 'Hindi') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['mother_tongue'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Diet</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['diet'] ?? 'Vegetarian') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['diet'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Body Type</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['body_type'] ?? 'Average') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['body_type'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Complexion</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['complexion'] ?? 'Fair') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['complexion'] ?: 'Not Specified') ?></div>
           </div>
         </div>
       </div>
 
       <!-- Education & Career -->
-      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);">
-        <div style="font-weight: 800; font-size: 0.82rem; color: #C31F3A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-graduation-cap" style="font-size: 0.88rem;"></i> Education & Career
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);">
+        <div style="font-weight: 700; font-size: 0.82rem; color: #1C1C1E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-graduation-cap" style="font-size: 0.88rem; color: #FF2D55;"></i> Education & Career
         </div>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 14px;">
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Qualification</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['highest_qualification'] ?? 'Graduate') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['highest_qualification'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Degree</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars(str_replace(' / Degree', '', $saathi['degree'] ?: 'Not Specified')) ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['degree'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Profession</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($user['occupation'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($user['occupation'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Sector</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['occupation_type'] ?? 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['occupation_type'] ?: 'Not Specified') ?></div>
           </div>
           <div style="grid-column: 1 / -1;">
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Annual Income</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['annual_income'] ?? 'Prefer not to say') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['annual_income'] ?: 'Not Specified') ?></div>
           </div>
         </div>
       </div>
 
       <!-- Astrology & Kundli -->
-      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);">
-        <div style="font-weight: 800; font-size: 0.82rem; color: #C31F3A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-moon" style="font-size: 0.88rem;"></i> Astrology & Kundli
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);">
+        <div style="font-weight: 700; font-size: 0.82rem; color: #1C1C1E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-moon" style="font-size: 0.88rem; color: #FF2D55;"></i> Astrology & Kundli
         </div>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 14px;">
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Gotra</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['gotra'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['gotra'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Manglik</div>
             <?php 
-              $m_status = $saathi['manglik_status'] ?? 'No';
-              if ($m_status === 'Prefer not to say' || empty($m_status)) { $m_status = 'Non-Manglik'; }
+              $m_status = $saathi['manglik_status'] ?? '';
+              if (empty($m_status)) { $m_status = 'Not Specified'; }
             ?>
-            <div style="font-size: 0.86rem; color: <?= ($m_status === 'Yes' || $m_status === 'Manglik') ? '#C31F3A' : '#1C1C1E' ?>; font-weight: 700;"><?= htmlspecialchars($m_status) ?></div>
+            <div style="font-size: 0.86rem; color: <?= ($m_status === 'Yes' || $m_status === 'Manglik') ? '#FF2D55' : '#1C1C1E' ?>; font-weight: 600;"><?= htmlspecialchars($m_status) ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Rashi</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['rashi'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['rashi'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Nakshatra</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['nakshatra'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['nakshatra'] ?: 'Not Specified') ?></div>
           </div>
         </div>
       </div>
 
       <!-- Family Background -->
-      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);">
-        <div style="font-weight: 800; font-size: 0.82rem; color: #C31F3A; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-house-chimney-window" style="font-size: 0.88rem;"></i> Family & Values
+      <div style="background: #FFFFFF; border-radius: 18px; padding: 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);">
+        <div style="font-weight: 700; font-size: 0.82rem; color: #1C1C1E; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-house-chimney-window" style="font-size: 0.88rem; color: #FF2D55;"></i> Family & Values
         </div>
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 14px;">
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Family Type</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars(str_replace(' Family', '', $saathi['family_type'] ?? 'Nuclear')) ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['family_type'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Status</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['family_status'] ?? 'Middle Class') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['family_status'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Father</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['father_occupation'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['father_occupation'] ?: 'Not Specified') ?></div>
           </div>
           <div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Mother</div>
-            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars($saathi['mother_occupation'] ?: 'Not Specified') ?></div>
+            <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 600;"><?= htmlspecialchars($saathi['mother_occupation'] ?: 'Not Specified') ?></div>
           </div>
         </div>
       </div>
@@ -311,11 +360,11 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- Account & Privacy Controls -->
-    <h3 class="profile-section-title" style="margin-top:28px;">Account Settings</h3>
-    <div style="background: #FDF4F6; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+    <h3 class="profile-section-title" style="margin-top:24px; font-family: system-ui, -apple-system, sans-serif;">Account Settings</h3>
+    <div style="background: #F8F8FA; border: 1px solid #E5E5EA; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
       <div>
-        <div style="font-weight: 700; font-size: 0.88rem; color: #1F2937;" id="privacyStatusLabel"><?= $is_private ? 'Private Profile' : 'Public Profile' ?></div>
-        <div style="font-size: 0.72rem; color: #6B7280; margin-top: 2px;" id="privacyStatusDesc">
+        <div style="font-weight: 700; font-size: 0.88rem; color: #1C1C1E;" id="privacyStatusLabel"><?= $is_private ? 'Private Profile' : 'Public Profile' ?></div>
+        <div style="font-size: 0.72rem; color: #636366; margin-top: 2px;" id="privacyStatusDesc">
           <?= $is_private ? 'Only main photo visible to non-matches.' : 'Everyone can view your profile photos.' ?>
         </div>
       </div>
@@ -327,12 +376,12 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Action Buttons Row -->
     <div style="display: flex; gap: 10px; margin-top: 16px;">
-      <button type="button" id="fetchLocBtn" onclick="fetchRealLocation()" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px;">
-        <i class="fa-solid fa-location-crosshairs"></i> Set Location
+      <button type="button" id="fetchLocBtn" onclick="fetchRealLocation()" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; border-radius: 14px; font-weight: 600; font-size: 0.82rem; border: 1px solid #E5E5EA; color: #1C1C1E;">
+        <i class="fa-solid fa-location-crosshairs" style="color: #FF2D55;"></i> Set Location
       </button>
 
-      <button type="button" onclick="openShareModal()" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px;">
-        <i class="fa-solid fa-share-nodes"></i> Share Profile
+      <button type="button" onclick="openShareModal()" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; border-radius: 14px; font-weight: 600; font-size: 0.82rem; border: 1px solid #E5E5EA; color: #1C1C1E;">
+        <i class="fa-solid fa-share-nodes" style="color: #FF2D55;"></i> Share Profile
       </button>
     </div>
 

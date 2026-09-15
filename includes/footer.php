@@ -169,10 +169,68 @@ $footer_user_id = get_current_user_id();
         </button>
       </div>
 
+  <!-- Global Candidate Chat Request & Pending Notice Modal -->
+  <div class="modal-overlay" id="globalChatNoticeModal" style="z-index: 999999; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; position: fixed; inset: 0;">
+    <div style="width: 90%; max-width: 380px; background: #FFFFFF; border-radius: 24px; padding: 24px 20px; text-align: center; box-shadow: 0 16px 40px rgba(0,0,0,0.2); position: relative;">
+      <div style="width: 60px; height: 60px; border-radius: 50%; background: #E8F2FF; color: #007AFF; font-size: 1.8rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px auto;">
+        <i class="fa-solid fa-comment-dots"></i>
+      </div>
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: #1C1C1E; margin-bottom: 8px;" id="chatNoticeTitle">Chat Request Sent 💬</h3>
+      <p style="font-size: 0.85rem; color: #636366; line-height: 1.5; margin-bottom: 20px;" id="chatNoticeBody">
+        Matrimonial interest & chat request sent! As soon as the candidate accepts your request, chat and calling will open automatically.
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <a href="matches.php" style="flex: 1; padding: 12px; border-radius: 16px; background: #F2F2F7; color: #1C1C1E; font-weight: 600; font-size: 0.88rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
+          View Requests
+        </a>
+        <button type="button" onclick="closeGlobalChatNoticeModal()" style="flex: 1; padding: 12px; border-radius: 16px; background: #1C1C1E; color: #FFFFFF; font-weight: 600; font-size: 0.88rem; border: none; cursor: pointer;">
+          Got It 👍
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
+  window.handleCandidateCardChat = async function(targetId, targetName = 'Candidate') {
+    if (!targetId || targetId <= 0) return;
+    
+    try {
+      const res = await fetch('api/check_chat_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ target_id: targetId })
+      });
+      const data = await res.json();
+      
+      if (data.can_chat && data.chat_url) {
+        window.location.href = data.chat_url;
+        return;
+      }
+      
+      // Show pending modal notice
+      const modal = document.getElementById('globalChatNoticeModal');
+      const title = document.getElementById('chatNoticeTitle');
+      const body = document.getElementById('chatNoticeBody');
+      
+      if (title) title.textContent = data.status === 'accepted' ? 'Connecting Chat... 💬' : 'Chat Request Sent 💬';
+      if (body) body.textContent = data.message || `Matrimonial chat request sent to ${targetName}! Once accepted, chat will open automatically.`;
+      if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+      }
+    } catch (err) {
+      console.error('Chat check error:', err);
+      window.location.href = 'matches.php';
+    }
+  };
+
+  window.closeGlobalChatNoticeModal = function() {
+    const modal = document.getElementById('globalChatNoticeModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('active');
+    }
+  };
   let globalPreviewPhotos = [];
   let globalPreviewIndex = 0;
 

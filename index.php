@@ -159,7 +159,10 @@ require_once __DIR__ . '/includes/header.php';
             <div class="carousel-card-photo-wrap">
               <img src="<?= htmlspecialchars($c_img) ?>" class="carousel-card-img" alt="<?= htmlspecialchars($c_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
               
-              <!-- Quick View Full Profile Button -->
+              <!-- Quick Chat & View Profile Buttons -->
+              <button onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" style="position: absolute; top: 12px; right: 52px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 122, 255, 0.85); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Message / Chat">
+                <i class="fa-solid fa-comment-dots" style="font-size: 0.85rem;"></i>
+              </button>
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; text-decoration: none;" title="View Profile">
                 <i class="fa-solid fa-user-check" style="font-size: 0.85rem;"></i>
               </a>
@@ -172,8 +175,13 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="carousel-card-loc"><?= htmlspecialchars($c_city) ?></div>
               </div>
 
-              <div class="carousel-card-like-icon" onclick="toggleCardFavorite(this, <?= $cand['id'] ?>)" title="Favorite">
-                <i class="fa-solid fa-heart"></i>
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <div class="carousel-card-like-icon" onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" title="Chat / Message" style="background: #E8F2FF; color: #007AFF;">
+                  <i class="fa-solid fa-comment-dots"></i>
+                </div>
+                <div class="carousel-card-like-icon" onclick="toggleCardFavorite(this, <?= $cand['id'] ?>)" title="Favorite">
+                  <i class="fa-solid fa-heart"></i>
+                </div>
               </div>
             </div>
 
@@ -201,7 +209,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- Match Percentage & Action Pill Bar -->
-    <div class="saathi-match-action-pill" style="margin-top: 6px; margin-bottom: 8px; background: transparent !important; flex-shrink: 0;">
+    <div class="saathi-match-action-pill" style="margin-top: 6px; margin-bottom: 8px; background: transparent !important; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <!-- Pass Button (X) -->
       <button class="action-circle-btn pass" id="carouselPassBtn" title="Pass / Next Card">
         <i class="fa-solid fa-xmark"></i>
@@ -212,6 +220,11 @@ require_once __DIR__ . '/includes/header.php';
         <span class="percent-chip" id="dynamicMatchScore">96%</span>
         <span class="match-label-text">Match Your Profile</span>
       </div>
+
+      <!-- Chat / Message Button (💬) -->
+      <button class="action-circle-btn chat" id="carouselChatBtn" title="Message / Chat Request" style="background: #FFFFFF; color: #007AFF; border: 1px solid #E5E5EA; box-shadow: 0 4px 12px rgba(0,0,0,0.06); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; cursor: pointer; transition: transform 0.2s ease;">
+        <i class="fa-solid fa-comment-dots" style="color: #007AFF;"></i>
+      </button>
 
       <!-- Like / Send Interest Button (Heart) -->
       <button class="action-circle-btn like" id="carouselLikeBtn" title="Send Matrimonial Interest">
@@ -230,6 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const matchScoreBadge = document.getElementById('dynamicMatchScore');
   const passBtn = document.getElementById('carouselPassBtn');
   const likeBtn = document.getElementById('carouselLikeBtn');
+  const chatBtn = document.getElementById('carouselChatBtn');
   let currentIndex = 0;
 
   function updateActiveCard() {
@@ -351,6 +365,19 @@ document.addEventListener('DOMContentLoaded', function() {
             scrollToCard(currentIndex + 1);
           }
         });
+      }
+    });
+  }
+
+  if (chatBtn) {
+    chatBtn.addEventListener('click', function() {
+      const activeCard = cards[currentIndex];
+      if (activeCard) {
+        const userId = activeCard.dataset.userId;
+        const userName = activeCard.dataset.userName || 'Candidate';
+        if (userId && userId !== '0') {
+          handleCandidateCardChat(userId, userName);
+        }
       }
     });
   }
