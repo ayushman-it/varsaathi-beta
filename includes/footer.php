@@ -202,25 +202,15 @@ $footer_user_id = get_current_user_id();
       });
       const data = await res.json();
       
-      if (data.can_chat && data.chat_url) {
+      if (data.chat_url) {
         window.location.href = data.chat_url;
         return;
       }
       
-      // Show pending modal notice
-      const modal = document.getElementById('globalChatNoticeModal');
-      const title = document.getElementById('chatNoticeTitle');
-      const body = document.getElementById('chatNoticeBody');
-      
-      if (title) title.textContent = data.status === 'accepted' ? 'Connecting Chat... 💬' : 'Chat Request Sent 💬';
-      if (body) body.textContent = data.message || `Matrimonial chat request sent to ${targetName}! Once accepted, chat will open automatically.`;
-      if (modal) {
-        modal.style.display = 'flex';
-        modal.classList.add('active');
-      }
+      window.location.href = `chat.php?target_id=${targetId}`;
     } catch (err) {
       console.error('Chat check error:', err);
-      window.location.href = 'matches.php';
+      window.location.href = `chat.php?target_id=${targetId}`;
     }
   };
 

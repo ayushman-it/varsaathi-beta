@@ -103,10 +103,14 @@ if (!$match_row) {
 }
 
 // Request is pending acceptance
+$match_id = (int)($match_row['id'] ?? 0);
+$chat_url = $match_id > 0 ? "chat.php?match_id={$match_id}" : "chat.php?target_id={$target_id}";
+
 json_response([
     'can_chat' => false,
     'status' => 'pending',
-    'match_id' => (int)($match_row['id'] ?? 0),
+    'match_id' => $match_id,
+    'chat_url' => $chat_url,
     'target_name' => $target_name,
     'message' => "Matrimonial chat request sent to {$target_name}! As soon as {$target_name} accepts your request, chat and calling will open automatically."
 ]);
