@@ -160,24 +160,24 @@ require_once __DIR__ . '/includes/header.php';
               <img src="<?= htmlspecialchars($c_img) ?>" class="carousel-card-img" alt="<?= htmlspecialchars($c_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
               
               <!-- Quick Chat & View Profile Buttons -->
-              <button onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" style="position: absolute; top: 12px; right: 52px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 122, 255, 0.85); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Message / Chat">
-                <i class="fa-solid fa-comment-dots" style="font-size: 0.85rem;"></i>
+              <button onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" style="position: absolute; top: 12px; right: 52px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; cursor: pointer;" title="Message / Chat">
+                <i class="fa-solid fa-comment-dots" style="font-size: 0.85rem; color: #FFF;"></i>
               </button>
-              <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.4); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; text-decoration: none;" title="View Profile">
-                <i class="fa-solid fa-user-check" style="font-size: 0.85rem;"></i>
+              <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #FFF; border: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; text-decoration: none;" title="View Profile">
+                <i class="fa-solid fa-user-check" style="font-size: 0.85rem; color: #FFF;"></i>
               </a>
             </div>
 
             <!-- White Footer Metadata -->
             <div class="carousel-card-footer">
               <div>
-                <div class="carousel-card-name"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></div>
+                <a href="saathi-profile.php?id=<?= $cand['id'] ?>" class="carousel-card-name" style="text-decoration: none; color: inherit; cursor: pointer; display: inline-block;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></a>
                 <div class="carousel-card-loc"><?= htmlspecialchars($c_city) ?></div>
               </div>
 
               <div style="display: flex; gap: 8px; align-items: center;">
-                <div class="carousel-card-like-icon" onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" title="Chat / Message" style="background: #E8F2FF; color: #007AFF;">
-                  <i class="fa-solid fa-comment-dots"></i>
+                <div class="carousel-card-like-icon" onclick="handleCandidateCardChat(<?= $cand['id'] ?>, '<?= htmlspecialchars(addslashes($c_name)) ?>')" title="Chat / Message" style="background: #F2F2F7; color: #1C1C1E; border: 1px solid #E5E5EA;">
+                  <i class="fa-solid fa-comment-dots" style="color: #1C1C1E;"></i>
                 </div>
                 <div class="carousel-card-like-icon" onclick="toggleCardFavorite(this, <?= $cand['id'] ?>)" title="Favorite">
                   <i class="fa-solid fa-heart"></i>
@@ -222,8 +222,8 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <!-- Chat / Message Button (💬) -->
-      <button class="action-circle-btn chat" id="carouselChatBtn" title="Message / Chat Request" style="background: #FFFFFF; color: #007AFF; border: 1px solid #E5E5EA; box-shadow: 0 4px 12px rgba(0,0,0,0.06); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; cursor: pointer; transition: transform 0.2s ease;">
-        <i class="fa-solid fa-comment-dots" style="color: #007AFF;"></i>
+      <button class="action-circle-btn chat" id="carouselChatBtn" title="Message / Chat Request" style="background: #FFFFFF; color: #1C1C1E; border: 1px solid #E5E5EA; box-shadow: 0 4px 12px rgba(0,0,0,0.06); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; cursor: pointer; transition: transform 0.2s ease;">
+        <i class="fa-solid fa-comment-dots" style="color: #1C1C1E;"></i>
       </button>
 
       <!-- Like / Send Interest Button (Heart) -->
