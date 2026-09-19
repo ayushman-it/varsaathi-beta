@@ -1,27 +1,17 @@
 <?php
-// profile-view.php
+// profile-view.php - Auto-Forward to Unified Saathi Profile Viewer
 require_once __DIR__ . '/config/db.php';
 require_login();
 
-try {
-    $active_tab = 'discover';
-    $current_user_id = (int)get_current_user_id();
-    $target_id = (int)($_GET['id'] ?? 0);
-
-    if (!$target_id) {
-        echo "<script>window.location.href='index.php';</script>";
-        exit;
-    }
-
-    // Fetch Candidate Profile
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-    $stmt->execute([':id' => $target_id]);
-    $target_user = $stmt->fetch();
-
-    if (!$target_user) {
-        echo "<script>window.location.href='index.php';</script>";
-        exit;
-    }
+$target_id = (int)($_GET['id'] ?? 0);
+if ($target_id > 0) {
+    header("Location: saathi-profile.php?id=" . $target_id);
+    exit;
+} else {
+    header("Location: index.php");
+    exit;
+}
+?>
 
     $age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
     $interests_decoded = json_decode((string)($target_user['interests'] ?? '[]'), true);

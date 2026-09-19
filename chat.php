@@ -92,7 +92,7 @@ $css_version = time();
       <header class="app-header">
         <a href="matches.php" class="icon-btn" style="width:34px; height:34px;"><i class="fa-solid fa-chevron-left" style="font-size:0.85rem;"></i></a>
 
-        <a href="profile-view.php?id=<?= $partner['partner_id'] ?>" style="display:flex; align-items:center; gap:10px; flex:1; margin-left:6px; text-decoration:none;">
+        <a href="saathi-profile.php?id=<?= $partner['partner_id'] ?>" style="display:flex; align-items:center; gap:10px; flex:1; margin-left:6px; text-decoration:none;">
           <div class="chat-avatar-wrapper">
             <img src="<?= htmlspecialchars($partner['avatar_url']) ?>" style="width:36px; height:36px; border-radius:50%; object-fit:cover;" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';">
             <?php if (!$is_pending): ?>
