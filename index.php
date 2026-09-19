@@ -123,38 +123,13 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </header>
 
-<main class="app-body" style="padding: 4px 0 75px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
-
-    <!-- Become a Chourasiya Member Compact Action Banner with Close Button -->
-    <div id="chourasiyaMemberBanner" style="padding: 0 16px; margin-bottom: 6px; display: block;">
-      <div style="display: flex; align-items: center; justify-content: space-between; background: #FFF0F4; border: 1px solid #FFE0E6; border-radius: 14px; padding: 6px 10px 6px 12px; box-shadow: 0 2px 8px rgba(195,31,58,0.04);">
-        <a href="profile.php?join_chourasiya=1" style="display: flex; align-items: center; gap: 8px; text-decoration: none; flex: 1; min-width: 0;">
-          <span style="font-weight: 700; font-size: 0.78rem; color: #1C1C1E; white-space: nowrap;">Become a Chourasiya Member</span>
-          <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 10px; white-space: nowrap;">Join Now</span>
-        </a>
-        <button type="button" onclick="dismissChourasiyaBanner()" style="background: transparent; border: none; color: #8E8E93; font-size: 0.85rem; padding: 4px 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Dismiss">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Pro iOS Segmented Category Tabs Bar -->
-    <div style="padding: 0 16px; margin-bottom: 8px;">
-      <div style="background: #EFEFF4; padding: 3px; border-radius: 20px; display: flex; align-items: center; gap: 2px;" id="homeCategoryTabs">
-        <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="flex: 1; height: 32px; border: none; border-radius: 17px; background: #FFFFFF; color: #1C1C1E; font-weight: 700; font-size: 0.76rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
-          All Profiles
-        </button>
-        <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="flex: 1; height: 32px; border: none; border-radius: 17px; background: transparent; color: #8E8E93; font-weight: 500; font-size: 0.76rem; cursor: pointer; transition: all 0.2s ease;">
-          Chourasiya
-        </button>
-      </div>
-    </div>
+<main class="app-body" style="padding: 6px 0 12px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
 
     <!-- Horizontal 3D Card Carousel Stage with Side Peeking Cards -->
     <div class="card-carousel-stage" id="cardCarouselStage">
       
       <!-- 1. Promo Welcome Banner Card (Always First Card in Carousel Stack) -->
-      <div class="carousel-card-item promo-card" data-index="0" data-match-score="100" data-user-id="0" data-user-name="Varsaathi Matrimony" data-community="chourasiya">
+      <div class="carousel-card-item promo-card" data-index="0" data-match-score="100" data-user-id="0" data-user-name="Varsaathi Matrimony">
         <div class="carousel-card-photo-wrap">
           <img src="assets/images/welcome_banner.jpg" class="carousel-card-img" alt="Varsaathi Promo Banner" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
         </div>
@@ -177,10 +152,8 @@ require_once __DIR__ . '/includes/header.php';
           $c_img = get_valid_avatar_url($cand['avatar_url'] ?? '');
           $c_city = !empty($cand['location_city']) && strpos(strtolower((string)$cand['location_city']), 'san francisco') === false ? $cand['location_city'] : 'India';
           $match_score = rand(91, 98); // High compatibility match score percentage
-          $c_comm = strtolower(trim(($cand['caste_community'] ?? '') . ' ' . ($cand['religion'] ?? '')));
-          $is_chourasiya = (strpos($c_comm, 'chourasiya') !== false || strpos($c_comm, 'chaurasia') !== false || empty($c_comm));
         ?>
-          <div class="carousel-card-item" data-index="<?= $index + 1 ?>" data-user-id="<?= $cand['id'] ?>" data-match-score="<?= $match_score ?>" data-user-name="<?= htmlspecialchars($c_name) ?>" data-community="<?= $is_chourasiya ? 'chourasiya' : 'other' ?>">
+          <div class="carousel-card-item" data-index="<?= $index + 1 ?>" data-user-id="<?= $cand['id'] ?>" data-match-score="<?= $match_score ?>" data-user-name="<?= htmlspecialchars($c_name) ?>">
             
             <!-- Photo Display -->
             <div class="carousel-card-photo-wrap">
@@ -262,58 +235,6 @@ require_once __DIR__ . '/includes/header.php';
 </main>
 
 <script>
-window.dismissChourasiyaBanner = function() {
-  const banner = document.getElementById('chourasiyaMemberBanner');
-  if (banner) {
-    banner.style.display = 'none';
-    localStorage.setItem('hide_chourasiya_banner', '1');
-  }
-};
-
-if (localStorage.getItem('hide_chourasiya_banner') === '1') {
-  document.addEventListener('DOMContentLoaded', function() {
-    const banner = document.getElementById('chourasiyaMemberBanner');
-    if (banner) banner.style.display = 'none';
-  });
-}
-
-window.switchHomeCategoryTab = function(tabName, btnElem) {
-  const tabs = document.querySelectorAll('.home-tab-btn');
-  tabs.forEach(t => {
-    t.style.background = 'transparent';
-    t.style.color = '#8E8E93';
-    t.style.fontWeight = '500';
-    t.style.boxShadow = 'none';
-    t.classList.remove('active');
-  });
-  if (btnElem) {
-    btnElem.style.background = '#FFFFFF';
-    btnElem.style.color = '#1C1C1E';
-    btnElem.style.fontWeight = '700';
-    btnElem.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
-    btnElem.classList.add('active');
-  }
-
-  const cards = document.querySelectorAll('.carousel-card-item');
-  cards.forEach(card => {
-    const comm = card.dataset.community || 'other';
-    if (tabName === 'chourasiya') {
-      if (comm === 'chourasiya' || card.classList.contains('promo-card')) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
-    } else {
-      card.style.display = 'flex';
-    }
-  });
-
-  const stage = document.getElementById('cardCarouselStage');
-  if (stage) {
-    stage.scrollTo({ left: 0, behavior: 'smooth' });
-  }
-};
-
 document.addEventListener('DOMContentLoaded', function() {
   const stage = document.getElementById('cardCarouselStage');
   if (!stage) return;
@@ -427,13 +348,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            const userAvatar = activeCard.querySelector('.carousel-card-img')?.src || '';
-            if (typeof window.showInterestMatchModal === 'function') {
-              window.showInterestMatchModal(userName, userAvatar, data.is_match, data.match_id || 0, userId);
+            if (data.is_match) {
+              alert(`💕 It's a Match with ${userName}! You can now chat and video call.`);
+            } else {
+              alert(`❤️ Matrimonial Interest & Notification Sent to ${userName}!`);
             }
           }
           if (currentIndex < cards.length - 1) {
             scrollToCard(currentIndex + 1);
+          } else {
+            location.reload();
           }
         })
         .catch(err => {
