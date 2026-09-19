@@ -3707,8 +3707,428 @@ body {
   transform: scale(0.98);
 }
 
-.filter-apply-btn:active {
-  transform: scale(0.98);
+/* Pixel-Perfect Shaadi.com iOS Matrimonial Profile UI (Ref: media_1789806192106.png) */
+.profile-screen-container {
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  background: #FDF4F6;
+  min-height: 100vh;
+  padding-bottom: 90px;
 }
+
+.profile-top-banner {
+  background: linear-gradient(180deg, #FDF0F3 0%, #FFFFFF 100%);
+  padding: 14px 16px 16px 16px;
+  position: relative;
+  text-align: center;
+}
+
+.profile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.profile-nav-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  color: #111111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.15s ease;
+}
+
+.profile-nav-btn:active {
+  transform: scale(0.92);
+}
+
+.profile-nav-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #111111;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.3px;
+}
+
+.profile-hero-watermarks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.profile-quote-left {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #7A424E;
+  max-width: 105px;
+  line-height: 1.35;
+  text-align: left;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.profile-quote-left span {
+  color: #E02847;
+  font-weight: 700;
+}
+
+.profile-script-right {
+  font-family: 'Dancing Script', 'Caveat', 'Brush Script MT', cursive;
+  font-size: 1.25rem;
+  color: #E02847;
+  text-align: right;
+  max-width: 95px;
+  line-height: 1.25;
+  opacity: 0.9;
+  transform: rotate(-3deg);
+}
+
+.profile-avatar-outer-ring {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  margin: 0 auto;
+}
+
+.profile-avatar-gradient-border {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  padding: 3.5px;
+  background: linear-gradient(135deg, #FF7B9B 0%, #E02847 100%);
+  box-shadow: 0 8px 24px rgba(224, 40, 71, 0.22);
+}
+
+.profile-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid #FFFFFF;
+  background: #FFF;
+}
+
+.profile-avatar-verified-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #22C55E;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  border: 2.5px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.profile-user-name {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #111111;
+  margin-top: 14px;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  letter-spacing: -0.3px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.profile-user-subtitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #666666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.profile-chips-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.profile-chip {
+  background: #FDF0F3;
+  border: 1px solid #FCE4EC;
+  color: #555555;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-chip i {
+  color: #E02847;
+  font-size: 0.82rem;
+}
+
+.profile-action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  padding: 0 4px;
+}
+
+.btn-action-outline {
+  flex: 1;
+  height: 44px;
+  border-radius: 22px;
+  border: 1.5px solid #FCE4EC;
+  background: #FFFFFF;
+  color: #E02847;
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.btn-action-outline:active {
+  transform: scale(0.97);
+  background: #FFF0F4;
+}
+
+.btn-action-filled {
+  flex: 1.3;
+  height: 44px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #E02847 0%, #C31F3A 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(224, 40, 71, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-action-filled:active {
+  transform: scale(0.97);
+}
+
+.btn-action-icon-only {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: 1.5px solid #FCE4EC;
+  background: #FFFFFF;
+  color: #E02847;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  flex-shrink: 0;
+}
+
+.ai-compatibility-card {
+  background: #FFFFFF;
+  border: 1px solid #FDE8EE;
+  border-radius: 24px;
+  padding: 18px 20px;
+  box-shadow: 0 6px 25px rgba(224, 40, 71, 0.05);
+  margin-bottom: 20px;
+}
+
+.ai-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ai-card-title {
+  font-weight: 900;
+  font-size: 1.08rem;
+  color: #111111;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.ai-donut-ring {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 4px solid #E02847;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(224, 40, 71, 0.15);
+  line-height: 1.1;
+  flex-shrink: 0;
+}
+
+.ai-donut-ring .pct {
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: #111111;
+}
+
+.ai-donut-ring .label {
+  font-size: 0.62rem;
+  color: #666666;
+  font-weight: 700;
+}
+
+.ai-criteria-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.ai-criteria-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FAFAFC;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.02);
+}
+
+.ai-criteria-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-criteria-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #FDF0F3;
+  color: #E02847;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+  flex-shrink: 0;
+}
+
+.ai-criteria-title {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #222222;
+}
+
+.ai-criteria-subtitle {
+  font-size: 0.76rem;
+  color: #777777;
+  font-weight: 500;
+}
+
+.ai-criteria-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #22C55E;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  flex-shrink: 0;
+}
+
+.profile-about-card {
+  background: #FFFFFF;
+  border: 1px solid #F0F0F5;
+  border-radius: 24px;
+  padding: 18px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  margin-bottom: 20px;
+}
+
+.profile-about-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.profile-about-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-about-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background: #FDF0F3;
+  color: #E02847;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.92rem;
+}
+
+.profile-about-title {
+  font-size: 1.08rem;
+  font-weight: 900;
+  color: #111111;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.profile-edit-chip-btn {
+  background: #FDF0F3;
+  color: #E02847;
+  font-weight: 700;
+  font-size: 0.78rem;
+  padding: 5px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  cursor: pointer;
+}
+
 
 

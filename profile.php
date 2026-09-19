@@ -55,33 +55,42 @@ try {
     require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="profile-screen-container" style="width: 100%; max-width: 580px; margin: 0 auto; padding-bottom: 90px;">
+<div class="profile-screen-container">
 
-  <!-- Header -->
-  <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E5E5EA;">
-    <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
-      Profile
-    </div>
+  <!-- 1. Soft Pink Header Banner (Ref: media_1789806192106.png) -->
+  <div class="profile-top-banner">
+    <div class="profile-nav-header">
+      <a href="javascript:history.length > 1 ? history.back() : (window.location.href='index.php')" class="profile-nav-btn" title="Back">
+        <i class="fa-solid fa-arrow-left"></i>
+      </a>
 
-    <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
-      <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #FFFFFF; border: 1px solid #E5E5EA; color: #1C1C1E; display: flex; align-items: center; justify-content: center;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" y1="21" x2="4" y2="14"></line>
-          <line x1="4" y1="10" x2="4" y2="3"></line>
-          <line x1="12" y1="21" x2="12" y2="12"></line>
-          <line x1="12" y1="8" x2="12" y2="3"></line>
-          <line x1="20" y1="21" x2="20" y2="16"></line>
-          <line x1="20" y1="12" x2="20" y2="3"></line>
-          <line x1="1" y1="14" x2="7" y2="14"></line>
-          <line x1="9" y1="8" x2="15" y2="8"></line>
-          <line x1="17" y1="16" x2="23" y2="16"></line>
-        </svg>
-      </button>
-      <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #FFFFFF; border: 1px solid #E5E5EA; color: #1C1C1E;">
-        <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
+      <div class="profile-nav-title">Profile</div>
+
+      <button type="button" class="profile-nav-btn" id="openSidebarBtn" title="Menu">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
       </button>
     </div>
-  </header>
+
+    <!-- Ambient Hero Watermarks -->
+    <div class="profile-hero-watermarks">
+      <div class="profile-quote-left">
+        "Building<br>a meaningful<br>tomorrow, <span>together."</span>
+      </div>
+
+      <!-- 2. Centered Overlapping Avatar Ring -->
+      <div class="profile-avatar-outer-ring" onclick="document.getElementById('avatarFileInput').click()" title="Tap to change profile picture" style="cursor: pointer;">
+        <div class="profile-avatar-gradient-border">
+          <img src="<?= htmlspecialchars($avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
+        </div>
+        <div class="profile-avatar-verified-badge" title="Verified Profile">
+          <i class="fa-solid fa-check"></i>
+        </div>
+      </div>
+
+      <div class="profile-script-right">
+        Good<br>People<br>Better<br>Together
+      </div>
+    </div>
 
     <!-- Hidden Avatar Upload Form -->
     <form id="avatarUploadForm" action="api/upload_photos.php" method="POST" enctype="multipart/form-data" style="display: none;">
@@ -89,36 +98,59 @@ try {
       <input type="file" id="avatarFileInput" name="avatar_file" accept="image/*" onchange="document.getElementById('avatarUploadForm').submit()">
     </form>
 
-    <!-- 2. Centered Overlapping Avatar Ring -->
-    <div class="profile-avatar-container" onclick="document.getElementById('avatarFileInput').click()" title="Tap to change profile picture" style="cursor:pointer; margin-top: 10px; margin-bottom: 14px;">
-      <div class="profile-avatar-outer-ring">
-        <img src="<?= htmlspecialchars($avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
-        <div class="profile-avatar-verified-badge" title="Change Profile Picture">
-          <i class="fa-solid fa-camera"></i>
-        </div>
+    <!-- User Name & Subtitle -->
+    <h1 class="profile-user-name">
+      <?= htmlspecialchars((string)($user['full_name'] ?? 'User')) ?>
+      <span style="background: #E02847; color: #FFF; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; vertical-align: middle;">
+        <i class="fa-solid fa-check"></i>
+      </span>
+    </h1>
+
+    <div class="profile-user-subtitle">
+      <span><?= $age ?></span>
+      <span>|</span>
+      <span><i class="fa-solid fa-location-dot" style="color: #E02847;"></i> <?= htmlspecialchars($city_display) ?></span>
+    </div>
+
+    <!-- Quick Metadata Chips Row -->
+    <div class="profile-chips-row">
+      <?php 
+        $qual = !empty($saathi['highest_qualification']) ? $saathi['highest_qualification'] : (!empty($saathi['degree']) ? $saathi['degree'] : 'Graduate');
+        $occ = !empty($user['occupation']) ? $user['occupation'] : (!empty($saathi['occupation_type']) ? $saathi['occupation_type'] : 'Working Professional');
+      ?>
+      <div class="profile-chip">
+        <i class="fa-solid fa-graduation-cap"></i> <?= htmlspecialchars((string)$qual) ?>
+      </div>
+      <div class="profile-chip">
+        <i class="fa-solid fa-briefcase"></i> <?= htmlspecialchars((string)$occ) ?>
+      </div>
+      <div class="profile-chip">
+        <i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars((string)$city_display) ?>
       </div>
     </div>
 
-  <!-- 3. Main Overlapping White Card Container -->
-  <div class="profile-main-card" style="margin-left: 12px; margin-right: 12px;">
-    
-    <!-- User Name & Subtitle -->
-    <h1 class="profile-user-name" style="font-family: system-ui, -apple-system, sans-serif; font-size: 1.4rem;">
-      <?= htmlspecialchars($user['full_name']) ?>
-      <i class="fa-solid fa-circle-check" style="color: #FF2D55; font-size: 1.15rem;" title="Verified Profile"></i>
-    </h1>
-
-    <div class="profile-user-subtitle" style="margin-bottom: 16px;">
-      <span><?= $age ?> Yrs</span>
-      <span>|</span>
-      <span><i class="fa-solid fa-location-dot" style="color: #FF2D55; margin-right: 2px;"></i> <span id="userCityLabel"><?= htmlspecialchars($city_display) ?></span></span>
+    <!-- Action Buttons Row -->
+    <div class="profile-action-row">
+      <a href="saathi-edit.php" class="btn-action-outline">
+        <i class="fa-solid fa-pen-to-square"></i> Edit Details
+      </a>
+      <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-action-filled">
+        <i class="fa-solid fa-file-pdf"></i> Download Biodata
+      </a>
+      <button type="button" class="btn-action-icon-only" title="Share Profile" onclick="if(navigator.share){navigator.share({title: '<?= htmlspecialchars(addslashes($share_title)) ?>', url: '<?= $profile_share_url ?>'});}else{navigator.clipboard.writeText('<?= $profile_share_url ?>'); alert('Profile link copied!');}">
+        <i class="fa-solid fa-arrow-up-from-bracket"></i>
+      </button>
     </div>
+
+  </div> <!-- End profile-top-banner -->
+
+  <div style="padding: 0 16px;">
 
     <!-- Upload Photo Callout Prompt if photo missing -->
     <?php if (!$has_photo): ?>
-      <div style="background: linear-gradient(135deg, #FFF0F4 0%, #FFEBF0 100%); border: 1px solid #FFD6E0; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+      <div style="background: linear-gradient(135deg, #FFF0F4 0%, #FFEBF0 100%); border: 1px solid #FFD6E0; border-radius: 20px; padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #FF2D55; color: #FFF; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #E02847; color: #FFF; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
             <i class="fa-solid fa-camera"></i>
           </div>
           <div>
@@ -126,75 +158,121 @@ try {
             <div style="font-size: 0.76rem; color: #636366;">Profiles with photos get 10x more interest!</div>
           </div>
         </div>
-        <button type="button" onclick="document.getElementById('avatarFileInput').click()" style="background: #FF2D55; color: #FFF; border: none; padding: 7px 14px; border-radius: 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; white-space: nowrap;">
+        <button type="button" onclick="document.getElementById('avatarFileInput').click()" style="background: #E02847; color: #FFF; border: none; padding: 7px 14px; border-radius: 14px; font-weight: 600; font-size: 0.78rem; cursor: pointer; white-space: nowrap;">
           Upload
         </button>
       </div>
     <?php endif; ?>
 
-    <!-- Profile Completion Progress Section -->
-    <div style="background: #F8F8FA; border: 1px solid #EBEBEF; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-        <span style="font-size: 0.84rem; font-weight: 700; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">Profile Completion</span>
-        <span style="font-size: 0.84rem; font-weight: 800; color: #C31F3A;"><?= $completion_pct ?>%</span>
-      </div>
-      <div style="width: 100%; height: 7px; background: #E5E5EA; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
-        <div style="width: <?= $completion_pct ?>%; height: 100%; background: linear-gradient(90deg, #1C1C1E 0%, #C31F3A 100%); border-radius: 4px; transition: width 0.4s ease;"></div>
-      </div>
-      <?php if ($completion_pct < 100): ?>
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-          <span style="font-size: 0.76rem; color: #8E8E93; flex: 1; min-width: 150px;">Complete your biodata for better matching</span>
-          <a href="saathi-edit.php" style="font-size: 0.76rem; font-weight: 700; color: #C31F3A; text-decoration: none; white-space: nowrap; flex-shrink: 0;">Update Profile &rarr;</a>
+    <!-- AI Compatibility / Profile Match Donut Card -->
+    <div class="ai-compatibility-card">
+      <div class="ai-card-header">
+        <div class="ai-card-title">
+          <i class="fa-solid fa-sparkles" style="color: #E02847;"></i> AI Compatibility
         </div>
-      <?php endif; ?>
-    </div>
-
-    <!-- Main Full-Width Edit Profile Action Button -->
-    <div style="display: flex; gap: 10px; margin-bottom: 16px;">
-      <a href="saathi-edit.php" class="btn-pink-action" style="flex: 1; margin: 0; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; background: #1C1C1E; color: #FFF; text-decoration: none;">
-        <i class="fa-solid fa-pen-to-square" style="margin-right: 6px;"></i> Edit Details
-      </a>
-      <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 16px; font-weight: 600; white-space: nowrap; display: flex; align-items: center; justify-content: center; border: 1px solid #E5E5EA; color: #1C1C1E; text-decoration: none;">
-        <i class="fa-solid fa-file-pdf" style="margin-right: 6px; color: #C31F3A;"></i> Download Biodata
-      </a>
-    </div>
-
-    <!-- Matrimonial Headline Banner -->
-    <?php if (!empty($saathi['headline'])): ?>
-      <div style="background: #F8F8FA; border-left: 3px solid #C31F3A; border-top: 1px solid #F0F0F5; border-right: 1px solid #F0F0F5; border-bottom: 1px solid #F0F0F5; padding: 9px 12px; border-radius: 10px; font-weight: 500; font-size: 0.82rem; color: #1C1C1E; margin-bottom: 16px;">
-        "<?= htmlspecialchars($saathi['headline']) ?>"
+        <div class="ai-donut-ring">
+          <div class="pct"><?= $completion_pct ?>%</div>
+          <div class="label">Match</div>
+        </div>
       </div>
-    <?php endif; ?>
 
-    <!-- About Me Section -->
-    <h3 class="profile-section-title" style="font-family: system-ui, -apple-system, sans-serif;">About Me</h3>
-    <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.5; margin-bottom: 20px;">
-      <?php if (!empty($user['bio'])): 
-        $bio_text = trim((string)$user['bio']);
-        $is_long_bio = (mb_strlen($bio_text) > 130 || substr_count($bio_text, "\n") >= 2);
-      ?>
-        <?php if ($is_long_bio): ?>
-          <div id="bioTextShortUser">
-            <?= nl2br(htmlspecialchars(mb_strimwidth($bio_text, 0, 130, '...'))) ?>
-            <button type="button" onclick="toggleBioUser(true)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
-              Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
-            </button>
+      <p style="font-size: 0.84rem; color: #555555; line-height: 1.45; margin-top: 4px; margin-bottom: 14px; font-weight: 400;">
+        High profile compatibility based on age alignment, location preferences, and matrimonial timeline.
+      </p>
+
+      <div class="ai-criteria-list">
+        <!-- Preferred location match -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Preferred location match</div>
+              <div class="ai-criteria-subtitle"><?= htmlspecialchars($city_display) ?></div>
+            </div>
           </div>
-          <div id="bioTextFullUser" style="display: none;">
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+
+        <!-- Optimal age alignment -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Optimal age alignment</div>
+              <div class="ai-criteria-subtitle"><?= $age ?> years</div>
+            </div>
+          </div>
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+
+        <!-- Shared matrimonial timeline -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Shared matrimonial timeline</div>
+              <div class="ai-criteria-subtitle"><?= htmlspecialchars((string)($saathi['marriage_timeline'] ?? 'Within 1 Year')) ?></div>
+            </div>
+          </div>
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Me Box -->
+    <div class="profile-about-card">
+      <div class="profile-about-header">
+        <div class="profile-about-title-wrap">
+          <div class="profile-about-icon">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="profile-about-title">About Me</div>
+        </div>
+        <a href="saathi-edit.php?step=2" class="profile-edit-chip-btn">
+          <i class="fa-solid fa-pen"></i> Edit
+        </a>
+      </div>
+
+      <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.55;">
+        <?php if (!empty($user['bio'])): 
+          $bio_text = trim((string)$user['bio']);
+          $is_long_bio = (mb_strlen($bio_text) > 130 || substr_count($bio_text, "\n") >= 2);
+        ?>
+          <?php if ($is_long_bio): ?>
+            <div id="bioTextShortUser">
+              <?= nl2br(htmlspecialchars(mb_strimwidth($bio_text, 0, 130, '...'))) ?>
+              <button type="button" onclick="toggleBioUser(true)" style="background: none; border: none; padding: 0; color: #E02847; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
+                Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
+              </button>
+            </div>
+            <div id="bioTextFullUser" style="display: none;">
+              <?= nl2br(htmlspecialchars($bio_text)) ?>
+              <button type="button" onclick="toggleBioUser(false)" style="background: none; border: none; padding: 0; color: #E02847; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
+                Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
+              </button>
+            </div>
+          <?php else: ?>
             <?= nl2br(htmlspecialchars($bio_text)) ?>
-            <button type="button" onclick="toggleBioUser(false)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
-              Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
-            </button>
-          </div>
+          <?php endif; ?>
         <?php else: ?>
-          <?= nl2br(htmlspecialchars($bio_text)) ?>
+          <span style="color: #8E8E93; font-style: italic;">No bio added yet. Tell potential life partners about yourself, your career, and family values.</span>
+          <div style="margin-top: 8px;">
+            <a href="saathi-edit.php?step=2" style="font-size: 0.78rem; font-weight: 700; color: #E02847; text-decoration: none;">+ Add Bio / About Me</a>
+          </div>
         <?php endif; ?>
-      <?php else: ?>
-        <span style="color: #8E8E93; font-style: italic;">No bio added yet. Tell potential life partners about yourself, your career, and family values.</span>
-        <div style="margin-top: 8px;">
-          <a href="saathi-edit.php?step=2" style="font-size: 0.78rem; font-weight: 700; color: #C31F3A; text-decoration: none;">+ Add Bio / About Me</a>
-        </div>
-      <?php endif; ?>
+      </div>
     </div>
 
     <!-- Partner Preference Section -->

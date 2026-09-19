@@ -82,149 +82,225 @@ try {
 
 <div class="profile-screen-container">
 
-  <!-- 1. Soft Pink Header Banner -->
+  <!-- 1. Soft Pink Header Banner (Ref: media_1789806192106.png) -->
   <div class="profile-top-banner">
     <div class="profile-nav-header">
-      <a href="javascript:history.length > 1 ? history.back() : (window.location.href='index.php')" class="icon-btn" style="background:#FFF; color:#111; width:36px; height:36px;" title="Back">
+      <a href="javascript:history.length > 1 ? history.back() : (window.location.href='index.php')" class="profile-nav-btn" title="Back">
         <i class="fa-solid fa-arrow-left"></i>
       </a>
 
       <div class="profile-nav-title">Profile</div>
 
-      <button class="icon-btn" style="background:#FFF; color:#111; width:36px; height:36px;" title="Options" onclick="alert('Profile options: Report, Share or Bookmark')">
+      <button type="button" class="profile-nav-btn" title="Options" onclick="alert('Profile options: Report, Share or Bookmark')">
         <i class="fa-solid fa-ellipsis-vertical"></i>
       </button>
     </div>
 
-    <!-- 2. Centered Overlapping Avatar -->
-    <div class="profile-avatar-container">
+    <!-- Ambient Hero Watermarks -->
+    <div class="profile-hero-watermarks">
+      <div class="profile-quote-left">
+        "Building<br>a meaningful<br>tomorrow, <span>together."</span>
+      </div>
+
+      <!-- 2. Centered Overlapping Avatar Ring -->
       <div class="profile-avatar-outer-ring" style="cursor: pointer;" onclick="openPhotoPreview('<?= htmlspecialchars((string)$avatar) ?>', <?= htmlspecialchars(json_encode(array_values($photos_raw))) ?>, 0)" title="Click to Preview Photo">
-        <img src="<?= htmlspecialchars((string)$avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+        <div class="profile-avatar-gradient-border">
+          <img src="<?= htmlspecialchars((string)$avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+        </div>
         <div class="profile-avatar-verified-badge" title="Verified Profile">
           <i class="fa-solid fa-check"></i>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- 3. Main Overlapping White Card -->
-  <div class="profile-main-card">
-    
+      <div class="profile-script-right">
+        Good<br>People<br>Better<br>Together
+      </div>
+    </div>
+
     <!-- User Name & Subtitle -->
     <h1 class="profile-user-name">
       <?= htmlspecialchars($target_name) ?>
-      <i class="fa-solid fa-circle-check" style="color: #E91E63; font-size: 1.15rem;" title="Verified Profile"></i>
+      <span style="background: #E02847; color: #FFF; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.65rem; vertical-align: middle;">
+        <i class="fa-solid fa-check"></i>
+      </span>
     </h1>
 
     <div class="profile-user-subtitle">
       <span><?= $age ?></span>
       <span>|</span>
-      <span><i class="fa-solid fa-location-dot" style="color: #E91E63; margin-right: 2px;"></i> <?= htmlspecialchars((string)$location_display) ?></span>
+      <span><i class="fa-solid fa-location-dot" style="color: #E02847;"></i> <?= htmlspecialchars((string)$location_display) ?></span>
     </div>
+
+    <!-- Quick Metadata Chips Row -->
+    <div class="profile-chips-row">
+      <?php 
+        $cand_qual = !empty($target_saathi['highest_qualification']) ? $target_saathi['highest_qualification'] : (!empty($target_saathi['degree']) ? $target_saathi['degree'] : 'Graduate');
+        $cand_occ = !empty($target_user['occupation']) ? $target_user['occupation'] : (!empty($target_saathi['occupation_type']) ? $target_saathi['occupation_type'] : 'Working Professional');
+      ?>
+      <div class="profile-chip">
+        <i class="fa-solid fa-graduation-cap"></i> <?= htmlspecialchars((string)$cand_qual) ?>
+      </div>
+      <div class="profile-chip">
+        <i class="fa-solid fa-briefcase"></i> <?= htmlspecialchars((string)$cand_occ) ?>
+      </div>
+      <div class="profile-chip">
+        <i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars((string)$location_display) ?>
+      </div>
+    </div>
+
+    <!-- Action Buttons Row -->
+    <?php if (!$is_own_profile): ?>
+      <div class="profile-action-row">
+        <button type="button" class="btn-action-outline <?= $has_sent_interest ? 'active' : '' ?>" id="candInterestBtn" onclick="toggleCandInterest(<?= $target_id ?>)">
+          <i class="fa-solid fa-heart" style="color: #E02847;"></i> <?= $has_sent_interest ? 'Interested' : 'Like' ?>
+        </button>
+        <a href="chat.php?user_id=<?= $target_id ?>" class="btn-action-filled">
+          <i class="fa-solid fa-comment-dots"></i> Start Chat
+        </a>
+        <button type="button" class="btn-action-icon-only" title="Bookmark Profile" onclick="alert('Profile Bookmarked!')">
+          <i class="fa-solid fa-bookmark"></i>
+        </button>
+      </div>
+    <?php else: ?>
+      <div class="profile-action-row">
+        <a href="saathi-edit.php" class="btn-action-outline">
+          <i class="fa-solid fa-pen-to-square"></i> Edit Details
+        </a>
+        <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-action-filled">
+          <i class="fa-solid fa-file-pdf"></i> Download Biodata
+        </a>
+        <button type="button" class="btn-action-icon-only" title="Share Profile" onclick="if(navigator.share){navigator.share({title: '<?= htmlspecialchars(addslashes($og_title)) ?>', url: '<?= $og_url ?>'});}else{navigator.clipboard.writeText('<?= $og_url ?>'); alert('Profile link copied!');}">
+          <i class="fa-solid fa-arrow-up-from-bracket"></i>
+        </button>
+      </div>
+    <?php endif; ?>
+
+  </div> <!-- End profile-top-banner -->
+
+  <div style="padding: 0 16px;">
 
     <!-- Matrimonial Headline Quote Banner -->
     <?php if (!empty($target_saathi['headline'])): ?>
-      <div style="background: #FDF4F6; border-left: 3.5px solid #E91E63; padding: 10px 14px; border-radius: 12px; font-weight: 600; font-size: 0.84rem; color: #9C1443; margin-bottom: 18px;">
+      <div style="background: #FDF4F6; border-left: 3.5px solid #E02847; padding: 10px 14px; border-radius: 14px; font-weight: 600; font-size: 0.84rem; color: #9C1443; margin-bottom: 20px;">
         "<?= htmlspecialchars((string)$target_saathi['headline']) ?>"
       </div>
     <?php endif; ?>
 
-    <!-- AI Compatibility Card -->
+    <!-- AI Compatibility Card (Ref: media_1789806192106.png) -->
     <?php if (!$is_own_profile): 
-      // Compute dynamic compatibility score & explanation
-      $c_user = is_array($current_user_data ?? null) ? $current_user_data : [];
-      $c_saathi = get_saathi_profile($current_user_id);
-      if (!is_array($c_saathi)) { $c_saathi = []; }
-      
-      $match_reasons = [];
       $score = 82;
-
-      // 1. Location match
-      $curr_city = strtolower(trim((string)($c_user['location_city'] ?? '')));
+      $curr_city = strtolower(trim((string)($current_user_data['location_city'] ?? '')));
       $targ_city = strtolower(trim((string)($target_user['location_city'] ?? '')));
       if (!empty($curr_city) && !empty($targ_city) && $curr_city === $targ_city && strpos($curr_city, 'san francisco') === false) {
           $score += 7;
-          $match_reasons[] = "Same location (" . ucwords($curr_city) . ")";
-      } else {
-          $match_reasons[] = "Preferred location match (" . htmlspecialchars((string)$location_display) . ")";
       }
-
-      // 2. Age compatibility
-      $curr_age = calculate_age($c_user['birthdate'] ?? '2000-01-01');
+      $curr_age = calculate_age($current_user_data['birthdate'] ?? '2000-01-01');
       $age_diff = abs($curr_age - $age);
-      if ($age_diff <= 4) {
-          $score += 6;
-          $match_reasons[] = "Optimal age alignment (" . $age . " years)";
-      }
-
-      // 3. Marriage Timeline match
-      $curr_timeline = (string)($c_saathi['marriage_timeline'] ?? 'Within 1 Year');
-      $targ_timeline = (string)($target_saathi['marriage_timeline'] ?? 'Within 1 Year');
-      if ($curr_timeline === $targ_timeline) {
-          $score += 4;
-          $match_reasons[] = "Shared matrimonial timeline (" . htmlspecialchars($targ_timeline) . ")";
-      } else {
-          $match_reasons[] = "Aligned relationship vision";
-      }
-
+      if ($age_diff <= 4) { $score += 6; }
       $final_match_percent = min(98, max(84, $score));
-
-      // Professional short summary paragraph
-      $target_first_name = explode(' ', trim($target_name))[0] ?: 'Candidate';
-      $summary_paragraph = "High profile compatibility based on age alignment, location preferences, and matrimonial timeline.";
     ?>
-    <div style="background: linear-gradient(135deg, #FFF5F7 0%, #FFFFFF 100%); border-radius: 20px; border: 1px solid rgba(195, 31, 58, 0.16); padding: 14px 16px; margin-bottom: 20px; box-shadow: 0 6px 20px rgba(195, 31, 58, 0.05);">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-        <div style="font-weight: 800; font-size: 0.9rem; color: #C31F3A; display: flex; align-items: center; gap: 6px;">
-          <i class="fa-solid fa-sparkles" style="font-size: 0.9rem;"></i> AI Compatibility
+    <div class="ai-compatibility-card">
+      <div class="ai-card-header">
+        <div class="ai-card-title">
+          <i class="fa-solid fa-sparkles" style="color: #E02847;"></i> AI Compatibility
         </div>
-        <span style="font-size: 0.74rem; font-weight: 800; background: linear-gradient(135deg, #E02847, #C31F3A); color: #FFF; padding: 3px 10px; border-radius: 12px; box-shadow: 0 2px 8px rgba(195, 31, 58, 0.25);">
-          <?= $final_match_percent ?>% Match
-        </span>
+        <div class="ai-donut-ring">
+          <div class="pct"><?= $final_match_percent ?>%</div>
+          <div class="label">Match</div>
+        </div>
       </div>
 
-      <!-- Short Professional Summary Paragraph -->
-      <p style="font-size: 0.8rem; color: #555555; line-height: 1.45; margin-bottom: 10px; font-weight: 400;">
-        <?= $summary_paragraph ?>
+      <p style="font-size: 0.84rem; color: #555555; line-height: 1.45; margin-top: 4px; margin-bottom: 14px; font-weight: 400;">
+        High profile compatibility based on age alignment, location preferences, and matrimonial timeline.
       </p>
 
-      <!-- Key Matched Factors -->
-      <div style="font-size: 0.76rem; color: #1C1C1E; display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,0.7); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.04);">
-        <?php foreach ($match_reasons as $reason): ?>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-circle-check" style="color: #22C55E; font-size: 0.82rem; flex-shrink: 0;"></i>
-            <span style="font-weight: 500;"><?= $reason ?></span>
+      <div class="ai-criteria-list">
+        <!-- Preferred location match -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Preferred location match</div>
+              <div class="ai-criteria-subtitle"><?= htmlspecialchars((string)$location_display) ?></div>
+            </div>
           </div>
-        <?php endforeach; ?>
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+
+        <!-- Optimal age alignment -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-user-group"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Optimal age alignment</div>
+              <div class="ai-criteria-subtitle"><?= $age ?> years</div>
+            </div>
+          </div>
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
+
+        <!-- Shared matrimonial timeline -->
+        <div class="ai-criteria-item">
+          <div class="ai-criteria-left">
+            <div class="ai-criteria-icon-box">
+              <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+              <div class="ai-criteria-title">Shared matrimonial timeline</div>
+              <div class="ai-criteria-subtitle"><?= htmlspecialchars((string)($target_saathi['marriage_timeline'] ?? 'Within 1 Year')) ?></div>
+            </div>
+          </div>
+          <div class="ai-criteria-check">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        </div>
       </div>
     </div>
     <?php endif; ?>
 
     <!-- About Me Section -->
-    <h3 class="profile-section-title">About Me</h3>
-    <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.5; margin-bottom: 20px;">
-      <?php 
-        $cand_bio = !empty($target_user['bio']) 
-            ? trim((string)$target_user['bio']) 
-            : "Looking for a life partner who values family, growth and happiness. Believer in simple living and meaningful bonds.";
-        $is_cand_long = (mb_strlen($cand_bio) > 130 || substr_count($cand_bio, "\n") >= 2);
-      ?>
-      <?php if ($is_cand_long): ?>
-        <div id="bioTextShortCand">
-          <?= nl2br(htmlspecialchars(mb_strimwidth($cand_bio, 0, 130, '...'))) ?>
-          <button type="button" onclick="toggleBioCand(true)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
-            Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
-          </button>
+    <div class="profile-about-card">
+      <div class="profile-about-header">
+        <div class="profile-about-title-wrap">
+          <div class="profile-about-icon">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div class="profile-about-title">About Me</div>
         </div>
-        <div id="bioTextFullCand" style="display: none;">
+      </div>
+
+      <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.55;">
+        <?php 
+          $cand_bio = !empty($target_user['bio']) 
+              ? trim((string)$target_user['bio']) 
+              : "Looking for a life partner who values family, growth and happiness. Believer in simple living and meaningful bonds.";
+          $is_cand_long = (mb_strlen($cand_bio) > 130 || substr_count($cand_bio, "\n") >= 2);
+        ?>
+        <?php if ($is_cand_long): ?>
+          <div id="bioTextShortCand">
+            <?= nl2br(htmlspecialchars(mb_strimwidth($cand_bio, 0, 130, '...'))) ?>
+            <button type="button" onclick="toggleBioCand(true)" style="background: none; border: none; padding: 0; color: #E02847; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
+              Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
+            </button>
+          </div>
+          <div id="bioTextFullCand" style="display: none;">
+            <?= nl2br(htmlspecialchars($cand_bio)) ?>
+            <button type="button" onclick="toggleBioCand(false)" style="background: none; border: none; padding: 0; color: #E02847; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
+              Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
+            </button>
+          </div>
+        <?php else: ?>
           <?= nl2br(htmlspecialchars($cand_bio)) ?>
-          <button type="button" onclick="toggleBioCand(false)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
-            Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
-          </button>
-        </div>
-      <?php else: ?>
-        <?= nl2br(htmlspecialchars($cand_bio)) ?>
-      <?php endif; ?>
+        <?php endif; ?>
+      </div>
     </div>
 
     <!-- Partner Preference Section -->
