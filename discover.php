@@ -282,9 +282,9 @@ require_once __DIR__ . '/includes/header.php';
             <!-- Left Candidate Main Metadata -->
             <div style="flex: 1; min-width: 0;">
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; color: inherit;">
-                <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px; max-width: 100%;">
-                  <h3 style="font-size: 1.05rem; font-weight: 800; color: #111111; margin: 0; line-height: 1.25; word-break: break-word; flex: 1;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></h3>
-                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.95rem; flex-shrink: 0; margin-top: 2px;" title="Verified Profile"></i>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; max-width: 100%;">
+                  <h3 style="font-size: 0.98rem; font-weight: 800; color: #111111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></h3>
+                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.95rem; flex-shrink: 0;" title="Verified Profile"></i>
                 </div>
                 <div style="font-size: 0.8rem; color: #666666; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($c_occ) ?></div>
                 <div style="font-size: 0.78rem; color: #888888; font-weight: 500; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -293,18 +293,16 @@ require_once __DIR__ . '/includes/header.php';
               </a>
             </div>
 
-            <!-- Right Photo Gallery Thumbnails Stack -->
-            <div style="display: flex; gap: 8px; flex-shrink: 0;">
-              <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none;">
+            <!-- Right Photo Gallery Box with Overlay Badge -->
+            <div style="position: relative; flex-shrink: 0; width: 85px; height: 110px;">
+              <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; display: block; width: 100%; height: 100%;">
                 <img src="<?= htmlspecialchars($c_avatar) ?>" style="width: 85px; height: 110px; border-radius: 16px; object-fit: cover; display: block;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
+                <?php if (count($photos_raw) > 1): ?>
+                  <div style="position: absolute; bottom: 6px; right: 6px; left: 6px; background: rgba(0, 0, 0, 0.68); color: #FFFFFF; font-size: 0.62rem; font-weight: 700; padding: 3px 4px; border-radius: 8px; text-align: center; backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; gap: 3px;">
+                    <i class="fa-solid fa-images" style="font-size: 0.6rem;"></i> +<?= count($photos_raw) - 1 ?>
+                  </div>
+                <?php endif; ?>
               </a>
-              <?php if (count($photos_raw) > 1): ?>
-                <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="width: 75px; height: 110px; border-radius: 16px; background: #FDF0F3; border: 1px solid #FCE4EC; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #E02847; text-decoration: none;">
-                  <i class="fa-solid fa-image" style="font-size: 1.1rem; margin-bottom: 2px;"></i>
-                  <span style="font-size: 0.82rem; font-weight: 900;">+<?= count($photos_raw) - 1 ?></span>
-                  <span style="font-size: 0.58rem; font-weight: 600; color: #888888;">More Photos</span>
-                </a>
-              <?php endif; ?>
             </div>
 
           </div>
