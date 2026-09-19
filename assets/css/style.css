@@ -3363,8 +3363,8 @@ body {
 
 .carousel-card-photo-wrap {
   width: 100%;
-  flex: 1;
-  min-height: 220px;
+  height: 310px;
+  max-height: 42vh;
   border-radius: 18px;
   overflow: hidden;
   position: relative;

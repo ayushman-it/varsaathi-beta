@@ -282,9 +282,9 @@ require_once __DIR__ . '/includes/header.php';
             <!-- Left Candidate Main Metadata -->
             <div style="flex: 1; min-width: 0;">
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; color: inherit;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; max-width: 100%;">
-                  <h3 style="font-size: 1.05rem; font-weight: 800; color: #111111; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></h3>
-                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.95rem; flex-shrink: 0;" title="Verified Profile"></i>
+                <div style="display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px; max-width: 100%;">
+                  <h3 style="font-size: 1.05rem; font-weight: 800; color: #111111; margin: 0; line-height: 1.25; word-break: break-word; flex: 1;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></h3>
+                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.95rem; flex-shrink: 0; margin-top: 2px;" title="Verified Profile"></i>
                 </div>
                 <div style="font-size: 0.8rem; color: #666666; font-weight: 500; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?= htmlspecialchars($c_occ) ?></div>
                 <div style="font-size: 0.78rem; color: #888888; font-weight: 500; display: flex; align-items: center; gap: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
