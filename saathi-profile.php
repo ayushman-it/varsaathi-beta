@@ -4,71 +4,87 @@ require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/config/flags.php';
 require_login();
 
-$target_id = (int)($_GET['id'] ?? 0);
-$current_user_id = get_current_user_id();
+try {
+    $target_id = (int)($_GET['id'] ?? 0);
+    $current_user_id = (int)get_current_user_id();
 
-if ($target_id <= 0) {
-    $target_id = $current_user_id; // Default to self if no ID provided
-}
+    if ($target_id <= 0) {
+        $target_id = $current_user_id; // Default to self if no ID provided
+    }
 
-$u_stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-$u_stmt->execute([':id' => $target_id]);
-$target_user = $u_stmt->fetch();
+    $u_stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+    $u_stmt->execute([':id' => $target_id]);
+    $target_user = $u_stmt->fetch();
 
-if (!$target_user) {
-    header("Location: index.php");
+    if (!$target_user) {
+        echo "<script>window.location.href='index.php';</script>";
+        exit;
+    }
+
+    $is_own_profile = ($target_id === $current_user_id);
+    $target_saathi = get_saathi_profile($target_id);
+    if (!is_array($target_saathi)) {
+        $target_saathi = [];
+    }
+
+    // Check existing match/interest status between current user and target user
+    $existing_match_row = false;
+    if ($current_user_id > 0 && $target_id > 0) {
+        $m_check = $pdo->prepare("
+            SELECT id, status, requested_by 
+            FROM matches 
+            WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t))
+        ");
+        $m_check->execute([':u' => $current_user_id, ':t' => $target_id]);
+        $existing_match_row = $m_check->fetch();
+    }
+
+    $has_sent_interest = ($existing_match_row && (int)($existing_match_row['requested_by'] ?? 0) === $current_user_id);
+
+    $age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
+    $avatar = get_valid_avatar_url($target_user['avatar_url'] ?? '');
+
+    $photos_decoded = json_decode((string)($target_user['photos'] ?? '[]'), true);
+    $photos_raw = is_array($photos_decoded) ? $photos_decoded : [$avatar];
+    if (!in_array($avatar, $photos_raw)) {
+        array_unshift($photos_raw, $avatar);
+    }
+
+    $privacy_decoded = json_decode((string)($target_saathi['privacy_json'] ?? '{}'), true);
+    $privacy = is_array($privacy_decoded) ? $privacy_decoded : [
+        'show_income' => true,
+        'show_religion' => true,
+        'show_community' => true,
+        'show_kundli' => true,
+        'show_family' => true
+    ];
+
+    $city_raw = trim((string)($target_user['location_city'] ?? ''));
+    if (empty($city_raw) || $city_raw === 'No Location' || strpos(strtolower($city_raw), 'san francisco') !== false) {
+        $location_display = 'India';
+    } else {
+        $location_display = ucwords(strtolower($city_raw)) . ', India';
+    }
+
+    $target_name = (string)($target_user['full_name'] ?? 'Candidate');
+    if (empty(trim($target_name))) { $target_name = 'Candidate'; }
+
+    $og_title = htmlspecialchars($target_name) . " (" . $age . " yrs, " . $location_display . ") - VARSAATHI Matrimony";
+    $og_description = "Matrimonial Profile & Biodata of " . htmlspecialchars($target_name) . ". Profession: " . htmlspecialchars((string)($target_user['occupation'] ?? 'Member')) . ". View profile on Varsaathi!";
+    $og_image = (strpos((string)$avatar, 'http') === 0) ? $avatar : (SITE_URL . ltrim((string)$avatar, '/'));
+    $og_url = SITE_URL . "saathi-profile.php?id=" . $target_id;
+
+    $css_version = time();
+    require_once __DIR__ . '/includes/header.php';
+} catch (Throwable $t_err) {
+    $og_title = "VARSAATHI Matrimony";
+    $css_version = time();
+    require_once __DIR__ . '/includes/header.php';
+    echo '<div style="padding:40px 20px; text-align:center;"><h3 style="color:#C31F3A;">Candidate Profile Not Found</h3><p style="color:#666; margin:10px 0 20px 0;">This profile may have been updated or is temporarily unavailable.</p><a href="index.php" style="background:#1C1C1E; color:#FFF; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:0.88rem;">Return to Cards Deck</a></div>';
+    require_once __DIR__ . '/includes/navbar.php';
+    require_once __DIR__ . '/includes/footer.php';
     exit;
 }
-
-$is_own_profile = ($target_id === $current_user_id);
-$target_saathi = get_saathi_profile($target_id) ?: [];
-
-// Check existing match/interest status between current user and target user
-$m_check = $pdo->prepare("
-    SELECT id, status, requested_by 
-    FROM matches 
-    WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t))
-");
-$m_check->execute([':u' => $current_user_id, ':t' => $target_id]);
-$existing_match_row = $m_check->fetch();
-
-$has_sent_interest = ($existing_match_row && (int)($existing_match_row['requested_by'] ?? 0) === $current_user_id);
-
-$age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
-$avatar = get_valid_avatar_url($target_user['avatar_url'] ?? '');
-
-$photos_decoded = json_decode((string)($target_user['photos'] ?? '[]'), true);
-$photos_raw = is_array($photos_decoded) ? $photos_decoded : [$avatar];
-if (!in_array($avatar, $photos_raw)) {
-    array_unshift($photos_raw, $avatar);
-}
-
-$privacy_decoded = json_decode((string)($target_saathi['privacy_json'] ?? '{}'), true);
-$privacy = is_array($privacy_decoded) ? $privacy_decoded : [
-    'show_income' => true,
-    'show_religion' => true,
-    'show_community' => true,
-    'show_kundli' => true,
-    'show_family' => true
-];
-
-$city_raw = trim($target_user['location_city'] ?? '');
-if (empty($city_raw) || $city_raw === 'No Location' || strpos(strtolower($city_raw), 'san francisco') !== false) {
-    $location_display = 'India';
-} else {
-    $location_display = ucwords(strtolower($city_raw)) . ', India';
-}
-
-$target_name = (string)($target_user['full_name'] ?? 'Candidate');
-if (empty(trim($target_name))) { $target_name = 'Candidate'; }
-
-$og_title = htmlspecialchars($target_name) . " (" . $age . " yrs, " . $location_display . ") - VARSAATHI Matrimony";
-$og_description = "Matrimonial Profile & Biodata of " . htmlspecialchars($target_name) . ". Profession: " . htmlspecialchars((string)($target_user['occupation'] ?? 'Member')) . ". View profile on Varsaathi!";
-$og_image = (strpos((string)$avatar, 'http') === 0) ? $avatar : (SITE_URL . ltrim((string)$avatar, '/'));
-$og_url = SITE_URL . "saathi-profile.php?id=" . $target_id;
-
-$css_version = time();
-require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="profile-screen-container">
