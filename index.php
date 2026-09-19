@@ -123,7 +123,7 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </header>
 
-<main class="app-body" style="padding: 4px 0 115px 0; background: transparent; display: flex; flex-direction: column; justify-content: flex-start; flex: 1; min-height: 0;">
+<main class="app-body" style="padding: 4px 0 75px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
 
     <!-- Become a Chourasiya Member Compact Action Banner with Close Button -->
     <div id="chourasiyaMemberBanner" style="padding: 0 16px; margin-bottom: 6px; display: block;">
