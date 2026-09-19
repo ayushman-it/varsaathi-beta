@@ -173,21 +173,21 @@ require_once __DIR__ . '/includes/header.php';
 
   <main style="padding: 0 16px;">
 
-    <!-- 2. AI Recommendations Section Box & Carousel -->
+    <!-- 2. AI Recommendations Section (Clean without background container) -->
     <?php if (!empty($ai_recommendations)): ?>
-      <div style="background: #FDF0F3; border-radius: 20px; padding: 14px 16px; margin-bottom: 20px; border: 1px solid #FDE8EE;">
+      <div style="margin-bottom: 24px;">
         
         <!-- Section Header -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-sparkles" style="font-size: 1.2rem; color: #E02847;"></i>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 0 4px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-sparkles" style="font-size: 1.1rem; color: #E02847;"></i>
             <div>
-              <div style="font-weight: 900; font-size: 1.02rem; color: #111111; font-family: system-ui, -apple-system, sans-serif;">AI Recommendations</div>
-              <div style="font-size: 0.76rem; color: #666666; font-weight: 500;">People you're most likely to connect with</div>
+              <div style="font-weight: 800; font-size: 0.96rem; color: #111111; font-family: system-ui, -apple-system, sans-serif;">AI Recommendations</div>
+              <div style="font-size: 0.74rem; color: #666666; font-weight: 400;">People you're most likely to connect with</div>
             </div>
           </div>
-          <span style="font-size: 0.74rem; font-weight: 700; color: #E02847; background: #FFFFFF; padding: 5px 12px; border-radius: 14px; border: 1px solid #FCE4EC; display: flex; align-items: center; gap: 4px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(224, 40, 71, 0.08);">
-            95%+ Match <i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i>
+          <span style="font-size: 0.72rem; font-weight: 700; color: #E02847; background: #FFFFFF; padding: 4px 10px; border-radius: 14px; border: 1px solid #FCE4EC; display: flex; align-items: center; gap: 4px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(224, 40, 71, 0.06);">
+            95%+ Match <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i>
           </span>
         </div>
 
@@ -203,46 +203,46 @@ require_once __DIR__ . '/includes/header.php';
             $r_city = !empty($rec_cand['location_city']) && strpos(strtolower($rec_cand['location_city']), 'san francisco') === false ? $rec_cand['location_city'] : 'India';
             $r_score = (int)($ai_rec['compatibilityScore'] ?? 97);
           ?>
-            <div style="width: 210px; min-width: 210px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #F0F0F5; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.04); display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+            <div style="width: 200px; min-width: 200px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #F0F0F5; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
               
               <!-- Card Top Photo Container -->
-              <div style="position: relative; width: 100%; height: 200px; overflow: hidden; background: #F8F8FA;">
+              <div style="position: relative; width: 100%; height: 190px; overflow: hidden; background: #F8F8FA;">
                 <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>">
                   <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
                 </a>
                 
                 <!-- Match Badge -->
-                <div style="position: absolute; top: 8px; right: 8px; background: rgba(255, 255, 255, 0.94); color: #E02847; font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-heart" style="font-size: 0.6rem; color: #E02847;"></i> <?= $r_score ?>% Match
+                <div style="position: absolute; top: 8px; right: 8px; background: rgba(255, 255, 255, 0.94); color: #E02847; font-size: 0.65rem; font-weight: 700; padding: 3px 8px; border-radius: 12px; backdrop-filter: blur(4px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 3px;">
+                  <i class="fa-solid fa-heart" style="font-size: 0.58rem; color: #E02847;"></i> <?= $r_score ?>% Match
                 </div>
 
                 <!-- Verified Badge -->
-                <div style="position: absolute; bottom: 8px; left: 8px; background: rgba(0, 0, 0, 0.65); color: #FFFFFF; font-size: 0.62rem; font-weight: 600; padding: 3px 8px; border-radius: 8px; backdrop-filter: blur(3px); display: flex; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-circle-check" style="color: #FFF; font-size: 0.6rem;"></i> Verified
+                <div style="position: absolute; bottom: 8px; left: 8px; background: rgba(0, 0, 0, 0.65); color: #FFFFFF; font-size: 0.6rem; font-weight: 500; padding: 3px 8px; border-radius: 8px; backdrop-filter: blur(3px); display: flex; align-items: center; gap: 3px;">
+                  <i class="fa-solid fa-circle-check" style="color: #FFF; font-size: 0.58rem;"></i> Verified
                 </div>
               </div>
 
               <!-- Card Body Content -->
               <div style="padding: 10px 12px 12px 12px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
-                <div style="margin-bottom: 8px;">
-                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 900; font-size: 0.9rem; color: #111111; text-decoration: none; display: block; margin-bottom: 3px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                <div style="margin-bottom: 6px;">
+                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.86rem; color: #222222; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                     <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                   </a>
-                  <div style="font-size: 0.74rem; color: #666666; font-weight: 500; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-briefcase" style="font-size: 0.7rem; color: #888888;"></i> <?= htmlspecialchars($r_occ) ?>
+                  <div style="font-size: 0.72rem; color: #666666; font-weight: 400; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-briefcase" style="font-size: 0.68rem; color: #888888;"></i> <?= htmlspecialchars($r_occ) ?>
                   </div>
-                  <div style="font-size: 0.74rem; color: #888888; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-location-dot" style="font-size: 0.7rem; color: #888888;"></i> <?= htmlspecialchars($r_city) ?>
+                  <div style="font-size: 0.72rem; color: #888888; font-weight: 400; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-location-dot" style="font-size: 0.68rem; color: #888888;"></i> <?= htmlspecialchars($r_city) ?>
                   </div>
                 </div>
 
                 <!-- Small Buttons Row -->
                 <div style="display: flex; gap: 6px; align-items: center;">
-                  <button type="button" onclick="toggleBookmark(this, <?= $rec_cand['id'] ?>)" style="width: 36px; height: 36px; border-radius: 12px; background: #FDF0F3; border: 1px solid #FCE4EC; color: #E02847; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Like Candidate">
-                    <i class="fa-regular fa-heart" style="font-size: 0.85rem;"></i>
+                  <button type="button" onclick="toggleBookmark(this, <?= $rec_cand['id'] ?>)" style="width: 34px; height: 34px; border-radius: 12px; background: #FDF0F3; border: 1px solid #FCE4EC; color: #E02847; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Like Candidate">
+                    <i class="fa-regular fa-heart" style="font-size: 0.82rem;"></i>
                   </button>
-                  <a href="chat.php?user_id=<?= $rec_cand['id'] ?>" style="flex: 1; height: 36px; border-radius: 12px; background: linear-gradient(135deg, #E02847 0%, #C31F3A 100%); color: #FFFFFF; font-weight: 700; font-size: 0.76rem; border: none; text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; box-shadow: 0 3px 10px rgba(224, 40, 71, 0.25);">
-                    <i class="fa-solid fa-comment-dots" style="font-size: 0.76rem;"></i> Start Chat
+                  <a href="chat.php?user_id=<?= $rec_cand['id'] ?>" style="flex: 1; height: 34px; border-radius: 12px; background: linear-gradient(135deg, #E02847 0%, #C31F3A 100%); color: #FFFFFF; font-weight: 700; font-size: 0.74rem; border: none; text-decoration: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; box-shadow: 0 3px 10px rgba(224, 40, 71, 0.25);">
+                    <i class="fa-solid fa-comment-dots" style="font-size: 0.74rem;"></i> Start Chat
                   </a>
                 </div>
               </div>
@@ -278,12 +278,12 @@ require_once __DIR__ . '/includes/header.php';
             <div style="flex: 1; min-width: 0;">
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; color: inherit;">
                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                  <h3 style="font-size: 1.15rem; font-weight: 900; color: #111111; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_name) ?></h3>
-                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.95rem;" title="Verified Profile"></i>
+                  <h3 style="font-size: 1.02rem; font-weight: 700; color: #222222; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_name) ?></h3>
+                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.9rem;" title="Verified Profile"></i>
                 </div>
-                <div style="font-size: 0.82rem; color: #666666; font-weight: 500; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_occ) ?></div>
-                <div style="font-size: 0.8rem; color: #888888; font-weight: 500; display: flex; align-items: center; gap: 4px;">
-                  <i class="fa-solid fa-location-dot" style="color: #E02847; font-size: 0.75rem;"></i> <?= htmlspecialchars($c_city) ?>
+                <div style="font-size: 0.8rem; color: #666666; font-weight: 400; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_occ) ?></div>
+                <div style="font-size: 0.78rem; color: #888888; font-weight: 400; display: flex; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-location-dot" style="color: #E02847; font-size: 0.72rem;"></i> <?= htmlspecialchars($c_city) ?>
                 </div>
               </a>
             </div>
