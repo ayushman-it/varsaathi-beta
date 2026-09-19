@@ -36,12 +36,15 @@ $has_sent_interest = ($existing_match_row && (int)($existing_match_row['requeste
 
 $age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
 $avatar = get_valid_avatar_url($target_user['avatar_url'] ?? '');
-$photos_raw = json_decode($target_user['photos'] ?? '[]', true) ?: [$avatar];
+
+$photos_decoded = json_decode((string)($target_user['photos'] ?? '[]'), true);
+$photos_raw = is_array($photos_decoded) ? $photos_decoded : [$avatar];
 if (!in_array($avatar, $photos_raw)) {
     array_unshift($photos_raw, $avatar);
 }
 
-$privacy = json_decode($target_saathi['privacy_json'] ?? '{}', true) ?: [
+$privacy_decoded = json_decode((string)($target_saathi['privacy_json'] ?? '{}'), true);
+$privacy = is_array($privacy_decoded) ? $privacy_decoded : [
     'show_income' => true,
     'show_religion' => true,
     'show_community' => true,
@@ -318,7 +321,7 @@ require_once __DIR__ . '/includes/header.php';
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Sector</div>
             <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars((string)($target_saathi['occupation_type'] ?? 'Private Job')) ?></div>
           </div>
-          <?php if (!empty($privacy['show_income']) && !empty($target_saathi['annual_income'])): ?>
+          <?php if (is_array($privacy) && !empty($privacy['show_income']) && !empty($target_saathi['annual_income'])): ?>
             <div style="grid-column: 1 / -1;">
               <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Annual Income</div>
               <div style="font-size: 0.86rem; color: #1C1C1E; font-weight: 700;"><?= htmlspecialchars((string)$target_saathi['annual_income']) ?></div>

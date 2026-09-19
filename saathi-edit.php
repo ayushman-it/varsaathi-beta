@@ -14,7 +14,8 @@ $current_user = $u_stmt->fetch();
 $saathi = get_saathi_profile($current_user_id);
 $completion_pct = calculate_saathi_completion($saathi, $current_user);
 
-$privacy = json_decode($saathi['privacy_json'] ?? '{}', true) ?: [
+$privacy_decoded = json_decode((string)($saathi['privacy_json'] ?? '{}'), true);
+$privacy = is_array($privacy_decoded) ? $privacy_decoded : [
     'show_income' => true,
     'show_religion' => true,
     'show_community' => true,
