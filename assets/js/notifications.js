@@ -145,26 +145,26 @@
     const banner = document.createElement('div');
     banner.id = 'mobileNotifBanner';
     banner.style.cssText = `
-      background: linear-gradient(135deg, #C31F3A 0%, #A8162E 100%);
-      color: #FFF;
-      padding: 10px 14px;
+      background: linear-gradient(135deg, #C31F3A 0%, #A81B32 100%);
+      color: #FFFFFF;
+      padding: 6px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 0.8rem;
-      font-weight: 700;
-      box-shadow: 0 4px 14px rgba(195, 31, 58, 0.3);
+      font-size: 0.74rem;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(195, 31, 58, 0.25);
       z-index: 9999;
       position: relative;
     `;
     banner.innerHTML = `
-      <div style="display:flex; align-items:center; gap:8px;">
-        <i class="fa-solid fa-bell" style="font-size: 1rem;"></i>
-        <span>Enable notifications for matches & messages</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-bell" style="font-size: 0.85rem;"></i>
+        <span>Enable Match & Chat Notifications</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <button id="enableNotifBtnBanner" style="background:#FFF; color:#C31F3A; border:none; padding:5px 12px; border-radius:14px; font-weight:800; font-size:0.75rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.15);">Enable</button>
-        <button onclick="document.getElementById('mobileNotifBanner')?.remove()" style="background:none; border:none; color:#FFF; font-size:1.1rem; cursor:pointer; opacity:0.8; line-height:1; padding:0 4px;">&times;</button>
+        <button id="enableNotifBtnBanner" style="background:#FFF; color:#C31F3A; border:none; padding:4px 10px; border-radius:12px; font-weight:700; font-size:0.72rem; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.12);">Enable</button>
+        <button onclick="document.getElementById('mobileNotifBanner')?.remove()" style="background:none; border:none; color:#FFF; font-size:1rem; cursor:pointer; opacity:0.8; line-height:1; padding:0 3px;">&times;</button>
       </div>
     `;
 

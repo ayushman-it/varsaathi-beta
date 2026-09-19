@@ -3350,9 +3350,9 @@ body {
   flex: 0 0 84%;
   scroll-snap-align: center;
   background: #FFFFFF;
-  border-radius: 28px;
-  padding: 10px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+  border-radius: 24px;
+  padding: 8px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
   border: 1px solid #F0F0F5;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
   position: relative;
@@ -3364,9 +3364,9 @@ body {
 .carousel-card-photo-wrap {
   width: 100%;
   flex: 1;
-  min-height: 380px;
-  max-height: 520px;
-  border-radius: 22px;
+  min-height: 240px;
+  max-height: 48vh;
+  border-radius: 18px;
   overflow: hidden;
   position: relative;
 }
@@ -3381,16 +3381,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 6px 4px 6px;
+  padding: 8px 6px 2px 6px;
 }
 
 .carousel-card-name {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   color: #1C1C1E;
   margin-bottom: 2px;
   letter-spacing: -0.2px;
+  line-height: 1.25;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .carousel-card-loc {
