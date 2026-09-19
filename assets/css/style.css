@@ -3364,8 +3364,7 @@ body {
 .carousel-card-photo-wrap {
   width: 100%;
   flex: 1;
-  min-height: 240px;
-  max-height: 48vh;
+  min-height: 0;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
@@ -3375,13 +3374,15 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .carousel-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 6px 2px 6px;
+  padding: 10px 8px 4px 8px;
+  flex-shrink: 0;
 }
 
 .carousel-card-name {
