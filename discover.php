@@ -145,9 +145,9 @@ require_once __DIR__ . '/includes/header.php';
 
   <!-- AI Recommendations Top Section (Only >= 95% AI Match) -->
   <?php if (!empty($ai_recommendations)): ?>
-    <div style="margin-bottom: 22px;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-        <div style="font-weight: 800; font-size: 1.05rem; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 0 2px;">
+        <div style="font-weight: 800; font-size: 1.05rem; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif; letter-spacing: -0.3px;">
           AI Recommendations
         </div>
         <span style="font-size: 0.72rem; font-weight: 700; color: #C31F3A; background: #FFF0F4; padding: 3px 10px; border-radius: 12px; border: 1px solid #FFE0E6;">
@@ -156,41 +156,42 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <!-- Horizontal Carousel Container for AI Recommendations -->
-      <div class="ai-carousel-track" style="display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; padding: 4px 2px 12px 2px;">
+      <div class="ai-carousel-track" style="display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; padding: 4px 2px 14px 2px;">
         <?php foreach ($ai_recommendations as $ai_rec): 
           $rec_cand = $ai_rec['candidate'] ?? null;
           if (!$rec_cand) continue;
-          $r_name = ucwords(strtolower(trim($rec_cand['full_name'])));
-          $r_age = calculate_age($rec_cand['birthdate'] ?? '2000-01-01');
-          $r_img = get_valid_avatar_url($rec_cand['avatar_url'] ?? '');
+          $r_name = ucwords(strtolower(trim((string)$rec_cand['full_name'])));
+          $r_age = calculate_age((string)($rec_cand['birthdate'] ?? '2000-01-01'));
+          $r_img = get_valid_avatar_url((string)($rec_cand['avatar_url'] ?? ''));
           $r_city = !empty($rec_cand['location_city']) && strpos(strtolower($rec_cand['location_city']), 'san francisco') === false ? $rec_cand['location_city'] : 'India';
           $r_score = (int)($ai_rec['compatibilityScore'] ?? 95);
           $r_reasons = $ai_rec['reasons'] ?? ['High Compatibility Match'];
+          $clean_reason = trim(preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F191}-\x{1F251}]/u', '', $r_reasons[0] ?? 'Top recommendation'));
         ?>
-          <div style="width: 255px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #E5E5EA; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.05); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+          <div style="width: 250px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #E5E5EA; overflow: hidden; box-shadow: 0 4px 18px rgba(0,0,0,0.05); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
             
-            <div style="position: relative; width: 100%; height: 165px; overflow: hidden; background: #F2F2F7;">
-              <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
-              <div style="position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, #E02847, #C31F3A); color: #FFF; font-size: 0.7rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; box-shadow: 0 3px 10px rgba(195,31,58,0.35); z-index: 2;">
+            <div style="position: relative; width: 100%; height: 180px; overflow: hidden; background: #F2F2F7;">
+              <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
+              <div style="position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%); color: #FFFFFF; font-size: 0.68rem; font-weight: 700; padding: 4px 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0,0,0,0.25); z-index: 2;">
                 <?= $r_score ?>% AI Match
               </div>
             </div>
 
             <div style="padding: 12px 14px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; box-sizing: border-box;">
               <div>
-                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.94rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; box-sizing: border-box;">
+                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.95rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 3px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; box-sizing: border-box;">
                   <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                 </a>
-                <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 500; margin-bottom: 8px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-                  <i class="fa-solid fa-location-dot" style="font-size: 0.68rem; margin-right: 3px;"></i> <?= htmlspecialchars($r_city) ?>
+                <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 500; margin-bottom: 8px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-location-dot" style="font-size: 0.7rem; color: #C31F3A;"></i> <?= htmlspecialchars($r_city) ?>
                 </div>
-                <div style="font-size: 0.73rem; color: #3A3A3C; font-weight: 500; line-height: 1.35; background: #F8F8FA; border: 1px solid #F0F0F5; padding: 8px 10px; border-radius: 10px; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 38px; box-sizing: border-box;">
-                  <?= htmlspecialchars($r_reasons[0] ?? 'Top recommendation') ?>
+                <div style="font-size: 0.73rem; color: #3A3A3C; font-weight: 500; line-height: 1.35; background: #F8F8FA; border-left: 3px solid #C31F3A; border-top: 1px solid #F0F0F5; border-right: 1px solid #F0F0F5; border-bottom: 1px solid #F0F0F5; padding: 7px 9px; border-radius: 8px; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 38px; box-sizing: border-box;">
+                  <?= htmlspecialchars($clean_reason) ?>
                 </div>
               </div>
 
-              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 14px; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.82rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                <i class="fa-solid fa-comments" style="font-size: 0.82rem;"></i> Start Chat
+              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; box-sizing: border-box; padding: 9px 12px; border-radius: 12px; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap;">
+                <i class="fa-solid fa-comment-dots" style="font-size: 0.82rem; color: #FF2D55;"></i> Start Chat
               </button>
             </div>
 
@@ -244,7 +245,7 @@ require_once __DIR__ . '/includes/header.php';
           <!-- Right Photo Carousel Horizontal Strip -->
           <div class="photo-carousel-wrap" style="display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; width: 145px; flex-shrink: 0; padding-bottom: 2px;">
             <?php foreach ($photos_raw as $p_img): ?>
-              <img src="<?= htmlspecialchars(get_valid_avatar_url($p_img)) ?>" style="width: 70px; height: 105px; border-radius: 16px; object-fit: cover; scroll-snap-align: start; flex-shrink: 0;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+              <img src="<?= htmlspecialchars(get_valid_avatar_url($p_img)) ?>" style="width: 70px; height: 105px; border-radius: 16px; object-fit: cover; scroll-snap-align: start; flex-shrink: 0;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
             <?php endforeach; ?>
           </div>
 

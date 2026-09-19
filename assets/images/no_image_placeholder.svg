@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F4F4F7" />
+      <stop offset="100%" stop-color="#E5E5EA" />
+    </linearGradient>
+    <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#C7C7CC" />
+      <stop offset="100%" stop-color="#8E8E93" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="500" fill="url(#bgGrad)" />
+  
+  <!-- Subtle background pattern ring -->
+  <circle cx="200" cy="210" r="110" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.6" />
+  
+  <!-- Silhouette Head & Shoulders -->
+  <g fill="url(#avatarGrad)" transform="translate(0, 10)">
+    <!-- Head -->
+    <circle cx="200" cy="180" r="55" />
+    <!-- Shoulders -->
+    <path d="M 100,340 C 100,265 140,250 200,250 C 260,250 300,265 300,340 C 300,355 285,365 200,365 C 115,365 100,355 100,340 Z" />
+  </g>
+  
+  <!-- Subtle luxury badge text at bottom -->
+  <rect x="120" y="400" width="160" height="28" rx="14" fill="#FFFFFF" opacity="0.85" />
+  <text x="200" y="419" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#636366" text-anchor="middle" letter-spacing="0.5">VERIFIED PROFILE</text>
+</svg>

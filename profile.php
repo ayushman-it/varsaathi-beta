@@ -434,7 +434,7 @@ try {
 
     <!-- Professional AI Recommendations Cards Section -->
     <h3 class="profile-section-title" style="margin-top:24px; font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between;">
-      <span>AI Smart Recommendations ✨</span>
+      <span>AI Smart Recommendations</span>
       <span style="font-size: 0.7rem; font-weight: 700; color: #C31F3A; background: #FFF0F4; padding: 2px 8px; border-radius: 10px;">Powered by Groq AI</span>
     </h3>
 
@@ -443,30 +443,31 @@ try {
         <?php foreach ($ai_recommendations as $rec): 
           $rec_cand = $rec['candidate'] ?? null;
           if (!$rec_cand) continue;
-          $r_name = ucwords(strtolower(trim($rec_cand['full_name'])));
-          $r_avatar = get_valid_avatar_url($rec_cand['avatar_url'] ?? '');
-          $r_score = (int)($rec['compatibilityScore'] ?? 92);
+          $r_name = ucwords(strtolower(trim((string)$rec_cand['full_name'])));
+          $r_avatar = get_valid_avatar_url((string)($rec_cand['avatar_url'] ?? ''));
+          $r_score = (int)($rec['compatibilityScore'] ?? 95);
           $r_reasons = $rec['reasons'] ?? ['High compatibility in education & preferences'];
+          $clean_rec_reason = trim(preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F191}-\x{1F251}]/u', '', $r_reasons[0] ?? 'Top recommendation based on values'));
         ?>
           <div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.04); display: flex; gap: 12px; align-items: center;">
-            <img src="<?= htmlspecialchars($r_avatar) ?>" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover; flex-shrink: 0;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+            <img src="<?= htmlspecialchars($r_avatar) ?>" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover; flex-shrink: 0;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
             
             <div style="flex: 1; min-width: 0;">
               <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px;">
                 <h4 style="font-size: 0.92rem; font-weight: 800; color: #1C1C1E; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin: 0;"><?= htmlspecialchars($r_name) ?></h4>
-                <span style="background: linear-gradient(135deg, #C31F3A, #FF2D55); color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; flex-shrink: 0;"><?= $r_score ?>% AI Match</span>
+                <span style="background: linear-gradient(135deg, #1C1C1E, #2C2C2E); color: #FFF; font-size: 0.68rem; font-weight: 700; padding: 2px 8px; border-radius: 10px; flex-shrink: 0;"><?= $r_score ?>% Match</span>
               </div>
               
-              <div style="font-size: 0.74rem; color: #636366; font-weight: 500; line-height: 1.35; margin-bottom: 6px;">
-                💡 <?= htmlspecialchars($r_reasons[0] ?? 'Top recommendation based on values') ?>
+              <div style="font-size: 0.74rem; color: #636366; font-weight: 500; line-height: 1.35; margin-bottom: 6px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                <i class="fa-solid fa-circle-check" style="color: #C31F3A; font-size: 0.7rem; margin-right: 3px;"></i> <?= htmlspecialchars($clean_rec_reason) ?>
               </div>
 
               <div style="display: flex; gap: 6px;">
-                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="padding: 4px 10px; border-radius: 12px; background: #F2F2F7; color: #1C1C1E; font-weight: 700; font-size: 0.72rem; text-decoration: none;">
+                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="padding: 5px 12px; border-radius: 10px; background: #F2F2F7; color: #1C1C1E; font-weight: 700; font-size: 0.72rem; text-decoration: none;">
                   View Profile
                 </a>
-                <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="padding: 4px 10px; border-radius: 12px; background: #1C1C1E; color: #FFF; font-weight: 700; font-size: 0.72rem; border: none; cursor: pointer;">
-                  Chat Now 💬
+                <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="padding: 5px 12px; border-radius: 10px; background: #1C1C1E; color: #FFF; font-weight: 700; font-size: 0.72rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                  <i class="fa-solid fa-comment-dots" style="color: #FF2D55; font-size: 0.75rem;"></i> Start Chat
                 </button>
               </div>
             </div>

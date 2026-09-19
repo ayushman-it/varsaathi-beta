@@ -249,13 +249,13 @@ function get_user_online_status($last_seen) {
     }
 }
 
-// Valid Avatar Helper: Replaces dummy unsplash links or empty avatars with standard no_image_placeholder
+// Valid Avatar Helper: Replaces dummy unsplash links or empty avatars with standard vector SVG placeholder
 function get_valid_avatar_url($avatar_url) {
     if (empty($avatar_url) || 
         strpos($avatar_url, 'unsplash.com') !== false || 
         strpos($avatar_url, 'default_avatar') !== false || 
-        strpos($avatar_url, 'placeholder') !== false) {
-        return 'assets/images/no_image_placeholder.png';
+        strpos($avatar_url, 'placeholder.png') !== false) {
+        return 'assets/images/no_image_placeholder.svg';
     }
     return $avatar_url;
 }
