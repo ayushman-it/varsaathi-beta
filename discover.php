@@ -168,29 +168,26 @@ require_once __DIR__ . '/includes/header.php';
           $r_reasons = $ai_rec['reasons'] ?? ['High Compatibility Match'];
           $clean_reason = trim(preg_replace('/[\x{1F600}-\x{1F64F}\x{1F300}-\x{1F5FF}\x{1F680}-\x{1F6FF}\x{1F1E0}-\x{1F1FF}\x{2600}-\x{26FF}\x{2700}-\x{27BF}\x{1F900}-\x{1F9FF}\x{1F191}-\x{1F251}]/u', '', $r_reasons[0] ?? 'Top recommendation'));
         ?>
-          <div style="width: 185px; flex-shrink: 0; background: #FFFFFF; border-radius: 16px; border: 1px solid #EBEBEF; overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,0.03); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+          <div style="width: 165px; flex-shrink: 0; background: #FFFFFF; border-radius: 18px; border: 1px solid #EBEBEF; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.04); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
             
-            <div style="position: relative; width: 100%; height: 135px; overflow: hidden; background: #F2F2F7;">
-              <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
-              <div style="position: absolute; top: 8px; right: 8px; background: rgba(255, 255, 255, 0.95); color: #C31F3A; font-size: 0.64rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; border: 1px solid #FFE0E6; box-shadow: 0 2px 6px rgba(0,0,0,0.06); z-index: 2;">
+            <div style="position: relative; width: 100%; height: 160px; overflow: hidden; background: #F2F2F7;">
+              <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
+              <div style="position: absolute; top: 8px; right: 8px; background: rgba(255, 255, 255, 0.95); color: #C31F3A; font-size: 0.62rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; border: 1px solid #FFE0E6; box-shadow: 0 2px 6px rgba(0,0,0,0.08); z-index: 2; backdrop-filter: blur(4px);">
                 <?= $r_score ?>% Match
               </div>
             </div>
 
-            <div style="padding: 10px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; box-sizing: border-box;">
-              <div>
+            <div style="padding: 10px 10px 12px 10px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; box-sizing: border-box;">
+              <div style="margin-bottom: 8px;">
                 <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.86rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; width: 100%; box-sizing: border-box;">
                   <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                 </a>
-                <div style="font-size: 0.7rem; color: #8E8E93; font-weight: 500; margin-bottom: 6px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
+                <div style="font-size: 0.7rem; color: #8E8E93; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
                   <i class="fa-solid fa-location-dot" style="font-size: 0.65rem; color: #C31F3A;"></i> <?= htmlspecialchars($r_city) ?>
-                </div>
-                <div style="font-size: 0.68rem; color: #48484A; font-weight: 500; line-height: 1.25; background: #F8F8FA; border: 1px solid #F0F0F5; padding: 5px 7px; border-radius: 8px; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 30px; box-sizing: border-box;">
-                  <?= htmlspecialchars($clean_reason) ?>
                 </div>
               </div>
 
-              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; box-sizing: border-box; padding: 7px; border-radius: 14px; background: #FFF0F4; color: #C31F3A; border: 1px solid #FFE0E6; font-weight: 700; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap;">
+              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; box-sizing: border-box; padding: 7px 10px; border-radius: 12px; background: #FFF0F4; color: #C31F3A; border: 1px solid #FFE0E6; font-weight: 700; font-size: 0.74rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap;">
                 <i class="fa-solid fa-comment-dots" style="font-size: 0.75rem; color: #C31F3A;"></i> Start Chat
               </button>
             </div>
