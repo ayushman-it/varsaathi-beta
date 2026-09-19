@@ -230,6 +230,20 @@ switch ($action) {
         ]);
         break;
 
+    case 'cancel_interest':
+        $target_id = (int)($input['target_id'] ?? 0);
+        if ($target_id > 0 && $target_id !== $user_id) {
+            $del_m = $pdo->prepare("DELETE FROM matches WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t)) AND status = 'pending' AND requested_by = :u");
+            $del_m->execute([':u' => $user_id, ':t' => $target_id]);
+
+            $del_s = $pdo->prepare("DELETE FROM swipes WHERE swiper_id = :s AND target_id = :t");
+            $del_s->execute([':s' => $user_id, ':t' => $target_id]);
+
+            json_response(['success' => true, 'message' => 'Interest request withdrawn']);
+        }
+        json_response(['error' => 'Invalid target ID'], 400);
+        break;
+
     case 'pass':
     case 'dislike':
         $target_id = (int)($input['target_id'] ?? 0);

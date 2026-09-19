@@ -23,6 +23,17 @@ if (!$target_user) {
 $is_own_profile = ($target_id === $current_user_id);
 $target_saathi = get_saathi_profile($target_id);
 
+// Check existing match/interest status between current user and target user
+$m_check = $pdo->prepare("
+    SELECT id, status, requested_by 
+    FROM matches 
+    WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t))
+");
+$m_check->execute([':u' => $current_user_id, ':t' => $target_id]);
+$existing_match_row = $m_check->fetch();
+
+$has_sent_interest = ($existing_match_row && (int)($existing_match_row['requested_by'] ?? 0) === $current_user_id);
+
 $age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
 $avatar = get_valid_avatar_url($target_user['avatar_url'] ?? '');
 $photos_raw = json_decode($target_user['photos'] ?? '[]', true) ?: [$avatar];
@@ -377,15 +388,24 @@ require_once __DIR__ . '/includes/header.php';
         <i class="fa-solid fa-file-pdf"></i> Download Biodata
       </a>
     <?php else: ?>
-      <button onclick="sendSaathiInterest(<?= $target_id ?>)" class="btn-pink-action">
-        <i class="fa-solid fa-heart"></i> Send Matrimonial Interest
-      </button>
-      <a href="biodata.php?id=<?= $target_id ?>" target="_blank" class="btn-pink-outline" style="padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 21px; font-weight: 700; white-space: nowrap;">
+      <div id="interestBtnArea" style="width: 100%; margin-bottom: 8px;">
+        <?php if ($has_sent_interest): ?>
+          <button onclick="cancelSaathiInterest(<?= $target_id ?>, '<?= htmlspecialchars(addslashes($target_user['full_name'] ?? 'Candidate')) ?>', '<?= htmlspecialchars(addslashes($avatar)) ?>')" class="btn-pink-action" style="background: #F2F2F7; color: #C31F3A; border: 1px solid #FFE0E6; box-shadow: none;">
+            <i class="fa-solid fa-xmark"></i> Cancel Interest Request
+          </button>
+        <?php else: ?>
+          <button onclick="sendSaathiInterest(<?= $target_id ?>, '<?= htmlspecialchars(addslashes($target_user['full_name'] ?? 'Candidate')) ?>', '<?= htmlspecialchars(addslashes($avatar)) ?>')" class="btn-pink-action">
+            <i class="fa-solid fa-heart"></i> Send Matrimonial Interest
+          </button>
+        <?php endif; ?>
+      </div>
+
+      <a href="biodata.php?id=<?= $target_id ?>" target="_blank" class="btn-pink-outline" style="padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 21px; font-weight: 700; white-space: nowrap; margin-bottom: 8px;">
         <i class="fa-solid fa-file-pdf"></i> Download Biodata
       </a>
-      <a href="chat.php?target_id=<?= $target_id ?>" class="btn-pink-outline" style="padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 21px; font-weight: 700; border-color:#D1D5DB; color:#374151 !important; white-space: nowrap;">
+      <button onclick="handleCandidateCardChat(<?= $target_id ?>, '<?= htmlspecialchars(addslashes($target_user['full_name'] ?? 'Candidate')) ?>')" class="btn-pink-outline" style="padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 21px; font-weight: 700; border-color:#D1D5DB; color:#374151 !important; white-space: nowrap; width: 100%; background: none; cursor: pointer;">
         <i class="fa-solid fa-comments"></i> Start Free Chat
-      </a>
+      </button>
     <?php endif; ?>
 
   </div>
@@ -393,7 +413,7 @@ require_once __DIR__ . '/includes/header.php';
 </div>
 
 <script>
-function sendSaathiInterest(targetId) {
+function sendSaathiInterest(targetId, targetName = 'Candidate', targetAvatar = '') {
   fetch('api/saathi_action.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -402,14 +422,46 @@ function sendSaathiInterest(targetId) {
   .then(res => res.json())
   .then(data => {
     if (data.success) {
-      alert(data.message || 'Interest sent successfully!');
-      if (data.match_id) {
-        location.href = `chat.php?match_id=${data.match_id}`;
+      if (typeof window.showInterestMatchModal === 'function') {
+        window.showInterestMatchModal(targetName, targetAvatar, data.is_match, data.match_id || 0, targetId);
+      }
+      const area = document.getElementById('interestBtnArea');
+      if (area) {
+        area.innerHTML = `
+          <button onclick="cancelSaathiInterest(${targetId}, '${targetName.replace(/'/g, "\\'")}', '${targetAvatar}')" class="btn-pink-action" style="background: #F2F2F7; color: #C31F3A; border: 1px solid #FFE0E6; box-shadow: none;">
+            <i class="fa-solid fa-xmark"></i> Cancel Interest Request
+          </button>
+        `;
       }
     } else {
       alert(data.error || 'Unable to send interest');
     }
-  });
+  })
+  .catch(err => alert('Network error. Failed to send interest.'));
+}
+
+function cancelSaathiInterest(targetId, targetName = 'Candidate', targetAvatar = '') {
+  fetch('api/saathi_action.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'cancel_interest', target_id: targetId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      const area = document.getElementById('interestBtnArea');
+      if (area) {
+        area.innerHTML = `
+          <button onclick="sendSaathiInterest(${targetId}, '${targetName.replace(/'/g, "\\'")}', '${targetAvatar}')" class="btn-pink-action">
+            <i class="fa-solid fa-heart"></i> Send Matrimonial Interest
+          </button>
+        `;
+      }
+    } else {
+      alert(data.error || 'Unable to cancel interest');
+    }
+  })
+  .catch(err => alert('Network error. Failed to cancel interest.'));
 }
 </script>
 
