@@ -230,7 +230,7 @@ require_once __DIR__ . '/includes/header.php';
               <!-- Card Body Content -->
               <div style="padding: 10px 12px 12px 12px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
                 <div style="margin-bottom: 6px;">
-                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.86rem; color: #222222; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 700; font-size: 0.86rem; color: #222222; text-decoration: none; display: block; margin-bottom: 2px; line-height: 1.25; word-break: break-word;">
                     <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                   </a>
                   <div style="font-size: 0.72rem; color: #666666; font-weight: 400; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 4px;">
@@ -282,11 +282,11 @@ require_once __DIR__ . '/includes/header.php';
             <!-- Left Candidate Main Metadata -->
             <div style="flex: 1; min-width: 0;">
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; color: inherit;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
-                  <h3 style="font-size: 1.02rem; font-weight: 700; color: #222222; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_name) ?></h3>
-                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.9rem;" title="Verified Profile"></i>
+                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px; flex-wrap: wrap;">
+                  <h3 style="font-size: 1.05rem; font-weight: 700; color: #111111; margin: 0; line-height: 1.25; word-break: break-word;"><?= htmlspecialchars($c_name) ?>, <?= $c_age ?></h3>
+                  <i class="fa-solid fa-circle-check" style="color: #3B82F6; font-size: 0.9rem; flex-shrink: 0;" title="Verified Profile"></i>
                 </div>
-                <div style="font-size: 0.8rem; color: #666666; font-weight: 400; margin-bottom: 4px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_occ) ?></div>
+                <div style="font-size: 0.8rem; color: #666666; font-weight: 400; margin-bottom: 4px;"><?= htmlspecialchars($c_occ) ?></div>
                 <div style="font-size: 0.78rem; color: #888888; font-weight: 400; display: flex; align-items: center; gap: 4px;">
                   <i class="fa-solid fa-location-dot" style="color: #E02847; font-size: 0.72rem;"></i> <?= htmlspecialchars($c_city) ?>
                 </div>

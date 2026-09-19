@@ -3340,6 +3340,7 @@ body {
   scroll-behavior: smooth;
   flex: 1;
   min-height: 0;
+  max-height: clamp(380px, 58vh, 500px);
 }
 
 .card-carousel-stage::-webkit-scrollbar {
@@ -3348,6 +3349,7 @@ body {
 
 .carousel-card-item {
   flex: 0 0 84%;
+  max-width: 380px;
   scroll-snap-align: center;
   background: #FFFFFF;
   border-radius: 24px;
