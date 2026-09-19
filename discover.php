@@ -131,23 +131,28 @@ require_once __DIR__ . '/includes/header.php';
   }
 </style>
 
-<<!-- Discover Page Header (Ref: media_1789806610870.png) -->
-<header style="padding: 16px 20px 8px 20px; background: #FAF9FC; display: flex; align-items: flex-start; justify-content: space-between; max-width: 820px; margin: 0 auto;">
-  <div>
-    <h1 style="font-size: 2.2rem; font-weight: 900; color: #111111; margin: 0; line-height: 1.1; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">Discover</h1>
-    <div style="font-size: 0.9rem; color: #777777; font-weight: 500; margin-top: 4px;">Find meaningful connections</div>
+<!-- Original Standard App Header -->
+<header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E5E5EA;">
+  <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
+    Discover
   </div>
 
-  <div style="display: flex; align-items: center; gap: 10px;">
-    <!-- Filters Button -->
-    <button type="button" id="filterBtn" title="Filter Matches" style="width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #111111; cursor: pointer;">
-      <i class="fa-solid fa-sliders" style="font-size: 0.95rem;"></i>
-      <span style="font-size: 0.58rem; font-weight: 700; color: #555555; margin-top: 1px;">Filters</span>
+  <div class="header-actions" style="display: flex; align-items: center; justify-content: flex-end; gap: 8px;">
+    <button class="icon-btn" id="filterBtn" title="Filter Matches" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E; display: flex; align-items: center; justify-content: center;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="4" y1="21" x2="4" y2="14"></line>
+        <line x1="4" y1="10" x2="4" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12" y2="3"></line>
+        <line x1="20" y1="21" x2="20" y2="16"></line>
+        <line x1="20" y1="12" x2="20" y2="3"></line>
+        <line x1="1" y1="14" x2="7" y2="14"></line>
+        <line x1="9" y1="8" x2="15" y2="8"></line>
+        <line x1="17" y1="16" x2="23" y2="16"></line>
+      </svg>
     </button>
-    <!-- Sort Button -->
-    <button type="button" id="openSidebarBtn" title="Sort Options" style="width: 44px; height: 44px; border-radius: 50%; background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #111111; cursor: pointer;">
+    <button class="icon-btn" id="openSidebarBtn" title="Menu" style="width: 36px; height: 36px; background: #F8F8FA; border: 1px solid #E5E5EA; color: #1C1C1E;">
       <i class="fa-solid fa-bars" style="font-size: 0.95rem;"></i>
-      <span style="font-size: 0.58rem; font-weight: 700; color: #555555; margin-top: 1px;">Sort</span>
     </button>
   </div>
 </header>
