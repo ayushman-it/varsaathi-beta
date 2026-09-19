@@ -188,7 +188,7 @@ require_once __DIR__ . '/includes/header.php';
             <i class="fa-solid fa-sparkles" style="font-size: 1.1rem; color: #E02847;"></i>
             <div>
               <div style="font-weight: 800; font-size: 0.96rem; color: #111111; font-family: system-ui, -apple-system, sans-serif;">AI Recommendations</div>
-              <div style="font-size: 0.74rem; color: #666666; font-weight: 400;">People you're most likely to connect with</div>
+              <div style="font-size: 0.65rem; color: #777777; font-weight: 400;">People you're most likely to connect with</div>
             </div>
           </div>
           <span style="font-size: 0.72rem; font-weight: 700; color: #E02847; background: #FFFFFF; padding: 4px 10px; border-radius: 14px; border: 1px solid #FCE4EC; display: flex; align-items: center; gap: 4px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(224, 40, 71, 0.06);">
