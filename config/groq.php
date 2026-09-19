@@ -34,10 +34,12 @@ function rank_candidates_with_groq($user_profile, $user_saathi, $candidates) {
 function call_groq_api($api_key, $user_profile, $user_saathi, $candidates) {
     try {
         $candidate_summaries = [];
+        $cand_map = [];
         foreach ($candidates as $c) {
+            $cand_map[(int)$c['id']] = $c;
             $candidate_summaries[] = [
                 'candidateId' => (int)$c['id'],
-                'age' => calculate_age($c['birthdate']),
+                'age' => calculate_age($c['birthdate'] ?? '2000-01-01'),
                 'location' => $c['location_city'] ?? '',
                 'state' => $c['state'] ?? '',
                 'occupation' => $c['occupation'] ?? '',
@@ -51,7 +53,7 @@ function call_groq_api($api_key, $user_profile, $user_saathi, $candidates) {
         }
 
         $user_summary = [
-            'age' => calculate_age($user_profile['birthdate']),
+            'age' => calculate_age($user_profile['birthdate'] ?? '2000-01-01'),
             'location' => $user_profile['location_city'] ?? '',
             'occupation' => $user_profile['occupation'] ?? '',
             'education' => $user_saathi['highest_qualification'] ?? '',
@@ -99,7 +101,13 @@ function call_groq_api($api_key, $user_profile, $user_saathi, $candidates) {
             $content = $data['choices'][0]['message']['content'] ?? '';
             $parsed = json_decode($content, true);
             if (!empty($parsed['recommendations']) && is_array($parsed['recommendations'])) {
-                return $parsed['recommendations'];
+                foreach ($parsed['recommendations'] as &$r_item) {
+                    $cid = (int)($r_item['candidateId'] ?? 0);
+                    $r_item['candidate'] = $cand_map[$cid] ?? null;
+                }
+                return array_filter($parsed['recommendations'], function($item) {
+                    return !empty($item['candidate']);
+                });
             }
         }
     } catch (Exception $e) {
@@ -114,7 +122,7 @@ function call_groq_api($api_key, $user_profile, $user_saathi, $candidates) {
  */
 function rank_candidates_fallback($user_profile, $user_saathi, $candidates) {
     $results = [];
-    $user_age = calculate_age($user_profile['birthdate']);
+    $user_age = calculate_age($user_profile['birthdate'] ?? '2000-01-01');
     $user_interests = json_decode($user_profile['interests'] ?? '[]', true) ?: [];
     $user_timeline = $user_saathi['marriage_timeline'] ?? 'Within 1 Year';
     $user_city = strtolower(trim($user_profile['location_city'] ?? ''));
@@ -122,7 +130,7 @@ function rank_candidates_fallback($user_profile, $user_saathi, $candidates) {
     foreach ($candidates as $idx => $c) {
         $score = 75; // Baseline score
         $reasons = [];
-        $cand_age = calculate_age($c['birthdate']);
+        $cand_age = calculate_age($c['birthdate'] ?? '2000-01-01');
 
         // 1. Age compatibility (+8 pts)
         $age_diff = abs($user_age - $cand_age);
@@ -168,6 +176,7 @@ function rank_candidates_fallback($user_profile, $user_saathi, $candidates) {
 
         $results[] = [
             'candidateId' => (int)$c['id'],
+            'candidate' => $c,
             'compatibilityScore' => $final_score,
             'confidence' => ($final_score >= 88) ? 'high' : 'medium',
             'reasons' => array_slice($reasons, 0, 3),

@@ -314,10 +314,14 @@ function get_current_user_id() {
 }
 
 function calculate_age($birthdate) {
-    if (empty($birthdate)) return 22;
-    $dob = new DateTime($birthdate);
-    $now = new DateTime();
-    return $dob->diff($now)->y;
+    if (empty($birthdate) || $birthdate === '0000-00-00') return 22;
+    try {
+        $dob = new DateTime($birthdate);
+        $now = new DateTime();
+        return $dob->diff($now)->y;
+    } catch (Exception $e) {
+        return 22;
+    }
 }
 
 function json_response($data, $status = 200) {
