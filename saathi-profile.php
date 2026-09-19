@@ -80,7 +80,7 @@ try {
     $og_title = "VARSAATHI Matrimony";
     $css_version = time();
     require_once __DIR__ . '/includes/header.php';
-    echo '<div style="padding:40px 20px; text-align:center;"><h3 style="color:#C31F3A;">Candidate Profile Not Found</h3><p style="color:#666; margin:10px 0 20px 0;">This profile may have been updated or is temporarily unavailable.</p><a href="index.php" style="background:#1C1C1E; color:#FFF; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:0.88rem;">Return to Cards Deck</a></div>';
+    echo '<div style="padding:40px 20px; text-align:center;"><h3 style="color:#C31F3A;">Candidate Profile Error</h3><p style="color:#666; margin:10px 0 20px 0;">' . htmlspecialchars($t_err->getMessage()) . ' (Line ' . $t_err->getLine() . ')</p><a href="index.php" style="background:#1C1C1E; color:#FFF; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:0.88rem;">Return to Cards Deck</a></div>';
     require_once __DIR__ . '/includes/navbar.php';
     require_once __DIR__ . '/includes/footer.php';
     exit;
