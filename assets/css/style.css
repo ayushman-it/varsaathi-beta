@@ -3334,13 +3334,12 @@ body {
   align-items: stretch;
   gap: 16px;
   overflow-x: auto;
-  padding: 6px 24px 10px 24px;
+  padding: 4px 24px 8px 24px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   flex: 1;
   min-height: 0;
-  max-height: clamp(380px, 58vh, 500px);
 }
 
 .card-carousel-stage::-webkit-scrollbar {
@@ -3349,7 +3348,6 @@ body {
 
 .carousel-card-item {
   flex: 0 0 84%;
-  max-width: 380px;
   scroll-snap-align: center;
   background: #FFFFFF;
   border-radius: 24px;
@@ -3366,7 +3364,8 @@ body {
 .carousel-card-photo-wrap {
   width: 100%;
   flex: 1;
-  min-height: 0;
+  min-height: 220px;
+  max-height: 45vh;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
