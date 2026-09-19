@@ -1,5 +1,5 @@
 <?php
-// discover.php - Discover Feed (Wide Container & Standard Header)
+// discover.php - Discover Feed (Wide Container & Uncompressed Spacing)
 require_once __DIR__ . '/config/db.php';
 require_login();
 
@@ -95,6 +95,13 @@ $ai_recommendations = array_values(array_filter($ai_recommendations, function($i
     return $score >= 95 && !empty($item['candidate']);
 }));
 
+// Helper to sanitize corrupted string names
+function sanitize_candidate_name($name) {
+    $clean = preg_replace('/[^\p{L}\p{N}\s\.\-\']/u', '', (string)$name);
+    $clean = trim($clean);
+    return !empty($clean) ? ucwords(strtolower($clean)) : 'Saathi Member';
+}
+
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -150,7 +157,7 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </header>
 
-<!-- Wide Container (Full Vertical Scrolling Allowed) -->
+<!-- Wide Container (Full Width & Uncompressed Spacing) -->
 <div class="discover-screen-container" style="width: 100%; max-width: 820px; margin: 0 auto; min-height: auto; padding-bottom: 100px; background: #FAF9FC;">
 
   <!-- 1. Category Filter Tabs Bar -->
@@ -169,76 +176,76 @@ require_once __DIR__ . '/includes/header.php';
     </button>
   </div>
 
-  <main style="padding: 0 16px;">
+  <main style="padding: 0 12px;">
 
-    <!-- 2. AI Recommendations Section Box & Carousel -->
+    <!-- 2. AI Recommendations Section Box & Carousel (Spacious & Uncompressed) -->
     <?php if (!empty($ai_recommendations)): ?>
-      <div style="background: #FFF5F7; border-radius: 20px; padding: 14px 16px; margin-bottom: 20px; border: 1px solid #FFE0E6;">
+      <div style="background: #FFF5F7; border-radius: 20px; padding: 12px 14px; margin-bottom: 20px; border: 1px solid #FFE0E6;">
         
         <!-- Section Header -->
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="font-size: 1.2rem; color: #D62952; line-height: 1;">✨</div>
+            <div style="font-size: 1.15rem; color: #D62952; line-height: 1;">✨</div>
             <div>
-              <div style="font-weight: 800; font-size: 0.96rem; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">AI Recommendations</div>
-              <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 400;">People you're most likely to connect with</div>
+              <div style="font-weight: 800; font-size: 0.94rem; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">AI Recommendations</div>
+              <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 400;">People you're most likely to connect with</div>
             </div>
           </div>
-          <span style="font-size: 0.72rem; font-weight: 700; color: #D62952; background: #FFFFFF; padding: 3px 9px; border-radius: 12px; border: 1px solid #FFE0E6; display: flex; align-items: center; gap: 4px;">
+          <span style="font-size: 0.7rem; font-weight: 700; color: #D62952; background: #FFFFFF; padding: 3px 8px; border-radius: 12px; border: 1px solid #FFE0E6; display: flex; align-items: center; gap: 3px; flex-shrink: 0;">
             95%+ Match <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i>
           </span>
         </div>
 
-        <!-- Carousel Cards Track -->
-        <div class="ai-carousel-track" style="display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; padding: 2px 2px 6px 2px;">
+        <!-- Carousel Cards Track (Clean 160px Portrait Cards) -->
+        <div class="ai-carousel-track" style="display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; padding: 2px 0 4px 0;">
           <?php foreach ($ai_recommendations as $ai_rec): 
             $rec_cand = $ai_rec['candidate'] ?? null;
             if (!$rec_cand) continue;
-            $r_name = ucwords(strtolower(trim((string)$rec_cand['full_name'])));
+            $r_name = sanitize_candidate_name($rec_cand['full_name'] ?? '');
             $r_age = calculate_age((string)($rec_cand['birthdate'] ?? '2000-01-01'));
             $r_img = get_valid_avatar_url((string)($rec_cand['avatar_url'] ?? ''));
             $r_occ = !empty($rec_cand['occupation']) ? $rec_cand['occupation'] : ($rec_cand['highest_qualification'] ?? 'Software Engineer');
             $r_city = !empty($rec_cand['location_city']) && strpos(strtolower($rec_cand['location_city']), 'san francisco') === false ? $rec_cand['location_city'] : 'India';
             $r_score = (int)($ai_rec['compatibilityScore'] ?? 97);
           ?>
-            <div style="width: 190px; flex-shrink: 0; background: #FFFFFF; border-radius: 18px; border: 1px solid #F0F0F5; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.03); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
+            <div style="width: 160px; min-width: 160px; flex-shrink: 0; background: #FFFFFF; border-radius: 18px; border: 1px solid #F0F0F5; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.03); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box;">
               
               <!-- Card Top Photo Container -->
-              <div style="position: relative; width: 100%; height: 175px; overflow: hidden; background: #F2F2F7;">
+              <div style="position: relative; width: 100%; height: 155px; overflow: hidden; background: #F2F2F7;">
                 <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover; object-position: center top;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
                 
                 <!-- Match Badge -->
-                <div style="position: absolute; top: 8px; right: 8px; background: rgba(255, 255, 255, 0.94); color: #D62952; font-size: 0.62rem; font-weight: 800; padding: 2px 7px; border-radius: 10px; backdrop-filter: blur(4px); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 3px;">
-                  <i class="fa-solid fa-heart" style="font-size: 0.58rem; color: #D62952;"></i> <?= $r_score ?>% Match
+                <div style="position: absolute; top: 6px; right: 6px; background: rgba(255, 255, 255, 0.94); color: #D62952; font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 10px; backdrop-filter: blur(4px); box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 3px;">
+                  <i class="fa-solid fa-heart" style="font-size: 0.55rem; color: #D62952;"></i> <?= $r_score ?>% Match
                 </div>
 
                 <!-- Verified Badge -->
-                <div style="position: absolute; bottom: 8px; left: 8px; background: rgba(0, 0, 0, 0.65); color: #FFFFFF; font-size: 0.6rem; font-weight: 600; padding: 2px 7px; border-radius: 8px; backdrop-filter: blur(3px); display: flex; align-items: center; gap: 3px;">
-                  <i class="fa-solid fa-circle-check" style="color: #FFF; font-size: 0.58rem;"></i> Verified
+                <div style="position: absolute; bottom: 6px; left: 6px; background: rgba(0, 0, 0, 0.65); color: #FFFFFF; font-size: 0.58rem; font-weight: 600; padding: 2px 6px; border-radius: 6px; backdrop-filter: blur(3px); display: flex; align-items: center; gap: 3px;">
+                  <i class="fa-solid fa-circle-check" style="color: #FFF; font-size: 0.56rem;"></i> Verified
                 </div>
               </div>
 
               <!-- Card Body Content -->
-              <div style="padding: 10px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; box-sizing: border-box;">
-                <div style="margin-bottom: 8px;">
-                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 800; font-size: 0.88rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+              <div style="padding: 8px 10px 10px 10px; display: flex; flex-direction: column; flex: 1; justify-content: space-between; box-sizing: border-box;">
+                <div style="margin-bottom: 6px;">
+                  <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 800; font-size: 0.84rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                     <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                   </a>
-                  <div style="font-size: 0.7rem; color: #636366; font-weight: 500; margin-bottom: 2px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
-                    <i class="fa-solid fa-briefcase" style="font-size: 0.65rem; color: #8E8E93;"></i> <?= htmlspecialchars($r_occ) ?>
+                  <div style="font-size: 0.68rem; color: #636366; font-weight: 500; margin-bottom: 1px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
+                    <i class="fa-solid fa-briefcase" style="font-size: 0.62rem; color: #8E8E93;"></i> <?= htmlspecialchars($r_occ) ?>
                   </div>
-                  <div style="font-size: 0.7rem; color: #8E8E93; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
-                    <i class="fa-solid fa-location-dot" style="font-size: 0.65rem; color: #8E8E93;"></i> <?= htmlspecialchars($r_city) ?>
+                  <div style="font-size: 0.68rem; color: #8E8E93; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; display: flex; align-items: center; gap: 3px;">
+                    <i class="fa-solid fa-location-dot" style="font-size: 0.62rem; color: #8E8E93;"></i> <?= htmlspecialchars($r_city) ?>
                   </div>
                 </div>
 
                 <!-- Small Buttons Row -->
-                <div style="display: flex; gap: 6px; align-items: center;">
-                  <button type="button" onclick="toggleBookmark(this, <?= $rec_cand['id'] ?>)" style="width: 32px; height: 32px; border-radius: 10px; background: #FFF0F4; border: none; color: #D62952; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Like Candidate">
-                    <i class="fa-regular fa-heart" style="font-size: 0.78rem;"></i>
+                <div style="display: flex; gap: 5px; align-items: center;">
+                  <button type="button" onclick="toggleBookmark(this, <?= $rec_cand['id'] ?>)" style="width: 30px; height: 30px; border-radius: 10px; background: #FFF0F4; border: none; color: #D62952; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;" title="Like Candidate">
+                    <i class="fa-regular fa-heart" style="font-size: 0.75rem;"></i>
                   </button>
-                  <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="flex: 1; height: 32px; border-radius: 10px; background: #D62952; color: #FFFFFF; font-weight: 700; font-size: 0.74rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
-                    <i class="fa-solid fa-comment-dots" style="font-size: 0.74rem;"></i> Start Chat
+                  <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="flex: 1; height: 30px; border-radius: 10px; background: #D62952; color: #FFFFFF; font-weight: 700; font-size: 0.72rem; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap;">
+                    <i class="fa-solid fa-comment-dots" style="font-size: 0.72rem;"></i> Start Chat
                   </button>
                 </div>
               </div>
@@ -250,10 +257,10 @@ require_once __DIR__ . '/includes/header.php';
       </div>
     <?php endif; ?>
 
-    <!-- 3. Discover Candidate Feed List (Wide & Small Compact Buttons) -->
-    <div style="display: flex; flex-direction: column; gap: 16px;">
+    <!-- 3. Discover Candidate Feed List (Clean Uncompressed Layout) -->
+    <div style="display: flex; flex-direction: column; gap: 14px;">
       <?php foreach ($candidates as $cand): 
-        $c_name = ucwords(strtolower(trim((string)$cand['full_name'])));
+        $c_name = sanitize_candidate_name($cand['full_name'] ?? '');
         $c_age = calculate_age((string)($cand['birthdate'] ?? '2000-01-01'));
         $c_avatar = get_valid_avatar_url((string)($cand['avatar_url'] ?? ''));
         $c_occ = !empty($cand['occupation']) ? $cand['occupation'] : ($cand['highest_qualification'] ?? 'Software Engineer');
@@ -265,46 +272,23 @@ require_once __DIR__ . '/includes/header.php';
         if (!in_array($c_avatar, $photos_raw)) { array_unshift($photos_raw, $c_avatar); }
         $cand_bio = !empty($cand['bio']) ? $cand['bio'] : "Passionate about technology, travel and good conversations. Looking for someone genuine.";
       ?>
-        <div style="background: #FFFFFF; border-radius: 20px; padding: 14px 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 18px rgba(0,0,0,0.03); position: relative;">
+        <div style="background: #FFFFFF; border-radius: 20px; padding: 14px 16px; border: 1px solid #F0F0F5; box-shadow: 0 4px 16px rgba(0,0,0,0.03); position: relative;">
           
           <!-- Top Row: Name/Info & Photo Stack -->
-          <div style="display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px;">
             
             <!-- Left Candidate Main Metadata -->
             <div style="flex: 1; min-width: 0;">
               <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; color: inherit;">
                 <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 2px;">
-                  <h3 style="font-size: 1.08rem; font-weight: 800; color: #1C1C1E; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_name) ?></h3>
-                  <i class="fa-solid fa-circle-check" style="color: #2196F3; font-size: 0.92rem;" title="Verified Profile"></i>
+                  <h3 style="font-size: 1.05rem; font-weight: 800; color: #1C1C1E; margin: 0; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_name) ?></h3>
+                  <i class="fa-solid fa-circle-check" style="color: #2196F3; font-size: 0.9rem;" title="Verified Profile"></i>
                 </div>
-                <div style="font-size: 0.78rem; color: #8E8E93; font-weight: 400; margin-bottom: 3px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_occ) ?></div>
-                <div style="font-size: 0.76rem; color: #8E8E93; font-weight: 400; display: flex; align-items: center; gap: 4px; margin-bottom: 10px;">
+                <div style="font-size: 0.78rem; color: #8E8E93; font-weight: 400; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;"><?= htmlspecialchars($c_occ) ?></div>
+                <div style="font-size: 0.76rem; color: #8E8E93; font-weight: 400; display: flex; align-items: center; gap: 4px;">
                   <i class="fa-solid fa-location-dot" style="color: #8E8E93; font-size: 0.7rem;"></i> <?= htmlspecialchars($c_city) ?>
                 </div>
               </a>
-
-              <!-- Stats Chips Row (Age & Height Boxes) -->
-              <div style="display: flex; gap: 8px;">
-                <div style="background: #FFF0F4; border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 6px; flex: 1;">
-                  <div style="width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #D62952; font-size: 0.7rem; flex-shrink: 0;">
-                    <i class="fa-solid fa-cake-candles"></i>
-                  </div>
-                  <div>
-                    <div style="font-size: 0.58rem; color: #8E8E93; font-weight: 700; text-transform: uppercase;">AGE</div>
-                    <div style="font-size: 0.78rem; color: #1C1C1E; font-weight: 800; white-space: nowrap;"><?= $c_age ?> Years</div>
-                  </div>
-                </div>
-
-                <div style="background: #FFF0F4; border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 6px; flex: 1;">
-                  <div style="width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #D62952; font-size: 0.7rem; flex-shrink: 0;">
-                    <i class="fa-solid fa-user"></i>
-                  </div>
-                  <div>
-                    <div style="font-size: 0.58rem; color: #8E8E93; font-weight: 700; text-transform: uppercase;">HEIGHT</div>
-                    <div style="font-size: 0.78rem; color: #1C1C1E; font-weight: 800; white-space: nowrap;"><?= $c_ht ?></div>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <!-- Right Photo Gallery Thumbnails Stack -->
@@ -313,7 +297,7 @@ require_once __DIR__ . '/includes/header.php';
                 <img src="<?= htmlspecialchars($c_avatar) ?>" style="width: 80px; height: 100px; border-radius: 14px; object-fit: cover; display: block;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.svg';">
               </a>
               <?php if (count($photos_raw) > 1): ?>
-                <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="width: 70px; height: 100px; border-radius: 14px; background: #FFF0F4; border: 1px solid #FFE0E6; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #D62952; text-decoration: none;">
+                <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="width: 68px; height: 100px; border-radius: 14px; background: #FFF0F4; border: 1px solid #FFE0E6; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #D62952; text-decoration: none;">
                   <i class="fa-solid fa-image" style="font-size: 1rem; margin-bottom: 2px;"></i>
                   <span style="font-size: 0.74rem; font-weight: 800;">+<?= count($photos_raw) - 1 ?></span>
                   <span style="font-size: 0.56rem; font-weight: 600; color: #8E8E93;">Photos</span>
@@ -321,6 +305,29 @@ require_once __DIR__ . '/includes/header.php';
               <?php endif; ?>
             </div>
 
+          </div>
+
+          <!-- Stats Chips Row (Uncompressed Full Width Row Below Name/Photo) -->
+          <div style="display: flex; gap: 8px; margin-top: 6px; margin-bottom: 10px;">
+            <div style="background: #FFF0F4; border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #D62952; font-size: 0.68rem; flex-shrink: 0;">
+                <i class="fa-solid fa-cake-candles"></i>
+              </div>
+              <div style="min-width: 0;">
+                <div style="font-size: 0.56rem; color: #8E8E93; font-weight: 700; text-transform: uppercase;">AGE</div>
+                <div style="font-size: 0.78rem; color: #1C1C1E; font-weight: 800; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"><?= $c_age ?> Years</div>
+              </div>
+            </div>
+
+            <div style="background: #FFF0F4; border-radius: 12px; padding: 6px 10px; display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+              <div style="width: 24px; height: 24px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; color: #D62952; font-size: 0.68rem; flex-shrink: 0;">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div style="min-width: 0;">
+                <div style="font-size: 0.56rem; color: #8E8E93; font-weight: 700; text-transform: uppercase;">HEIGHT</div>
+                <div style="font-size: 0.78rem; color: #1C1C1E; font-weight: 800; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;"><?= $c_ht ?></div>
+              </div>
+            </div>
           </div>
 
           <!-- Traits Pills Row -->
