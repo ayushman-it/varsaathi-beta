@@ -202,11 +202,30 @@ try {
 
     <!-- About Me Section -->
     <h3 class="profile-section-title">About Me</h3>
-    <p class="profile-about-text">
-      <?= !empty($target_user['bio']) 
-          ? nl2br(htmlspecialchars((string)$target_user['bio'])) 
-          : "Looking for a life partner who values family, growth and happiness. Believer in simple living and meaningful bonds." ?>
-    </p>
+    <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.5; margin-bottom: 20px;">
+      <?php 
+        $cand_bio = !empty($target_user['bio']) 
+            ? trim((string)$target_user['bio']) 
+            : "Looking for a life partner who values family, growth and happiness. Believer in simple living and meaningful bonds.";
+        $is_cand_long = (mb_strlen($cand_bio) > 130 || substr_count($cand_bio, "\n") >= 2);
+      ?>
+      <?php if ($is_cand_long): ?>
+        <div id="bioTextShortCand">
+          <?= nl2br(htmlspecialchars(mb_strimwidth($cand_bio, 0, 130, '...'))) ?>
+          <button type="button" onclick="toggleBioCand(true)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
+            Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
+          </button>
+        </div>
+        <div id="bioTextFullCand" style="display: none;">
+          <?= nl2br(htmlspecialchars($cand_bio)) ?>
+          <button type="button" onclick="toggleBioCand(false)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
+            Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
+          </button>
+        </div>
+      <?php else: ?>
+        <?= nl2br(htmlspecialchars($cand_bio)) ?>
+      <?php endif; ?>
+    </div>
 
     <!-- Partner Preference Section -->
     <h3 class="profile-section-title">Partner Preference</h3>
@@ -421,6 +440,15 @@ try {
 </div>
 
 <script>
+function toggleBioCand(expand) {
+  const shortEl = document.getElementById('bioTextShortCand');
+  const fullEl = document.getElementById('bioTextFullCand');
+  if (shortEl && fullEl) {
+    shortEl.style.display = expand ? 'none' : 'block';
+    fullEl.style.display = expand ? 'block' : 'none';
+  }
+}
+
 function sendSaathiInterest(targetId) {
   fetch('api/saathi_action.php', {
     method: 'POST',

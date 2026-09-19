@@ -133,18 +133,18 @@ try {
     <?php endif; ?>
 
     <!-- Profile Completion Progress Section -->
-    <div style="background: #F8F8FA; border: 1px solid #E5E5EA; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px;">
+    <div style="background: #F8F8FA; border: 1px solid #EBEBEF; border-radius: 18px; padding: 14px 16px; margin-bottom: 16px;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
         <span style="font-size: 0.84rem; font-weight: 700; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">Profile Completion</span>
-        <span style="font-size: 0.84rem; font-weight: 700; color: #FF2D55;"><?= $completion_pct ?>%</span>
+        <span style="font-size: 0.84rem; font-weight: 800; color: #C31F3A;"><?= $completion_pct ?>%</span>
       </div>
       <div style="width: 100%; height: 7px; background: #E5E5EA; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
-        <div style="width: <?= $completion_pct ?>%; height: 100%; background: linear-gradient(90deg, #FF2D55, #FF4081); border-radius: 4px; transition: width 0.4s ease;"></div>
+        <div style="width: <?= $completion_pct ?>%; height: 100%; background: linear-gradient(90deg, #1C1C1E 0%, #C31F3A 100%); border-radius: 4px; transition: width 0.4s ease;"></div>
       </div>
       <?php if ($completion_pct < 100): ?>
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <span style="font-size: 0.76rem; color: #8E8E93;">Complete your biodata for better matching</span>
-          <a href="saathi-edit.php" style="font-size: 0.76rem; font-weight: 700; color: #FF2D55; text-decoration: none;">Update Profile &rarr;</a>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.76rem; color: #8E8E93; flex: 1; min-width: 150px;">Complete your biodata for better matching</span>
+          <a href="saathi-edit.php" style="font-size: 0.76rem; font-weight: 700; color: #C31F3A; text-decoration: none; white-space: nowrap; flex-shrink: 0;">Update Profile &rarr;</a>
         </div>
       <?php endif; ?>
     </div>
@@ -155,13 +155,13 @@ try {
         <i class="fa-solid fa-pen-to-square" style="margin-right: 6px;"></i> Edit Details
       </a>
       <a href="biodata.php?id=<?= $current_user_id ?>" target="_blank" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; height: 42px; font-size: 0.86rem; border-radius: 16px; font-weight: 600; white-space: nowrap; display: flex; align-items: center; justify-content: center; border: 1px solid #E5E5EA; color: #1C1C1E; text-decoration: none;">
-        <i class="fa-solid fa-file-pdf" style="margin-right: 6px; color: #FF2D55;"></i> Download Biodata
+        <i class="fa-solid fa-file-pdf" style="margin-right: 6px; color: #C31F3A;"></i> Download Biodata
       </a>
     </div>
 
     <!-- Matrimonial Headline Banner -->
     <?php if (!empty($saathi['headline'])): ?>
-      <div style="background: #F8F8FA; border-left: 3.5px solid #FF2D55; padding: 10px 14px; border-radius: 12px; font-weight: 500; font-size: 0.84rem; color: #1C1C1E; margin-bottom: 18px;">
+      <div style="background: #F8F8FA; border-left: 3px solid #C31F3A; border-top: 1px solid #F0F0F5; border-right: 1px solid #F0F0F5; border-bottom: 1px solid #F0F0F5; padding: 9px 12px; border-radius: 10px; font-weight: 500; font-size: 0.82rem; color: #1C1C1E; margin-bottom: 16px;">
         "<?= htmlspecialchars($saathi['headline']) ?>"
       </div>
     <?php endif; ?>
@@ -169,12 +169,30 @@ try {
     <!-- About Me Section -->
     <h3 class="profile-section-title" style="font-family: system-ui, -apple-system, sans-serif;">About Me</h3>
     <div class="profile-about-text" style="font-size: 0.88rem; color: #3A3A3C; line-height: 1.5; margin-bottom: 20px;">
-      <?php if (!empty($user['bio'])): ?>
-        <?= nl2br(htmlspecialchars($user['bio'])) ?>
+      <?php if (!empty($user['bio'])): 
+        $bio_text = trim((string)$user['bio']);
+        $is_long_bio = (mb_strlen($bio_text) > 130 || substr_count($bio_text, "\n") >= 2);
+      ?>
+        <?php if ($is_long_bio): ?>
+          <div id="bioTextShortUser">
+            <?= nl2br(htmlspecialchars(mb_strimwidth($bio_text, 0, 130, '...'))) ?>
+            <button type="button" onclick="toggleBioUser(true)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; display: inline-flex; align-items: center; gap: 2px;">
+              Read More <i class="fa-solid fa-chevron-down" style="font-size: 0.68rem;"></i>
+            </button>
+          </div>
+          <div id="bioTextFullUser" style="display: none;">
+            <?= nl2br(htmlspecialchars($bio_text)) ?>
+            <button type="button" onclick="toggleBioUser(false)" style="background: none; border: none; padding: 0; color: #C31F3A; font-weight: 700; font-size: 0.8rem; cursor: pointer; margin-left: 4px; margin-top: 4px; display: inline-flex; align-items: center; gap: 2px;">
+              Read Less <i class="fa-solid fa-chevron-up" style="font-size: 0.68rem;"></i>
+            </button>
+          </div>
+        <?php else: ?>
+          <?= nl2br(htmlspecialchars($bio_text)) ?>
+        <?php endif; ?>
       <?php else: ?>
         <span style="color: #8E8E93; font-style: italic;">No bio added yet. Tell potential life partners about yourself, your career, and family values.</span>
         <div style="margin-top: 8px;">
-          <a href="saathi-edit.php?step=2" style="font-size: 0.78rem; font-weight: 700; color: #FF2D55; text-decoration: none;">+ Add Bio / About Me</a>
+          <a href="saathi-edit.php?step=2" style="font-size: 0.78rem; font-weight: 700; color: #C31F3A; text-decoration: none;">+ Add Bio / About Me</a>
         </div>
       <?php endif; ?>
     </div>
@@ -568,6 +586,15 @@ $rich_share_text = "🌸 Matrimonial Profile & Biodata of " . $user['full_name']
 </div>
 
 <script>
+function toggleBioUser(expand) {
+  const shortEl = document.getElementById('bioTextShortUser');
+  const fullEl = document.getElementById('bioTextFullUser');
+  if (shortEl && fullEl) {
+    shortEl.style.display = expand ? 'none' : 'block';
+    fullEl.style.display = expand ? 'block' : 'none';
+  }
+}
+
 function toggleChourasiyaMode(isChourasiya) {
   fetch('api/saathi_action.php', {
     method: 'POST',
