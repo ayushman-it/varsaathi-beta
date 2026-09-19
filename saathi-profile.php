@@ -21,7 +21,7 @@ if (!$target_user) {
 }
 
 $is_own_profile = ($target_id === $current_user_id);
-$target_saathi = get_saathi_profile($target_id);
+$target_saathi = get_saathi_profile($target_id) ?: [];
 
 // Check existing match/interest status between current user and target user
 $m_check = $pdo->prepare("

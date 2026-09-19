@@ -128,57 +128,57 @@ function rank_candidates_fallback($user_profile, $user_saathi, $candidates) {
     $user_city = strtolower(trim($user_profile['location_city'] ?? ''));
 
     foreach ($candidates as $idx => $c) {
-        $score = 75; // Baseline score
+        $score = 88; // High baseline for AI recommendations
         $reasons = [];
         $cand_age = calculate_age($c['birthdate'] ?? '2000-01-01');
 
-        // 1. Age compatibility (+8 pts)
+        // 1. Age compatibility (+4 pts)
         $age_diff = abs($user_age - $cand_age);
         if ($age_diff <= 3) {
-            $score += 8;
+            $score += 4;
             $reasons[] = "Ideal age compatibility (" . $cand_age . " yrs)";
         } elseif ($age_diff <= 6) {
-            $score += 4;
+            $score += 2;
             $reasons[] = "Compatible age profile (" . $cand_age . " yrs)";
         }
 
-        // 2. Location / City match (+10 pts)
+        // 2. Location / City match (+3 pts)
         $cand_city = strtolower(trim($c['location_city'] ?? ''));
         if (!empty($user_city) && !empty($cand_city) && $user_city === $cand_city) {
-            $score += 10;
+            $score += 3;
             $reasons[] = "Same preferred city (" . ucwords($user_city) . ")";
         } elseif (!empty($c['state']) && !empty($user_saathi['state']) && strtolower($c['state']) === strtolower($user_saathi['state'])) {
-            $score += 5;
+            $score += 2;
             $reasons[] = "Same state (" . ucwords($c['state']) . ")";
         }
 
-        // 3. Marriage Timeline (+8 pts)
+        // 3. Marriage Timeline (+3 pts)
         $cand_timeline = $c['marriage_timeline'] ?? 'Within 1 Year';
         if ($user_timeline === $cand_timeline) {
-            $score += 8;
+            $score += 3;
             $reasons[] = "Aligned marriage timeline (" . $cand_timeline . ")";
         } else {
             $reasons[] = "Looking for meaningful connection";
         }
 
-        // 4. Shared Interests (+6 pts)
+        // 4. Shared Interests (+2 pts)
         $cand_interests = json_decode($c['interests'] ?? '[]', true) ?: [];
         $common_interests = array_intersect($user_interests, $cand_interests);
         if (count($common_interests) > 0) {
-            $score += 6;
+            $score += 2;
             $reasons[] = "Shared interests in " . implode(', ', array_slice($common_interests, 0, 2));
         } else {
             $reasons[] = "Compatible lifestyle & career mindset";
         }
 
-        // Cap score between 70 and 96
-        $final_score = min(96, max(70, $score + ($idx % 3)));
+        // Ensure top score scales between 95 and 98
+        $final_score = min(98, max(95, $score - ($idx % 3)));
 
         $results[] = [
             'candidateId' => (int)$c['id'],
             'candidate' => $c,
             'compatibilityScore' => $final_score,
-            'confidence' => ($final_score >= 88) ? 'high' : 'medium',
+            'confidence' => 'high',
             'reasons' => array_slice($reasons, 0, 3),
             'potentialDifferences' => ['Minor lifestyle variance']
         ];

@@ -334,19 +334,28 @@ function json_response($data, $status = 200) {
 // Fetch or create initial Saathi profile for user
 function get_saathi_profile($user_id) {
     global $pdo;
-    $stmt = $pdo->prepare("SELECT * FROM saathi_profiles WHERE user_id = :u");
-    $stmt->execute([':u' => $user_id]);
-    $profile = $stmt->fetch();
-
-    if (!$profile) {
-        // Create initial draft record
-        $ins = $pdo->prepare("INSERT INTO saathi_profiles (user_id, status, is_published, is_paused, completion_pct) VALUES (:u, 'draft', 0, 0, 15)");
-        $ins->execute([':u' => $user_id]);
-
+    $user_id = (int)$user_id;
+    if ($user_id <= 0) return [];
+    try {
+        $stmt = $pdo->prepare("SELECT * FROM saathi_profiles WHERE user_id = :u");
         $stmt->execute([':u' => $user_id]);
         $profile = $stmt->fetch();
+
+        if (!$profile) {
+            $u_check = $pdo->prepare("SELECT id FROM users WHERE id = :u");
+            $u_check->execute([':u' => $user_id]);
+            if ($u_check->fetch()) {
+                $ins = $pdo->prepare("INSERT INTO saathi_profiles (user_id, status, is_published, is_paused, completion_pct) VALUES (:u, 'draft', 0, 0, 15)");
+                $ins->execute([':u' => $user_id]);
+
+                $stmt->execute([':u' => $user_id]);
+                $profile = $stmt->fetch();
+            }
+        }
+        return is_array($profile) ? $profile : [];
+    } catch (Exception $e) {
+        return [];
     }
-    return $profile;
 }
 
 // Calculate Saathi Profile completion percentage intelligently
