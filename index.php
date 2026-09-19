@@ -127,25 +127,25 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Become a Chourasiya Member Quick Action Banner -->
     <div style="padding: 0 16px; margin-bottom: 8px;">
-      <a href="saathi-edit.php" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F7 100%); border: 1px solid #FFE0E6; border-radius: 16px; padding: 10px 14px; text-decoration: none; box-shadow: 0 2px 8px rgba(195,31,58,0.06);">
+      <a href="profile.php?join_chourasiya=1" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F7 100%); border: 1px solid #FFE0E6; border-radius: 16px; padding: 10px 14px; text-decoration: none; box-shadow: 0 2px 8px rgba(195,31,58,0.06);">
         <div style="display: flex; align-items: center; gap: 10px;">
           <span style="font-size: 1.25rem;">👑</span>
           <div>
-            <div style="font-weight: 800; font-size: 0.84rem; color: #1C1C1E; line-height: 1.2;">Become a Chourasiya Member</div>
+            <div style="font-weight: 700; font-size: 0.84rem; color: #1C1C1E; line-height: 1.2;">Become a Chourasiya Member</div>
             <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 500;">Get verified badge & exclusive community matches</div>
           </div>
         </div>
-        <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 12px; white-space: nowrap;">Join Now</span>
+        <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.72rem; font-weight: 600; padding: 5px 12px; border-radius: 12px; white-space: nowrap;">Join Now</span>
       </a>
     </div>
 
-    <!-- Category Tabs: All vs Chourasiya -->
-    <div style="padding: 0 16px; margin-bottom: 8px; display: flex; gap: 8px;" id="homeCategoryTabs">
-      <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid #E5E5EA; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">
-        All Profiles 🌐
+    <!-- Category Tabs: All vs Chourasiya (Clean Underline Active Tabs) -->
+    <div style="padding: 0 16px; margin-bottom: 10px; display: flex; gap: 16px; border-bottom: 1px solid #E5E5EA;" id="homeCategoryTabs">
+      <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="padding: 6px 4px 8px 4px; border: none; border-bottom: 2.5px solid #1C1C1E; background: transparent; color: #1C1C1E; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;">
+        All Profiles
       </button>
-      <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid #E5E5EA; background: #F8F8FA; color: #1C1C1E; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">
-        Chourasiya Samaj ❤️
+      <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="padding: 6px 4px 8px 4px; border: none; border-bottom: 2.5px solid transparent; background: transparent; color: #8E8E93; font-weight: 500; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;">
+        Chourasiya
       </button>
     </div>
 
@@ -261,6 +261,41 @@ require_once __DIR__ . '/includes/header.php';
 </main>
 
 <script>
+window.switchHomeCategoryTab = function(tabName, btnElem) {
+  const tabs = document.querySelectorAll('.home-tab-btn');
+  tabs.forEach(t => {
+    t.style.borderBottom = '2.5px solid transparent';
+    t.style.color = '#8E8E93';
+    t.style.fontWeight = '400';
+    t.classList.remove('active');
+  });
+  if (btnElem) {
+    btnElem.style.borderBottom = '2.5px solid #1C1C1E';
+    btnElem.style.color = '#1C1C1E';
+    btnElem.style.fontWeight = '600';
+    btnElem.classList.add('active');
+  }
+
+  const cards = document.querySelectorAll('.carousel-card-item');
+  cards.forEach(card => {
+    const comm = card.dataset.community || 'other';
+    if (tabName === 'chourasiya') {
+      if (comm === 'chourasiya' || card.classList.contains('promo-card')) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    } else {
+      card.style.display = 'flex';
+    }
+  });
+
+  const stage = document.getElementById('cardCarouselStage');
+  if (stage) {
+    stage.scrollTo({ left: 0, behavior: 'smooth' });
+  }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
   const stage = document.getElementById('cardCarouselStage');
   if (!stage) return;

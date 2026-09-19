@@ -17,6 +17,21 @@ $user = $user_stmt->fetch();
 $saathi = get_saathi_profile($user_id);
 
 switch ($action) {
+    case 'toggle_chourasiya':
+        $is_chourasiya = (bool)($input['is_chourasiya'] ?? false);
+        $comm_val = $is_chourasiya ? 'Chourasiya' : 'General';
+        $rel_val = $is_chourasiya ? 'Hindu' : '';
+        
+        $stmt = $pdo->prepare("UPDATE saathi_profiles SET caste_community = :c, religion = IF(religion IS NULL OR religion = '', :r, religion) WHERE user_id = :u");
+        $stmt->execute([':c' => $comm_val, ':r' => $rel_val, ':u' => $user_id]);
+        
+        json_response([
+            'success' => true,
+            'is_chourasiya' => $is_chourasiya,
+            'message' => $is_chourasiya ? "Switched to Chourasiya Member! Your profile will now show in Chourasiya tabs." : "Updated community preference."
+        ]);
+        break;
+
     case 'save_profile_step':
         $step = (int)($input['step'] ?? 1);
 

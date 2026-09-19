@@ -149,8 +149,8 @@ require_once __DIR__ . '/includes/header.php';
         </span>
       </div>
 
-      <!-- Horizontal Scrollable Cards Container -->
-      <div style="display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding-bottom: 4px;">
+      <!-- Horizontal Carousel Container for AI Recommendations -->
+      <div class="ai-carousel-track" style="display: flex; gap: 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory; padding: 4px 2px 10px 2px;">
         <?php foreach ($ai_recommendations as $ai_rec): 
           $rec_cand = $ai_rec['candidate'] ?? null;
           if (!$rec_cand) continue;
@@ -161,29 +161,29 @@ require_once __DIR__ . '/includes/header.php';
           $r_score = (int)($ai_rec['compatibilityScore'] ?? 95);
           $r_reasons = $ai_rec['reasons'] ?? ['High Compatibility Match'];
         ?>
-          <div style="width: 210px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #E5E5EA; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.04); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between;">
+          <div style="width: 230px; flex-shrink: 0; background: #FFFFFF; border-radius: 22px; border: 1px solid #E5E5EA; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.05); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease;">
             
-            <div style="position: relative; width: 100%; height: 150px; overflow: hidden;">
+            <div style="position: relative; width: 100%; height: 160px; overflow: hidden;">
               <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
-              <div style="position: absolute; top: 10px; right: 10px; background: rgba(195,31,58,0.88); backdrop-filter: blur(8px); color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 4px 8px; border-radius: 10px;">
+              <div style="position: absolute; top: 10px; right: 10px; background: rgba(195,31,58,0.9); backdrop-filter: blur(8px); color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 4px 10px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
                 <?= $r_score ?>% AI Match
               </div>
             </div>
 
-            <div style="padding: 12px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+            <div style="padding: 14px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
               <div>
-                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 800; font-size: 0.92rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 800; font-size: 0.94rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 3px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
                   <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
                 </a>
-                <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 500; margin-bottom: 6px;">
-                  <i class="fa-solid fa-location-dot" style="font-size: 0.68rem;"></i> <?= htmlspecialchars($r_city) ?>
+                <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 500; margin-bottom: 8px;">
+                  <i class="fa-solid fa-location-dot" style="font-size: 0.68rem; margin-right: 2px;"></i> <?= htmlspecialchars($r_city) ?>
                 </div>
-                <div style="font-size: 0.72rem; color: #636366; font-weight: 500; line-height: 1.35; background: #F8F8FA; padding: 6px 8px; border-radius: 8px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                <div style="font-size: 0.72rem; color: #48484A; font-weight: 500; line-height: 1.35; background: #F8F8FA; border: 1px solid #F0F0F5; padding: 8px 10px; border-radius: 10px; margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
                   💡 <?= htmlspecialchars($r_reasons[0] ?? 'Top recommendation') ?>
                 </div>
               </div>
 
-              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; padding: 8px; border-radius: 14px; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.78rem; border: none; cursor: pointer;">
+              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; padding: 9px; border-radius: 14px; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                 Chat Now 💬
               </button>
             </div>

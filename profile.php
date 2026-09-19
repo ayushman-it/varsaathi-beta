@@ -374,6 +374,34 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Account & Privacy Controls -->
     <h3 class="profile-section-title" style="margin-top:24px; font-family: system-ui, -apple-system, sans-serif;">Account Settings</h3>
+
+    <?php 
+    $user_comm = strtolower(trim(($saathi['caste_community'] ?? '') . ' ' . ($saathi['religion'] ?? '')));
+    $is_chourasiya_user = (strpos($user_comm, 'chourasiya') !== false || strpos($user_comm, 'chaurasia') !== false);
+    $auto_enable_chourasiya = isset($_GET['join_chourasiya']) && $_GET['join_chourasiya'] == '1';
+    if ($auto_enable_chourasiya && !$is_chourasiya_user) {
+        $is_chourasiya_user = true;
+        $upd_c = $pdo->prepare("UPDATE saathi_profiles SET caste_community = 'Chourasiya' WHERE user_id = :u");
+        $upd_c->execute([':u' => $current_user_id]);
+    }
+    ?>
+
+    <!-- Community Chourasiya Member Toggle Switch -->
+    <div style="background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F7 100%); border: 1px solid #FFE0E6; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;" id="chourasiyaToggleCard">
+      <div>
+        <div style="font-weight: 700; font-size: 0.88rem; color: #1C1C1E; display: flex; align-items: center; gap: 6px;">
+          <span>👑 I'm a Chourasiya Member</span>
+        </div>
+        <div style="font-size: 0.72rem; color: #636366; margin-top: 2px;" id="chourasiyaStatusDesc">
+          <?= $is_chourasiya_user ? 'Active! Your profile appears under Chourasiya community tabs.' : 'Enable to list your profile under Chourasiya Samaj tabs.' ?>
+        </div>
+      </div>
+      <label class="ios-switch">
+        <input type="checkbox" id="chourasiyaToggleBtn" <?= $is_chourasiya_user ? 'checked' : '' ?> onchange="toggleChourasiyaMode(this.checked)">
+        <span class="ios-slider"></span>
+      </label>
+    </div>
+
     <div style="background: #F8F8FA; border: 1px solid #E5E5EA; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
       <div>
         <div style="font-weight: 700; font-size: 0.88rem; color: #1C1C1E;" id="privacyStatusLabel"><?= $is_private ? 'Private Profile' : 'Public Profile' ?></div>
@@ -533,6 +561,29 @@ $rich_share_text = "🌸 Matrimonial Profile & Biodata of " . $user['full_name']
 </div>
 
 <script>
+function toggleChourasiyaMode(isChourasiya) {
+  fetch('api/saathi_action.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'toggle_chourasiya', is_chourasiya: isChourasiya })
+  })
+  .then(res => res.json())
+  .then(data => {
+    const desc = document.getElementById('chourasiyaStatusDesc');
+    if (data.success) {
+      if (desc) {
+        desc.textContent = data.is_chourasiya 
+          ? 'Active! Your profile appears under Chourasiya community tabs.' 
+          : 'Enable to list your profile under Chourasiya Samaj tabs.';
+      }
+      alert(data.message || 'Community preference updated!');
+    } else {
+      alert(data.error || 'Failed to update community preference');
+    }
+  })
+  .catch(() => alert('Network error updating community preference'));
+}
+
 function togglePrivacyMode(isPrivate) {
   fetch('api/toggle_privacy.php', {
     method: 'POST',
