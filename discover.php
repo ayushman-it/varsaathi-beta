@@ -81,6 +81,14 @@ if (empty($candidates)) {
     $candidates = $fallback_stmt->fetchAll();
 }
 
+// Groq AI Integration for Top Recommendations Section
+require_once __DIR__ . '/config/groq.php';
+$u_stmt = $pdo->prepare("SELECT * FROM users WHERE id = :u");
+$u_stmt->execute([':u' => $current_user_id]);
+$current_user_profile = $u_stmt->fetch() ?: [];
+$current_saathi = get_saathi_profile($current_user_id);
+$ai_recommendations = rank_candidates_with_groq($current_user_profile, $current_saathi, array_slice($candidates, 0, 8));
+
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -128,6 +136,63 @@ require_once __DIR__ . '/includes/header.php';
       Nearby
     </button>
   </div>
+
+  <!-- AI Recommendations Top Section -->
+  <?php if (!empty($ai_recommendations)): ?>
+    <div style="margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+        <div style="font-weight: 800; font-size: 1.05rem; color: #1C1C1E; font-family: system-ui, -apple-system, sans-serif;">
+          AI Recommendations ✨
+        </div>
+        <span style="font-size: 0.7rem; font-weight: 700; color: #C31F3A; background: #FFF0F4; padding: 3px 10px; border-radius: 12px;">
+          AI Matched
+        </span>
+      </div>
+
+      <!-- Horizontal Scrollable Cards Container -->
+      <div style="display: flex; gap: 12px; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; padding-bottom: 4px;">
+        <?php foreach ($ai_recommendations as $ai_rec): 
+          $rec_cand = $ai_rec['candidate'] ?? null;
+          if (!$rec_cand) continue;
+          $r_name = ucwords(strtolower(trim($rec_cand['full_name'])));
+          $r_age = calculate_age($rec_cand['birthdate'] ?? '2000-01-01');
+          $r_img = get_valid_avatar_url($rec_cand['avatar_url'] ?? '');
+          $r_city = !empty($rec_cand['location_city']) && strpos(strtolower($rec_cand['location_city']), 'san francisco') === false ? $rec_cand['location_city'] : 'India';
+          $r_score = (int)($ai_rec['compatibilityScore'] ?? 95);
+          $r_reasons = $ai_rec['reasons'] ?? ['High Compatibility Match'];
+        ?>
+          <div style="width: 210px; flex-shrink: 0; background: #FFFFFF; border-radius: 20px; border: 1px solid #E5E5EA; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,0.04); scroll-snap-align: start; display: flex; flex-direction: column; justify-content: space-between;">
+            
+            <div style="position: relative; width: 100%; height: 150px; overflow: hidden;">
+              <img src="<?= htmlspecialchars($r_img) ?>" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+              <div style="position: absolute; top: 10px; right: 10px; background: rgba(195,31,58,0.88); backdrop-filter: blur(8px); color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 4px 8px; border-radius: 10px;">
+                <?= $r_score ?>% AI Match
+              </div>
+            </div>
+
+            <div style="padding: 12px; display: flex; flex-direction: column; flex: 1; justify-content: space-between;">
+              <div>
+                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="font-weight: 800; font-size: 0.92rem; color: #1C1C1E; text-decoration: none; display: block; margin-bottom: 2px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                  <?= htmlspecialchars($r_name) ?>, <?= $r_age ?>
+                </a>
+                <div style="font-size: 0.74rem; color: #8E8E93; font-weight: 500; margin-bottom: 6px;">
+                  <i class="fa-solid fa-location-dot" style="font-size: 0.68rem;"></i> <?= htmlspecialchars($r_city) ?>
+                </div>
+                <div style="font-size: 0.72rem; color: #636366; font-weight: 500; line-height: 1.35; background: #F8F8FA; padding: 6px 8px; border-radius: 8px; margin-bottom: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                  💡 <?= htmlspecialchars($r_reasons[0] ?? 'Top recommendation') ?>
+                </div>
+              </div>
+
+              <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="width: 100%; padding: 8px; border-radius: 14px; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.78rem; border: none; cursor: pointer;">
+                Chat Now 💬
+              </button>
+            </div>
+
+          </div>
+        <?php endforeach; ?>
+      </div>
+    </div>
+  <?php endif; ?>
 
   <!-- Discover Candidate Feed List (Matching UI Mockup) -->
   <div style="display: flex; flex-direction: column; gap: 14px;">

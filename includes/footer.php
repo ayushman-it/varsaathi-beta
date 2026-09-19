@@ -190,7 +190,67 @@ $footer_user_id = get_current_user_id();
     </div>
   </div>
 
+  <!-- Global Interest Match Screen Modal -->
+  <div class="modal-overlay" id="globalInterestMatchModal" style="z-index: 9999999; background: rgba(0,0,0,0.82); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; position: fixed; inset: 0;">
+    <div style="width: 90%; max-width: 360px; background: #FFFFFF; border-radius: 28px; padding: 28px 24px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.4); position: relative;">
+      
+      <div style="width: 84px; height: 84px; border-radius: 50%; background: linear-gradient(135deg, #FFF0F4 0%, #FFE4EC 100%); margin: 0 auto 14px auto; display: flex; align-items: center; justify-content: center; border: 3px solid #FF2D55; box-shadow: 0 8px 20px rgba(255,45,85,0.25);">
+        <img id="interestMatchAvatar" src="assets/images/no_image_placeholder.png" style="width: 74px; height: 74px; border-radius: 50%; object-fit: cover;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+      </div>
+
+      <div style="display: inline-block; background: var(--ios-gradient); color: #FFF; font-weight: 800; font-size: 0.72rem; padding: 4px 14px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;" id="interestMatchBadge">
+        Interest Sent! 💕
+      </div>
+
+      <h3 style="font-weight: 800; font-size: 1.25rem; color: #1C1C1E; margin-bottom: 6px;" id="interestMatchTitle">Interest Sent</h3>
+      <p style="font-size: 0.82rem; color: #636366; line-height: 1.45; margin-bottom: 20px;" id="interestMatchSubtitle">
+        Matrimonial interest & notification sent successfully. Chat & calling will open once accepted!
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a id="interestMatchChatBtn" href="chat.php" style="width: 100%; padding: 12px; border-radius: 18px; background: var(--ios-gradient); color: #FFFFFF; font-weight: 800; font-size: 0.9rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 6px 16px rgba(195,31,58,0.28);">
+          <i class="fa-solid fa-comment-dots"></i> Open Chat
+        </a>
+        <button type="button" onclick="closeInterestMatchModal()" style="width: 100%; padding: 11px; border-radius: 18px; background: #F2F2F7; color: #3A3A3C; font-weight: 700; font-size: 0.88rem; border: none; cursor: pointer;">
+          Keep Browsing
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+  window.showInterestMatchModal = function(userName, userAvatar, isMatch = false, matchId = 0, targetId = 0) {
+    const modal = document.getElementById('globalInterestMatchModal');
+    if (!modal) return;
+    const avatar = document.getElementById('interestMatchAvatar');
+    const badge = document.getElementById('interestMatchBadge');
+    const title = document.getElementById('interestMatchTitle');
+    const sub = document.getElementById('interestMatchSubtitle');
+    const chatBtn = document.getElementById('interestMatchChatBtn');
+
+    if (avatar && userAvatar) avatar.src = userAvatar;
+    if (badge) badge.textContent = isMatch ? "It's a Match! 💕" : "Interest Sent! 💕";
+    if (title) title.textContent = isMatch ? `Matched with ${userName}!` : `Interest Sent to ${userName}`;
+    if (sub) sub.textContent = isMatch 
+      ? `${userName} also liked your profile! You can now chat and video call freely.` 
+      : `Matrimonial interest & push notification sent to ${userName}. Chat opens once accepted!`;
+
+    if (chatBtn) {
+      chatBtn.href = matchId > 0 ? `chat.php?match_id=${matchId}` : `chat.php?target_id=${targetId}`;
+    }
+
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  };
+
+  window.closeInterestMatchModal = function() {
+    const modal = document.getElementById('globalInterestMatchModal');
+    if (modal) {
+      modal.style.display = 'none';
+      modal.classList.remove('active');
+    }
+  };
+
   window.handleCandidateCardChat = async function(targetId, targetName = 'Candidate') {
     if (!targetId || targetId <= 0) return;
     

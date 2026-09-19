@@ -32,6 +32,19 @@ $is_private = (bool)($user['is_private'] ?? 0);
 $city_display = (!empty(trim($user['location_city'] ?? '')) && $user['location_city'] !== 'No Location') ? $user['location_city'] . ', India' : 'Location Not Set';
 $profile_share_url = SITE_URL . "saathi-profile.php?id=" . $current_user_id;
 
+// Fetch sample candidates for AI recommendations
+require_once __DIR__ . '/config/groq.php';
+$rec_stmt = $pdo->prepare("
+    SELECT u.*, sp.highest_qualification, sp.occupation_type, sp.height_cm, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
+    FROM users u
+    LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
+    WHERE u.id != :u
+    LIMIT 6
+");
+$rec_stmt->execute([':u' => $current_user_id]);
+$rec_candidates = $rec_stmt->fetchAll();
+$ai_recommendations = rank_candidates_with_groq($user, $saathi, $rec_candidates);
+
 $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -39,7 +52,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="profile-screen-container" style="width: 100%; max-width: 580px; margin: 0 auto; padding-bottom: 90px;">
 
   <!-- Header -->
-  <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: transparent; border: none;">
+  <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E5E5EA;">
     <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
       Profile
     </div>
@@ -383,6 +396,53 @@ require_once __DIR__ . '/includes/header.php';
       <button type="button" onclick="openShareModal()" class="btn-pink-outline" style="flex: 1; margin: 0; padding: 10px; border-radius: 14px; font-weight: 600; font-size: 0.82rem; border: 1px solid #E5E5EA; color: #1C1C1E;">
         <i class="fa-solid fa-share-nodes" style="color: #FF2D55;"></i> Share Profile
       </button>
+    </div>
+
+    <!-- Professional AI Recommendations Cards Section -->
+    <h3 class="profile-section-title" style="margin-top:24px; font-family: system-ui, -apple-system, sans-serif; display: flex; align-items: center; justify-content: space-between;">
+      <span>AI Smart Recommendations ✨</span>
+      <span style="font-size: 0.7rem; font-weight: 700; color: #C31F3A; background: #FFF0F4; padding: 2px 8px; border-radius: 10px;">Powered by Groq AI</span>
+    </h3>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+      <?php if (!empty($ai_recommendations)): ?>
+        <?php foreach ($ai_recommendations as $rec): 
+          $rec_cand = $rec['candidate'] ?? null;
+          if (!$rec_cand) continue;
+          $r_name = ucwords(strtolower(trim($rec_cand['full_name'])));
+          $r_avatar = get_valid_avatar_url($rec_cand['avatar_url'] ?? '');
+          $r_score = (int)($rec['compatibilityScore'] ?? 92);
+          $r_reasons = $rec['reasons'] ?? ['High compatibility in education & preferences'];
+        ?>
+          <div style="background: #FFFFFF; border: 1px solid #E5E5EA; border-radius: 18px; padding: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.04); display: flex; gap: 12px; align-items: center;">
+            <img src="<?= htmlspecialchars($r_avatar) ?>" style="width: 58px; height: 58px; border-radius: 50%; object-fit: cover; flex-shrink: 0;" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+            
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px;">
+                <h4 style="font-size: 0.92rem; font-weight: 800; color: #1C1C1E; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; margin: 0;"><?= htmlspecialchars($r_name) ?></h4>
+                <span style="background: linear-gradient(135deg, #C31F3A, #FF2D55); color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; flex-shrink: 0;"><?= $r_score ?>% AI Match</span>
+              </div>
+              
+              <div style="font-size: 0.74rem; color: #636366; font-weight: 500; line-height: 1.35; margin-bottom: 6px;">
+                💡 <?= htmlspecialchars($r_reasons[0] ?? 'Top recommendation based on values') ?>
+              </div>
+
+              <div style="display: flex; gap: 6px;">
+                <a href="saathi-profile.php?id=<?= $rec_cand['id'] ?>" style="padding: 4px 10px; border-radius: 12px; background: #F2F2F7; color: #1C1C1E; font-weight: 700; font-size: 0.72rem; text-decoration: none;">
+                  View Profile
+                </a>
+                <button type="button" onclick="handleCandidateCardChat(<?= $rec_cand['id'] ?>, '<?= htmlspecialchars(addslashes($r_name)) ?>')" style="padding: 4px 10px; border-radius: 12px; background: #1C1C1E; color: #FFF; font-weight: 700; font-size: 0.72rem; border: none; cursor: pointer;">
+                  Chat Now 💬
+                </button>
+              </div>
+            </div>
+          </div>
+        <?php endforeach; ?>
+      <?php else: ?>
+        <div style="background: #F8F8FA; border-radius: 16px; padding: 16px; text-align: center; color: #8E8E93; font-size: 0.8rem;">
+          AI Recommendations loading fresh candidates...
+        </div>
+      <?php endif; ?>
     </div>
 
   </div>

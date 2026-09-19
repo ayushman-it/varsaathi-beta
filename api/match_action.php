@@ -16,7 +16,7 @@ $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 $match_id = (int)($input['match_id'] ?? 0);
 $action = trim($input['action'] ?? '');
 
-if (!$match_id || !in_array($action, ['accept', 'decline', 'reject'])) {
+if (!$match_id || !in_array($action, ['accept', 'decline', 'reject', 'delete', 'unmatch'])) {
     json_response(['error' => 'Invalid parameters'], 400);
 }
 
@@ -65,7 +65,17 @@ try {
         json_response([
             'success' => true,
             'status' => 'accepted',
+            'chat_url' => "chat.php?match_id=$match_id",
             'message' => 'Match request accepted!'
+        ]);
+    } else if (in_array($action, ['delete', 'unmatch'])) {
+        $del_stmt = $pdo->prepare("DELETE FROM matches WHERE id = :mid");
+        $del_stmt->execute([':mid' => $match_id]);
+
+        json_response([
+            'success' => true,
+            'status' => 'deleted',
+            'message' => 'Match conversation removed.'
         ]);
     } else {
         // Decline/Reject match

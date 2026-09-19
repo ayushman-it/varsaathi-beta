@@ -133,25 +133,34 @@ require_once __DIR__ . '/includes/header.php';
           $last_seen_time = !empty($m['last_seen']) ? strtotime($m['last_seen']) : 0;
           $has_story_ring = ($unread > 0 || (time() - $last_seen_time) < 3600);
         ?>
-          <a href="chat.php?match_id=<?= $m['match_id'] ?>" class="message-item-row">
-            <div class="message-avatar-wrap" style="<?= $has_story_ring ? 'padding: 2px; background: linear-gradient(135deg, #C31F3A, #FF2D55); border-radius: 50%;' : '' ?>">
-              <img src="<?= htmlspecialchars($partner_avatar) ?>" class="message-avatar-img" alt="<?= htmlspecialchars($partner_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+          <!-- Slideable Row Wrapper with Delete Action -->
+          <div class="message-row-wrapper" style="position: relative; overflow: hidden; border-bottom: 1px solid #F0F0F8;" data-match-id="<?= $m['match_id'] ?>">
+            <!-- Hidden Delete Action Button -->
+            <div class="message-row-delete-action" onclick="deleteMatchConversation(event, <?= $m['match_id'] ?>)" style="position: absolute; top: 0; right: 0; bottom: 0; width: 80px; background: #FF3B30; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; cursor: pointer; z-index: 1;">
+              <i class="fa-solid fa-trash" style="margin-right: 4px;"></i> Delete
             </div>
 
-            <div class="message-body-meta">
-              <div class="message-author-name"><?= htmlspecialchars($partner_name) ?></div>
-              <div class="message-snippet-text" style="<?= $unread > 0 ? 'font-weight: 600; color: #1C1C1E;' : '' ?>">
-                <?= htmlspecialchars($clean_snippet) ?>
+            <!-- Foreground Row Link -->
+            <a href="chat.php?match_id=<?= $m['match_id'] ?>" class="message-item-row" style="position: relative; z-index: 2; background: #FFFFFF; transition: transform 0.2s ease;">
+              <div class="message-avatar-wrap" style="<?= $has_story_ring ? 'padding: 2px; background: linear-gradient(135deg, #C31F3A, #FF2D55); border-radius: 50%;' : '' ?>">
+                <img src="<?= htmlspecialchars($partner_avatar) ?>" class="message-avatar-img" alt="<?= htmlspecialchars($partner_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
               </div>
-            </div>
 
-            <div class="message-right-info">
-              <div class="message-time-text"><?= htmlspecialchars($rel_time) ?></div>
-              <?php if ($unread > 0): ?>
-                <div class="message-unread-badge"><?= $unread ?></div>
-              <?php endif; ?>
-            </div>
-          </a>
+              <div class="message-body-meta">
+                <div class="message-author-name"><?= htmlspecialchars($partner_name) ?></div>
+                <div class="message-snippet-text" style="<?= $unread > 0 ? 'font-weight: 600; color: #1C1C1E;' : '' ?>">
+                  <?= htmlspecialchars($clean_snippet) ?>
+                </div>
+              </div>
+
+              <div class="message-right-info">
+                <div class="message-time-text"><?= htmlspecialchars($rel_time) ?></div>
+                <?php if ($unread > 0): ?>
+                  <div class="message-unread-badge"><?= $unread ?></div>
+                <?php endif; ?>
+              </div>
+            </a>
+          </div>
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
@@ -251,18 +260,23 @@ require_once __DIR__ . '/includes/header.php';
           $p_name = ucwords(strtolower(trim($pend['full_name'])));
           $p_avatar = get_valid_avatar_url($pend['avatar_url'] ?? '');
         ?>
-          <a href="chat.php?match_id=<?= $pend['match_id'] ?>" class="message-item-row">
-            <div class="message-avatar-wrap">
-              <img src="<?= htmlspecialchars($p_avatar) ?>" class="message-avatar-img" alt="<?= htmlspecialchars($p_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+          <div class="message-row-wrapper" style="position: relative; overflow: hidden; border-bottom: 1px solid #F0F0F8;" data-match-id="<?= $pend['match_id'] ?>">
+            <div class="message-row-delete-action" onclick="deleteMatchConversation(event, <?= $pend['match_id'] ?>)" style="position: absolute; top: 0; right: 0; bottom: 0; width: 80px; background: #FF3B30; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; cursor: pointer; z-index: 1;">
+              <i class="fa-solid fa-trash" style="margin-right: 4px;"></i> Delete
             </div>
-            <div class="message-body-meta">
-              <div class="message-author-name"><?= htmlspecialchars($p_name) ?></div>
-              <div class="message-snippet-text">Matrimonial interest sent • Awaiting response</div>
-            </div>
-            <div class="message-right-info">
-              <span style="font-size: 0.72rem; font-weight: 700; color: #8E8E93; background: #F2F2F7; padding: 4px 10px; border-radius: 12px;">Pending</span>
-            </div>
-          </a>
+            <a href="chat.php?match_id=<?= $pend['match_id'] ?>" class="message-item-row" style="position: relative; z-index: 2; background: #FFFFFF; transition: transform 0.2s ease;">
+              <div class="message-avatar-wrap">
+                <img src="<?= htmlspecialchars($p_avatar) ?>" class="message-avatar-img" alt="<?= htmlspecialchars($p_name) ?>" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
+              </div>
+              <div class="message-body-meta">
+                <div class="message-author-name"><?= htmlspecialchars($p_name) ?></div>
+                <div class="message-snippet-text">Matrimonial interest sent • Awaiting response</div>
+              </div>
+              <div class="message-right-info">
+                <span style="font-size: 0.72rem; font-weight: 700; color: #8E8E93; background: #F2F2F7; padding: 4px 10px; border-radius: 12px;">Pending</span>
+              </div>
+            </a>
+          </div>
         <?php endforeach; ?>
       </div>
     <?php endif; ?>
@@ -298,19 +312,87 @@ function handleRequestAction(matchId, action) {
   })
   .then(res => res.json())
   .then(data => {
-    alert(data.message || 'Request updated');
-    location.reload();
+    if (action === 'accept_request' && data.success) {
+      window.location.href = `chat.php?match_id=${matchId}`;
+    } else {
+      location.reload();
+    }
   })
   .catch(err => {
     location.reload();
   });
 }
 
+// Touch Slide to Delete for Chat Rows
+let touchStartX = 0;
+let currentSwipedRow = null;
+
+document.querySelectorAll('.message-row-wrapper').forEach(wrapper => {
+  const item = wrapper.querySelector('.message-item-row');
+  if (!item) return;
+
+  item.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+
+  item.addEventListener('touchmove', function(e) {
+    const diffX = e.touches[0].clientX - touchStartX;
+    if (diffX < -20 && diffX > -120) {
+      item.style.transform = `translateX(${diffX}px)`;
+    } else if (diffX >= 0) {
+      item.style.transform = 'translateX(0px)';
+    }
+  }, { passive: true });
+
+  item.addEventListener('touchend', function(e) {
+    const diffX = e.changedTouches[0].clientX - touchStartX;
+    if (diffX < -40) {
+      item.style.transform = 'translateX(-80px)';
+      if (currentSwipedRow && currentSwipedRow !== item) {
+        currentSwipedRow.style.transform = 'translateX(0px)';
+      }
+      currentSwipedRow = item;
+    } else {
+      item.style.transform = 'translateX(0px)';
+    }
+  });
+});
+
+window.deleteMatchConversation = function(e, matchId) {
+  if (e) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+  if (!confirm('Are you sure you want to delete this conversation?')) return;
+
+  fetch('api/match_action.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'delete', match_id: matchId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      const wrapper = document.querySelector(`.message-row-wrapper[data-match-id="${matchId}"]`);
+      if (wrapper) {
+        wrapper.style.transition = 'all 0.3s ease';
+        wrapper.style.maxHeight = '0px';
+        wrapper.style.opacity = '0';
+        wrapper.style.padding = '0';
+        setTimeout(() => wrapper.remove(), 300);
+      }
+    } else {
+      alert(data.error || 'Could not delete conversation.');
+    }
+  })
+  .catch(err => alert('Network error. Failed to delete.'));
+};
+
 document.getElementById('msgSearchInput')?.addEventListener('input', function(e) {
   const query = e.target.value.toLowerCase().trim();
-  document.querySelectorAll('.message-item-row, .req-card').forEach(row => {
+  document.querySelectorAll('.message-row-wrapper, .req-card').forEach(row => {
     const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(query) ? 'flex' : 'none';
+    row.style.display = text.includes(query) ? 'block' : 'none';
   });
 });
 </script>

@@ -125,11 +125,35 @@ require_once __DIR__ . '/includes/header.php';
 
 <main class="app-body" style="padding: 6px 0 12px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
 
+    <!-- Become a Chourasiya Member Quick Action Banner -->
+    <div style="padding: 0 16px; margin-bottom: 8px;">
+      <a href="saathi-edit.php" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F7 100%); border: 1px solid #FFE0E6; border-radius: 16px; padding: 10px 14px; text-decoration: none; box-shadow: 0 2px 8px rgba(195,31,58,0.06);">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.25rem;">👑</span>
+          <div>
+            <div style="font-weight: 800; font-size: 0.84rem; color: #1C1C1E; line-height: 1.2;">Become a Chourasiya Member</div>
+            <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 500;">Get verified badge & exclusive community matches</div>
+          </div>
+        </div>
+        <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 12px; white-space: nowrap;">Join Now</span>
+      </a>
+    </div>
+
+    <!-- Category Tabs: All vs Chourasiya -->
+    <div style="padding: 0 16px; margin-bottom: 8px; display: flex; gap: 8px;" id="homeCategoryTabs">
+      <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid #E5E5EA; background: #1C1C1E; color: #FFFFFF; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">
+        All Profiles 🌐
+      </button>
+      <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="flex: 1; padding: 8px 12px; border-radius: 18px; border: 1px solid #E5E5EA; background: #F8F8FA; color: #1C1C1E; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.2s ease;">
+        Chourasiya Samaj ❤️
+      </button>
+    </div>
+
     <!-- Horizontal 3D Card Carousel Stage with Side Peeking Cards -->
     <div class="card-carousel-stage" id="cardCarouselStage">
       
       <!-- 1. Promo Welcome Banner Card (Always First Card in Carousel Stack) -->
-      <div class="carousel-card-item promo-card" data-index="0" data-match-score="100" data-user-id="0" data-user-name="Varsaathi Matrimony">
+      <div class="carousel-card-item promo-card" data-index="0" data-match-score="100" data-user-id="0" data-user-name="Varsaathi Matrimony" data-community="chourasiya">
         <div class="carousel-card-photo-wrap">
           <img src="assets/images/welcome_banner.jpg" class="carousel-card-img" alt="Varsaathi Promo Banner" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
         </div>
@@ -152,8 +176,10 @@ require_once __DIR__ . '/includes/header.php';
           $c_img = get_valid_avatar_url($cand['avatar_url'] ?? '');
           $c_city = !empty($cand['location_city']) && strpos(strtolower((string)$cand['location_city']), 'san francisco') === false ? $cand['location_city'] : 'India';
           $match_score = rand(91, 98); // High compatibility match score percentage
+          $c_comm = strtolower(trim(($cand['caste_community'] ?? '') . ' ' . ($cand['religion'] ?? '')));
+          $is_chourasiya = (strpos($c_comm, 'chourasiya') !== false || strpos($c_comm, 'chaurasia') !== false || empty($c_comm));
         ?>
-          <div class="carousel-card-item" data-index="<?= $index + 1 ?>" data-user-id="<?= $cand['id'] ?>" data-match-score="<?= $match_score ?>" data-user-name="<?= htmlspecialchars($c_name) ?>">
+          <div class="carousel-card-item" data-index="<?= $index + 1 ?>" data-user-id="<?= $cand['id'] ?>" data-match-score="<?= $match_score ?>" data-user-name="<?= htmlspecialchars($c_name) ?>" data-community="<?= $is_chourasiya ? 'chourasiya' : 'other' ?>">
             
             <!-- Photo Display -->
             <div class="carousel-card-photo-wrap">
@@ -348,16 +374,13 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            if (data.is_match) {
-              alert(`💕 It's a Match with ${userName}! You can now chat and video call.`);
-            } else {
-              alert(`❤️ Matrimonial Interest & Notification Sent to ${userName}!`);
+            const userAvatar = activeCard.querySelector('.carousel-card-img')?.src || '';
+            if (typeof window.showInterestMatchModal === 'function') {
+              window.showInterestMatchModal(userName, userAvatar, data.is_match, data.match_id || 0, userId);
             }
           }
           if (currentIndex < cards.length - 1) {
             scrollToCard(currentIndex + 1);
-          } else {
-            location.reload();
           }
         })
         .catch(err => {
