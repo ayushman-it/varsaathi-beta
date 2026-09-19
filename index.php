@@ -125,28 +125,29 @@ require_once __DIR__ . '/includes/header.php';
 
 <main class="app-body" style="padding: 6px 0 12px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
 
-    <!-- Become a Chourasiya Member Quick Action Banner -->
-    <div style="padding: 0 16px; margin-bottom: 8px;">
-      <a href="profile.php?join_chourasiya=1" style="display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #FFF0F4 0%, #FFF5F7 100%); border: 1px solid #FFE0E6; border-radius: 16px; padding: 10px 14px; text-decoration: none; box-shadow: 0 2px 8px rgba(195,31,58,0.06);">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.25rem;">👑</span>
-          <div>
-            <div style="font-weight: 700; font-size: 0.84rem; color: #1C1C1E; line-height: 1.2;">Become a Chourasiya Member</div>
-            <div style="font-size: 0.72rem; color: #8E8E93; font-weight: 500;">Get verified badge & exclusive community matches</div>
-          </div>
-        </div>
-        <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.72rem; font-weight: 600; padding: 5px 12px; border-radius: 12px; white-space: nowrap;">Join Now</span>
-      </a>
+    <!-- Become a Chourasiya Member Compact Action Banner with Close Button -->
+    <div id="chourasiyaMemberBanner" style="padding: 0 16px; margin-bottom: 6px; display: block;">
+      <div style="display: flex; align-items: center; justify-content: space-between; background: #FFF0F4; border: 1px solid #FFE0E6; border-radius: 14px; padding: 6px 10px 6px 12px; box-shadow: 0 2px 8px rgba(195,31,58,0.04);">
+        <a href="profile.php?join_chourasiya=1" style="display: flex; align-items: center; gap: 8px; text-decoration: none; flex: 1; min-width: 0;">
+          <span style="font-weight: 700; font-size: 0.78rem; color: #1C1C1E; white-space: nowrap;">Become a Chourasiya Member</span>
+          <span style="background: var(--ios-gradient); color: #FFF; font-size: 0.68rem; font-weight: 700; padding: 3px 9px; border-radius: 10px; white-space: nowrap;">Join Now</span>
+        </a>
+        <button type="button" onclick="dismissChourasiyaBanner()" style="background: transparent; border: none; color: #8E8E93; font-size: 0.85rem; padding: 4px 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;" title="Dismiss">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- Category Tabs: All vs Chourasiya (Clean Underline Active Tabs) -->
-    <div style="padding: 0 16px; margin-bottom: 10px; display: flex; gap: 16px; border-bottom: 1px solid #E5E5EA;" id="homeCategoryTabs">
-      <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="padding: 6px 4px 8px 4px; border: none; border-bottom: 2.5px solid #1C1C1E; background: transparent; color: #1C1C1E; font-weight: 600; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;">
-        All Profiles
-      </button>
-      <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="padding: 6px 4px 8px 4px; border: none; border-bottom: 2.5px solid transparent; background: transparent; color: #8E8E93; font-weight: 500; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease;">
-        Chourasiya
-      </button>
+    <!-- Pro iOS Segmented Category Tabs Bar -->
+    <div style="padding: 0 16px; margin-bottom: 8px;">
+      <div style="background: #EFEFF4; padding: 3px; border-radius: 20px; display: flex; align-items: center; gap: 2px;" id="homeCategoryTabs">
+        <button type="button" class="home-tab-btn active" data-tab="all" onclick="switchHomeCategoryTab('all', this)" style="flex: 1; height: 32px; border: none; border-radius: 17px; background: #FFFFFF; color: #1C1C1E; font-weight: 700; font-size: 0.76rem; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+          All Profiles
+        </button>
+        <button type="button" class="home-tab-btn" data-tab="chourasiya" onclick="switchHomeCategoryTab('chourasiya', this)" style="flex: 1; height: 32px; border: none; border-radius: 17px; background: transparent; color: #8E8E93; font-weight: 500; font-size: 0.76rem; cursor: pointer; transition: all 0.2s ease;">
+          Chourasiya
+        </button>
+      </div>
     </div>
 
     <!-- Horizontal 3D Card Carousel Stage with Side Peeking Cards -->
@@ -261,18 +262,35 @@ require_once __DIR__ . '/includes/header.php';
 </main>
 
 <script>
+window.dismissChourasiyaBanner = function() {
+  const banner = document.getElementById('chourasiyaMemberBanner');
+  if (banner) {
+    banner.style.display = 'none';
+    localStorage.setItem('hide_chourasiya_banner', '1');
+  }
+};
+
+if (localStorage.getItem('hide_chourasiya_banner') === '1') {
+  document.addEventListener('DOMContentLoaded', function() {
+    const banner = document.getElementById('chourasiyaMemberBanner');
+    if (banner) banner.style.display = 'none';
+  });
+}
+
 window.switchHomeCategoryTab = function(tabName, btnElem) {
   const tabs = document.querySelectorAll('.home-tab-btn');
   tabs.forEach(t => {
-    t.style.borderBottom = '2.5px solid transparent';
+    t.style.background = 'transparent';
     t.style.color = '#8E8E93';
-    t.style.fontWeight = '400';
+    t.style.fontWeight = '500';
+    t.style.boxShadow = 'none';
     t.classList.remove('active');
   });
   if (btnElem) {
-    btnElem.style.borderBottom = '2.5px solid #1C1C1E';
+    btnElem.style.background = '#FFFFFF';
     btnElem.style.color = '#1C1C1E';
-    btnElem.style.fontWeight = '600';
+    btnElem.style.fontWeight = '700';
+    btnElem.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
     btnElem.classList.add('active');
   }
 
