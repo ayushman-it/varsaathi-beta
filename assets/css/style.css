@@ -3331,10 +3331,10 @@ body {
 /* Horizontal 3D Card Carousel with Responsive Layout */
 .card-carousel-stage {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: 16px;
   overflow-x: auto;
-  padding: 4px 24px;
+  padding: 4px 24px 8px 24px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -3358,16 +3358,16 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: auto;
+  height: 100%;
 }
 
 .carousel-card-photo-wrap {
   width: 100%;
-  height: clamp(220px, 38vh, 320px);
+  flex: 1;
+  min-height: 0;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
-  flex-shrink: 0;
 }
 
 .carousel-card-img {
