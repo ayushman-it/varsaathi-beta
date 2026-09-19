@@ -4,49 +4,55 @@ require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/config/flags.php';
 require_login();
 
-$active_tab = 'profile';
-$current_user_id = get_current_user_id();
+try {
+    $active_tab = 'profile';
+    $current_user_id = get_current_user_id();
 
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :u");
-$stmt->execute([':u' => $current_user_id]);
-$user = $stmt->fetch();
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :u");
+    $stmt->execute([':u' => $current_user_id]);
+    $user = $stmt->fetch();
 
-if (!$user) {
-    header("Location: splash.php");
-    exit;
-}
+    if (!$user) {
+        header("Location: splash.php");
+        exit;
+    }
 
-$saathi = get_saathi_profile($current_user_id);
-$age = calculate_age($user['birthdate'] ?? '2000-01-01');
-$placeholder_img = 'assets/images/no_image_placeholder.png';
-$avatar = get_valid_avatar_url($user['avatar_url'] ?? '');
-$photos = json_decode($user['photos'] ?? '[]', true) ?: [];
-if (empty($photos) && !empty($avatar) && $avatar !== $placeholder_img) {
-    $photos = [$avatar];
-}
+    $saathi = get_saathi_profile($current_user_id) ?: [];
+    $age = calculate_age((string)($user['birthdate'] ?? '2000-01-01'));
+    $placeholder_img = 'assets/images/no_image_placeholder.png';
+    $avatar = get_valid_avatar_url((string)($user['avatar_url'] ?? ''));
+    $photos = json_decode((string)($user['photos'] ?? '[]'), true);
+    if (!is_array($photos)) {
+        $photos = [];
+    }
+    if (empty($photos) && !empty($avatar) && $avatar !== $placeholder_img) {
+        $photos = [$avatar];
+    }
 
-$has_photo = (!empty($avatar) && $avatar !== $placeholder_img);
-$completion_pct = calculate_saathi_completion($saathi, $user);
+    $has_photo = (!empty($avatar) && $avatar !== $placeholder_img);
+    $completion_pct = calculate_saathi_completion($saathi, $user);
 
-$is_private = (bool)($user['is_private'] ?? 0);
-$city_display = (!empty(trim($user['location_city'] ?? '')) && $user['location_city'] !== 'No Location') ? $user['location_city'] . ', India' : 'Location Not Set';
-$profile_share_url = SITE_URL . "saathi-profile.php?id=" . $current_user_id;
+    $is_private = (bool)($user['is_private'] ?? 0);
+    $city_name = trim((string)($user['location_city'] ?? ''));
+    $city_display = (!empty($city_name) && $city_name !== 'No Location') ? $city_name . ', India' : 'Location Not Set';
+    $profile_share_url = SITE_URL . "saathi-profile.php?id=" . $current_user_id;
+    $share_title = "Matrimonial Profile - " . (string)($user['full_name'] ?? '');
 
-// Fetch sample candidates for AI recommendations
-require_once __DIR__ . '/config/groq.php';
-$rec_stmt = $pdo->prepare("
-    SELECT u.*, sp.highest_qualification, sp.occupation_type, sp.height_cm, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
-    FROM users u
-    LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
-    WHERE u.id != :u
-    LIMIT 6
-");
-$rec_stmt->execute([':u' => $current_user_id]);
-$rec_candidates = $rec_stmt->fetchAll();
-$ai_recommendations = rank_candidates_with_groq($user, $saathi, $rec_candidates);
+    // Fetch sample candidates for AI recommendations
+    require_once __DIR__ . '/config/groq.php';
+    $rec_stmt = $pdo->prepare("
+        SELECT u.*, sp.highest_qualification, sp.occupation_type, sp.height_cm, sp.marital_status AS saathi_marital_status, sp.diet, sp.religion, sp.caste_community, sp.degree
+        FROM users u
+        LEFT JOIN saathi_profiles sp ON sp.user_id = u.id
+        WHERE u.id != :u
+        LIMIT 6
+    ");
+    $rec_stmt->execute([':u' => $current_user_id]);
+    $rec_candidates = $rec_stmt->fetchAll();
+    $ai_recommendations = rank_candidates_with_groq($user, $saathi, $rec_candidates);
 
-$css_version = time();
-require_once __DIR__ . '/includes/header.php';
+    $css_version = time();
+    require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="profile-screen-container" style="width: 100%; max-width: 580px; margin: 0 auto; padding-bottom: 90px;">
@@ -704,4 +710,13 @@ function fetchRealLocation() {
 <?php 
 require_once __DIR__ . '/includes/navbar.php';
 require_once __DIR__ . '/includes/footer.php'; 
+} catch (Throwable $e) {
+    error_log("profile.php Error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+    echo "<div style='padding:40px 20px; text-align:center; font-family:sans-serif;'>
+            <h2 style='color:#FF2D55;'>Profile Temporarily Unavailable</h2>
+            <p style='color:#666;'>We encountered an unexpected error loading your profile. Please try refreshing.</p>
+            <p style='font-size:0.8rem; color:#aaa;'>" . htmlspecialchars($e->getMessage()) . "</p>
+            <a href='home.php' style='display:inline-block; margin-top:15px; padding:10px 20px; background:#FF2D55; color:#fff; text-decoration:none; border-radius:12px;'>Return Home</a>
+          </div>";
+}
 ?>
