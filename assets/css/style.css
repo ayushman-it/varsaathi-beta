@@ -3364,8 +3364,8 @@ body {
 .carousel-card-photo-wrap {
   width: 100%;
   flex: 1;
-  min-height: 220px;
-  max-height: 45vh;
+  min-height: 180px;
+  max-height: 38vh;
   border-radius: 18px;
   overflow: hidden;
   position: relative;
