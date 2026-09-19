@@ -99,6 +99,31 @@ $css_version = time();
 require_once __DIR__ . '/includes/header.php';
 ?>
 
+<style>
+  html, body {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    background-color: #FAF9FC !important;
+  }
+  body {
+    display: block !important;
+    padding: 0 !important;
+  }
+  .app-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+  }
+</style>
+
 <!-- Original Standard App Header (Unchanged) -->
 <header class="app-header" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; min-height: 56px; background: #FFFFFF; border-bottom: 1px solid #E5E5EA;">
   <div class="header-title" style="font-size: 1.6rem; font-weight: 300; color: #1C1C1E; letter-spacing: -0.5px; font-family: system-ui, -apple-system, sans-serif;">
@@ -126,7 +151,7 @@ require_once __DIR__ . '/includes/header.php';
 </header>
 
 <!-- Wide Container (Full Vertical Scrolling Allowed) -->
-<div class="discover-screen-container" style="width: 100%; max-width: 720px; margin: 0 auto; min-height: auto; padding-bottom: 100px; background: #FAF9FC;">
+<div class="discover-screen-container" style="width: 100%; max-width: 820px; margin: 0 auto; min-height: auto; padding-bottom: 100px; background: #FAF9FC;">
 
   <!-- 1. Category Filter Tabs Bar -->
   <div style="display: flex; gap: 8px; padding: 12px 16px; background: #FFFFFF; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid #F2F2F7; margin-bottom: 14px;">
