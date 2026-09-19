@@ -3,57 +3,70 @@
 require_once __DIR__ . '/config/db.php';
 require_login();
 
-$active_tab = 'discover';
-$current_user_id = get_current_user_id();
-$target_id = (int)($_GET['id'] ?? 0);
+try {
+    $active_tab = 'discover';
+    $current_user_id = (int)get_current_user_id();
+    $target_id = (int)($_GET['id'] ?? 0);
 
-if (!$target_id) {
-    header("Location: index.php");
+    if (!$target_id) {
+        echo "<script>window.location.href='index.php';</script>";
+        exit;
+    }
+
+    // Fetch Candidate Profile
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
+    $stmt->execute([':id' => $target_id]);
+    $target_user = $stmt->fetch();
+
+    if (!$target_user) {
+        echo "<script>window.location.href='index.php';</script>";
+        exit;
+    }
+
+    $age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
+    $interests_decoded = json_decode((string)($target_user['interests'] ?? '[]'), true);
+    $interests = is_array($interests_decoded) ? $interests_decoded : [];
+
+    $placeholder_img = 'assets/images/no_image_placeholder.png';
+    $avatar = get_valid_avatar_url($target_user['avatar_url'] ?? '');
+    
+    $photos_decoded = json_decode((string)($target_user['photos'] ?? '[]'), true);
+    $photos = is_array($photos_decoded) ? $photos_decoded : [];
+    $photos = array_values(array_filter($photos, function($p) { return !empty($p); }));
+
+    if (empty($photos)) {
+        $photos = [$avatar];
+    }
+
+    $is_private = (bool)($target_user['is_private'] ?? 0);
+    $is_own_profile = ($target_id === $current_user_id);
+
+    if ($is_private && !$is_own_profile) {
+        $visible_photos = [$avatar];
+        $photos_locked = true;
+    } else {
+        $visible_photos = $photos;
+        $photos_locked = false;
+    }
+
+    $has_multiple_photos = count($visible_photos) > 1;
+
+    // Get candidate online status
+    $partner_status = get_user_online_status($target_user['last_seen'] ?? null);
+    if (!is_array($partner_status)) {
+        $partner_status = ['status' => 'offline', 'label' => 'Offline', 'color' => '#8E8E93'];
+    }
+
+    $css_version = time();
+    require_once __DIR__ . '/includes/header.php';
+} catch (Throwable $t_err) {
+    $css_version = time();
+    require_once __DIR__ . '/includes/header.php';
+    echo '<div style="padding:40px 20px; text-align:center;"><h3 style="color:#C31F3A;">Profile Error</h3><p style="color:#666; margin:10px 0 20px 0;">' . htmlspecialchars($t_err->getMessage()) . '</p><a href="index.php" style="background:#1C1C1E; color:#FFF; padding:10px 20px; border-radius:20px; text-decoration:none; font-weight:bold; font-size:0.88rem;">Return to Home Deck</a></div>';
+    require_once __DIR__ . '/includes/navbar.php';
+    require_once __DIR__ . '/includes/footer.php';
     exit;
 }
-
-// Fetch Candidate Profile
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-$stmt->execute([':id' => $target_id]);
-$target_user = $stmt->fetch();
-
-if (!$target_user) {
-    header("Location: index.php");
-    exit;
-}
-
-$age = calculate_age($target_user['birthdate'] ?? '2000-01-01');
-$interests = json_decode($target_user['interests'] ?? '[]', true) ?: [];
-$placeholder_img = 'assets/images/no_image_placeholder.png';
-$avatar = !empty($target_user['avatar_url']) ? $target_user['avatar_url'] : $placeholder_img;
-$photos = json_decode($target_user['photos'] ?? '[]', true) ?: [];
-
-// Filter out any empty strings from photos array
-$photos = array_values(array_filter($photos, fn($p) => !empty($p)));
-
-if (empty($photos)) {
-    $photos = [$avatar];
-}
-
-$is_private = (bool)($target_user['is_private'] ?? 0);
-$is_own_profile = ($target_id === $current_user_id);
-
-// If profile is private and not viewer's own profile, restrict visible photos to avatar only
-if ($is_private && !$is_own_profile) {
-    $visible_photos = [$avatar];
-    $photos_locked = true;
-} else {
-    $visible_photos = $photos;
-    $photos_locked = false;
-}
-
-$has_multiple_photos = count($visible_photos) > 1;
-
-// Get candidate online status
-$partner_status = get_user_online_status($target_user['last_seen'] ?? null);
-
-$css_version = filemtime(__DIR__ . '/assets/css/style.css');
-require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="app-header">
