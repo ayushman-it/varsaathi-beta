@@ -24,15 +24,18 @@ if (!$target_user) {
     json_response(['error' => 'User not found'], 404);
 }
 
-$target_name = ucwords(strtolower(trim($target_user['full_name'])));
+$target_name = ucwords(strtolower(trim((string)$target_user['full_name'])));
+
+$u1 = min((int)$user_id, (int)$target_id);
+$u2 = max((int)$user_id, (int)$target_id);
 
 // Check existing match record
 $m_stmt = $pdo->prepare("
     SELECT id, status, requested_by 
     FROM matches 
-    WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t))
+    WHERE user1_id = :u1 AND user2_id = :u2
 ");
-$m_stmt->execute([':u' => $user_id, ':t' => $target_id]);
+$m_stmt->execute([':u1' => $u1, ':u2' => $u2]);
 $match_row = $m_stmt->fetch();
 
 if ($match_row && $match_row['status'] === 'accepted') {
@@ -59,11 +62,11 @@ if (!$match_row) {
     $is_mutual = (bool)$check_stmt->fetch();
     $initial_status = $is_mutual ? 'accepted' : 'pending';
 
-    $ins_match = $pdo->prepare("INSERT INTO matches (user1_id, user2_id, status, requested_by) VALUES (LEAST(:u1, :u2), GREATEST(:u1, :u2), :st, :req) ON DUPLICATE KEY UPDATE status = IF(status = 'accepted', 'accepted', VALUES(status))");
-    $ins_match->execute([':u1' => $user_id, ':u2' => $target_id, ':st' => $initial_status, ':req' => $user_id]);
+    $ins_match = $pdo->prepare("INSERT INTO matches (user1_id, user2_id, status, requested_by) VALUES (:u1, :u2, :st, :req) ON DUPLICATE KEY UPDATE status = IF(status = 'accepted', 'accepted', VALUES(status))");
+    $ins_match->execute([':u1' => $u1, ':u2' => $u2, ':st' => $initial_status, ':req' => $user_id]);
 
     // Re-fetch match ID
-    $m_stmt->execute([':u' => $user_id, ':t' => $target_id]);
+    $m_stmt->execute([':u1' => $u1, ':u2' => $u2]);
     $match_row = $m_stmt->fetch();
 
     // Trigger FCM push notification to target user

@@ -194,11 +194,14 @@ switch ($action) {
         $is_mutual = (bool)$check_stmt->fetch();
         $initial_status = $is_mutual ? 'accepted' : 'pending';
 
-        $match_stmt = $pdo->prepare("INSERT INTO matches (user1_id, user2_id, status, requested_by) VALUES (LEAST(:u1, :u2), GREATEST(:u1, :u2), :st, :req) ON DUPLICATE KEY UPDATE status = IF(status = 'accepted', 'accepted', VALUES(status))");
-        $match_stmt->execute([':u1' => $user_id, ':u2' => $target_id, ':st' => $initial_status, ':req' => $user_id]);
+        $u1 = min((int)$user_id, (int)$target_id);
+        $u2 = max((int)$user_id, (int)$target_id);
 
-        $m_id_stmt = $pdo->prepare("SELECT id FROM matches WHERE (user1_id = :u1 AND user2_id = :u2) OR (user1_id = :u2 AND user2_id = :u1)");
-        $m_id_stmt->execute([':u1' => $user_id, ':u2' => $target_id]);
+        $match_stmt = $pdo->prepare("INSERT INTO matches (user1_id, user2_id, status, requested_by) VALUES (:u1, :u2, :st, :req) ON DUPLICATE KEY UPDATE status = IF(status = 'accepted', 'accepted', VALUES(status))");
+        $match_stmt->execute([':u1' => $u1, ':u2' => $u2, ':st' => $initial_status, ':req' => $user_id]);
+
+        $m_id_stmt = $pdo->prepare("SELECT id FROM matches WHERE user1_id = :u1 AND user2_id = :u2");
+        $m_id_stmt->execute([':u1' => $u1, ':u2' => $u2]);
         $match_id = (int)$m_id_stmt->fetchColumn();
 
         // Send FCM Push Notification to target user
@@ -233,8 +236,10 @@ switch ($action) {
     case 'cancel_interest':
         $target_id = (int)($input['target_id'] ?? 0);
         if ($target_id > 0 && $target_id !== $user_id) {
-            $del_m = $pdo->prepare("DELETE FROM matches WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t)) AND status = 'pending' AND requested_by = :u");
-            $del_m->execute([':u' => $user_id, ':t' => $target_id]);
+            $u1 = min((int)$user_id, (int)$target_id);
+            $u2 = max((int)$user_id, (int)$target_id);
+            $del_m = $pdo->prepare("DELETE FROM matches WHERE user1_id = :u1 AND user2_id = :u2 AND status = 'pending' AND requested_by = :req");
+            $del_m->execute([':u1' => $u1, ':u2' => $u2, ':req' => $user_id]);
 
             $del_s = $pdo->prepare("DELETE FROM swipes WHERE swiper_id = :s AND target_id = :t");
             $del_s->execute([':s' => $user_id, ':t' => $target_id]);

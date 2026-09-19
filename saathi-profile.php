@@ -30,12 +30,14 @@ try {
     // Check existing match/interest status between current user and target user
     $existing_match_row = false;
     if ($current_user_id > 0 && $target_id > 0) {
+        $u1 = min((int)$current_user_id, (int)$target_id);
+        $u2 = max((int)$current_user_id, (int)$target_id);
         $m_check = $pdo->prepare("
             SELECT id, status, requested_by 
             FROM matches 
-            WHERE (user1_id = LEAST(:u, :t) AND user2_id = GREATEST(:u, :t))
+            WHERE user1_id = :u1 AND user2_id = :u2
         ");
-        $m_check->execute([':u' => $current_user_id, ':t' => $target_id]);
+        $m_check->execute([':u1' => $u1, ':u2' => $u2]);
         $existing_match_row = $m_check->fetch();
     }
 
