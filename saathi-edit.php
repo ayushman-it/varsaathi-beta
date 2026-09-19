@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- Header -->
 <header class="app-header">
-  <a href="saathi.php" class="icon-btn" title="Back to Saathi">
+  <a href="profile.php" class="icon-btn" title="Back to Profile">
     <i class="fa-solid fa-chevron-left"></i>
   </a>
 
@@ -695,8 +695,8 @@ function savePrivacyAndFinish() {
   })
   .then(res => res.json())
   .then(data => {
-    alert('🎉 Your Saathi Matrimonial Profile is now published & ready!');
-    location.href = 'saathi.php';
+    alert('Your Saathi Matrimonial Profile is updated!');
+    location.href = 'profile.php';
   });
 }
 

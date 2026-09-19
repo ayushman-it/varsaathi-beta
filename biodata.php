@@ -16,7 +16,7 @@ $u_stmt->execute([':id' => $target_id]);
 $target_user = $u_stmt->fetch();
 
 if (!$target_user) {
-    header("Location: saathi.php");
+    header("Location: profile.php");
     exit;
 }
 
