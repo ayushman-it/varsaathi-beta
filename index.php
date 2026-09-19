@@ -123,7 +123,7 @@ require_once __DIR__ . '/includes/header.php';
   </div>
 </header>
 
-<main class="app-body" style="padding: 6px 0 80px 0; background: transparent; display: flex; flex-direction: column; justify-content: space-between; flex: 1; min-height: 0;">
+<main class="app-body" style="padding: 4px 0 75px 0; background: transparent; display: flex; flex-direction: column; justify-content: flex-start; flex: 1; min-height: 0;">
 
     <!-- Become a Chourasiya Member Compact Action Banner with Close Button -->
     <div id="chourasiyaMemberBanner" style="padding: 0 16px; margin-bottom: 6px; display: block;">
@@ -236,7 +236,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <!-- Match Percentage & Action Pill Bar -->
-    <div class="saathi-match-action-pill" style="margin-top: 6px; margin-bottom: 8px; background: transparent !important; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <div class="saathi-match-action-pill" style="margin-top: 4px; margin-bottom: 4px; background: transparent !important; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 10px;">
       <!-- Pass Button (X) -->
       <button class="action-circle-btn pass" id="carouselPassBtn" title="Pass / Next Card">
         <i class="fa-solid fa-xmark"></i>

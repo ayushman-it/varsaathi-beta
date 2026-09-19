@@ -339,13 +339,6 @@ require_once __DIR__ . '/includes/header.php';
             <?php endforeach; ?>
           </div>
 
-          <!-- Bio Quote Snippet with Arrow -->
-          <a href="saathi-profile.php?id=<?= $cand['id'] ?>" style="text-decoration: none; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid #F2F2F7; padding-top: 10px; margin-bottom: 14px; color: inherit;">
-            <div style="font-size: 0.8rem; color: #555555; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1;">
-              "<?= htmlspecialchars($cand_bio) ?>"
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color: #999999; font-size: 0.75rem;"></i>
-          </a>
 
           <!-- Bottom Action Buttons -->
           <div style="display: flex; gap: 10px;">
