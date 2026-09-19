@@ -71,13 +71,8 @@ try {
       </button>
     </div>
 
-    <!-- Ambient Hero Watermarks -->
-    <div class="profile-hero-watermarks">
-      <div class="profile-quote-left">
-        "Building<br>a meaningful<br>tomorrow, <span>together."</span>
-      </div>
-
-      <!-- 2. Centered Overlapping Avatar Ring -->
+    <!-- 2. Centered Overlapping Avatar Ring -->
+    <div style="margin-top: 8px; margin-bottom: 6px;">
       <div class="profile-avatar-outer-ring" onclick="document.getElementById('avatarFileInput').click()" title="Tap to change profile picture" style="cursor: pointer;">
         <div class="profile-avatar-gradient-border">
           <img src="<?= htmlspecialchars($avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='<?= $placeholder_img ?>';">
@@ -85,10 +80,6 @@ try {
         <div class="profile-avatar-verified-badge" title="Verified Profile">
           <i class="fa-solid fa-check"></i>
         </div>
-      </div>
-
-      <div class="profile-script-right">
-        Good<br>People<br>Better<br>Together
       </div>
     </div>
 

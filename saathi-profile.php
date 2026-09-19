@@ -96,13 +96,8 @@ try {
       </button>
     </div>
 
-    <!-- Ambient Hero Watermarks -->
-    <div class="profile-hero-watermarks">
-      <div class="profile-quote-left">
-        "Building<br>a meaningful<br>tomorrow, <span>together."</span>
-      </div>
-
-      <!-- 2. Centered Overlapping Avatar Ring -->
+    <!-- 2. Centered Overlapping Avatar Ring -->
+    <div style="margin-top: 8px; margin-bottom: 6px;">
       <div class="profile-avatar-outer-ring" style="cursor: pointer;" onclick="openPhotoPreview('<?= htmlspecialchars((string)$avatar) ?>', <?= htmlspecialchars(json_encode(array_values($photos_raw))) ?>, 0)" title="Click to Preview Photo">
         <div class="profile-avatar-gradient-border">
           <img src="<?= htmlspecialchars((string)$avatar) ?>" class="profile-avatar-img" onerror="this.onerror=null; this.src='assets/images/no_image_placeholder.png';">
@@ -110,10 +105,6 @@ try {
         <div class="profile-avatar-verified-badge" title="Verified Profile">
           <i class="fa-solid fa-check"></i>
         </div>
-      </div>
-
-      <div class="profile-script-right">
-        Good<br>People<br>Better<br>Together
       </div>
     </div>
 
